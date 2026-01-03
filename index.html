@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Akça ERP v24.0 | Yönetici Vizyonu</title>
+    <title>Akça ERP v25.0 | Final Boss</title>
     
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
@@ -25,9 +25,8 @@
         .input-dark:focus { border-color: #3b82f6; ring: 2px solid #3b82f6; }
         .btn { padding: 8px 16px; border-radius: 8px; font-weight: 600; transition: 0.2s; cursor: pointer; display: inline-flex; items-center; justify-content: center; gap: 8px; }
         .btn-primary { background: #2563eb; color: white; } .btn-primary:hover { background: #1d4ed8; }
-        .btn-success { background: #059669; color: white; } .btn-success:hover { background: #047857; }
         
-        /* Defter Tipi Etiketleri */
+        /* Özel Etiketler */
         .badge-bilanco { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 800; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(16, 185, 129, 0.1); display: inline-block; min-width: 70px; text-align: center; }
         .badge-isletme { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4); padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; display: inline-block; min-width: 70px; text-align: center; }
     </style>
@@ -36,19 +35,19 @@
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect } = React;
+        const { useState, useEffect, useMemo } = React;
 
-        // --- GÜVENLİK AYARI ---
+        // --- GÜVENLİK ---
         const SISTEM_SIFRESI = "1453"; 
 
-        // --- API AYARLARI ---
+        // --- API ---
         const API_CONFIG = {
             id: "7105435782",
             token: "9909ba226135436cb48ba61229ea6c7976122daff9b249b89c",
             baseUrl: "https://api.green-api.com"
         };
 
-        // --- GERÇEK PERSONEL LİSTESİ ---
+        // --- PERSONEL ---
         const INITIAL_PERSONEL = [
             { id: 1, ad: "ÖZLEM", unvan: "S.M.M.M", giris: "2018-01-01", maas: 35000, sgk: 6000, yemek: 5000, vergi: 2000, diger: 0 },
             { id: 2, ad: "TUĞÇE TETİK", unvan: "S.M.M.M", giris: "2019-05-15", maas: 35000, sgk: 6000, yemek: 5000, vergi: 2000, diger: 0 },
@@ -59,235 +58,235 @@
             { id: 7, ad: "HALİL AKÇA", unvan: "Yönetici", giris: "2010-01-01", maas: 0, sgk: 0, yemek: 0, vergi: 0, diger: 0 }
         ];
 
-        // --- TAM LİSTE (230 KAYIT) ---
+        // --- 230 MÜKELLEF LİSTESİ (Sıkıştırılmış Format) ---
         const FULL_DATA = [
-            {"id": 1, "unvan": "18 Mart Özel Güvenlik Ve Eğitim Hiz. Tic. Ltd. Şti.", "tel": "05419353101", "tel2": "05362629620", "defter": "BILANÇO", "temsilci": "ÖZLEM", "aylikUcret": 14500, "durum": "Aktif"},
-            {"id": 2, "unvan": "1915 Çanakkale Transport Nakliyat Organizasyon Turizm Ticaret Limited Şirke", "tel": "05448602914", "tel2": "05444953993", "defter": "BILANÇO", "temsilci": "TUĞÇE TETİK", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 3, "unvan": "Abdulkadir Ceylan", "tel": "05394831765", "defter": "İŞLETME", "temsilci": "ÖMER", "aylikUcret": 3300, "durum": "Aktif"},
-            {"id": 4, "unvan": "Ali Baki USTA", "tel": "", "defter": "ÖZEL BİNA İNŞAATI", "temsilci": "ASLI", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 5, "unvan": "Ahmet Çelik", "tel": "05366407632", "defter": "BASİT USUL", "temsilci": "ASLI", "aylikUcret": 3300, "durum": "Aktif"},
-            {"id": 6, "unvan": "Ahmet Eker", "tel": "05455433041", "defter": "GÖNDER", "temsilci": "ÖMER", "aylikUcret": 3000, "durum": "Aktif"},
-            {"id": 7, "unvan": "Ahmet Öner", "tel": "05535041774", "defter": "BILANÇO", "temsilci": "ÖMER", "aylikUcret": 6000, "durum": "Aktif"},
-            {"id": 8, "unvan": "Ainos Şarapçılık Turz. San. Ve Tic. A. Ş.", "tel": "05327309221", "defter": "BILANÇO", "temsilci": "TUĞÇE KUTLU", "aylikUcret": 10000, "durum": "Aktif"},
-            {"id": 9, "unvan": "Altıüstü Organizasyon Moda Tasarım Tic Ltd Şti", "tel": "05464788173", "tel2": "05467352862", "defter": "BILANÇO", "temsilci": "ASLI", "aylikUcret": 4500, "durum": "Aktif"},
-            {"id": 10, "unvan": "Angeliki Muhali", "tel": "05312178249", "defter": "BILANÇO", "temsilci": "ÖMER", "aylikUcret": 17500, "durum": "Aktif"},
-            {"id": 11, "unvan": "Ar Oto-Ali Tırnak Ve Rahim Meriç Adi Ortaklığı", "tel": "05423519457", "tel2": "05414033168", "tel3": "05524211191", "defter": "İŞLETME", "temsilci": "ASLI", "aylikUcret": 6000, "durum": "Aktif"},
-            {"id": 12, "unvan": "Areti Sozo Kostalas", "tel": "05302502737", "tel2": "05461472738", "tel3": "05451477300", "defter": "İŞLETME", "temsilci": "EREN", "aylikUcret": 3000, "durum": "Aktif"},
-            {"id": 13, "unvan": "Areto Turizm Otelcilik Ve Ahşap Ürünleri İmalat İthalat İhracat Sanayi Tica", "tel": "05302502737", "tel2": "05461472738", "tel3": "05451477300", "defter": "BILANÇO", "temsilci": "EREN", "aylikUcret": 13000, "durum": "Aktif"},
-            {"id": 14, "unvan": "Arslan Gıda Pazarlama İnşaat Ticaret Ve Sanayi Limited Şirketi", "tel": "05334916801", "tel2": "05308509359", "tel3": "05369672307", "defter": "BILANÇO", "temsilci": "TUĞÇE KUTLU", "aylikUcret": 40000, "durum": "Aktif"},
-            {"id": 15, "unvan": "Arzu Güleğlen", "tel": "05324579556", "defter": "NAN", "temsilci": "EREN", "aylikUcret": 7000, "durum": "Aktif"},
-            {"id": 16, "unvan": "As-Il Tekstil İnşaatve Otomotiv Ticaret Ltd. Şti.", "tel": "05322303033", "defter": "BILANÇO", "temsilci": "EREN", "aylikUcret": 16000, "durum": "Aktif"},
-            {"id": 17, "unvan": "Aslı Gizem Garip", "tel": "05557629762", "defter": "İŞLETME", "temsilci": "ASLI", "aylikUcret": 2000, "durum": "Aktif"},
-            {"id": 18, "unvan": "Asmas Organik Tarım Ür Turizm İnşaat Madencilik Ve Enerji Limit", "tel": "05322823110", "defter": "BILANÇO", "temsilci": "ASLI", "aylikUcret": 10000, "durum": "Aktif"},
-            {"id": 19, "unvan": "Ayhan Çınar", "tel": "05435400288", "defter": "İŞLETME", "temsilci": "ÖMER", "aylikUcret": 3300, "durum": "Aktif"},
-            {"id": 20, "unvan": "Ayhan Mengüş", "tel": "05322830950", "tel2": "05435340036", "defter": "BILANÇO", "temsilci": "ÖZLEM", "aylikUcret": 20000, "durum": "Aktif"},
-            {"id": 21, "unvan": "Aynur Kutlu", "tel": "05058747718", "defter": "İŞLETME", "temsilci": "ASLI", "aylikUcret": 3000, "durum": "Aktif"},
-            {"id": 22, "unvan": "Aysel Güven", "tel": "05432082576", "defter": "İŞLETME", "temsilci": "ÖZLEM", "aylikUcret": 3000, "durum": "Aktif"},
-            {"id": 23, "unvan": "Aytaç Yılmaz", "tel": "05445385691", "defter": "İŞLETME", "temsilci": "TUĞÇE TETİK", "aylikUcret": 3000, "durum": "Aktif"},
-            {"id": 24, "unvan": "Aytuğ Şah Gıda Pazl. Teks. Tur. Ve İnşasan. Ltd. Şti.", "tel": "05373725795", "defter": "BILANÇO", "temsilci": "EREN", "aylikUcret": 10000, "durum": "Aktif"},
-            {"id": 25, "unvan": "Barış Koç", "tel": "05330276543", "defter": "KAPATCAZ", "temsilci": "ASLI", "aylikUcret": 3300, "durum": "Aktif"},
-            {"id": 26, "unvan": "Bbk Tarım Anonim Şirketi", "tel": "05322771137", "tel2": "05532227799", "defter": "BILANÇO", "temsilci": "TUĞÇE KUTLU", "aylikUcret": 17000, "durum": "Aktif"},
-            {"id": 27, "unvan": "Bernis Harita Mimarlık Mühendislik Ltd. Şti.", "tel": "05324509908", "defter": "BILANÇO", "temsilci": "ASLI", "aylikUcret": 10000, "durum": "Aktif"},
-            {"id": 28, "unvan": "Biga Demir Enerji Sanayi Ve Ticaret Limited Şirketi", "tel": "05380100777", "tel2": "05546817977", "defter": "BILANÇO", "temsilci": "TUĞÇE TETİK", "aylikUcret": 20000, "durum": "Aktif"},
-            {"id": 29, "unvan": "Bigfoot Kafeterya Ltd Şti", "tel": "05369311982", "defter": "BILANÇO", "temsilci": "TUĞÇE TETİK", "aylikUcret": 12500, "durum": "Aktif"},
-            {"id": 30, "unvan": "Birsen Ergün", "tel": "05322919323", "defter": "BILANÇO", "temsilci": "EREN", "aylikUcret": 7000, "durum": "Aktif"},
-            {"id": 31, "unvan": "Boğaz Cy Planlama Mühendislik Gayrimenkul İnşaat Turizm Ticaret Limited Şir", "tel": "05466934871", "tel2": "05549424041", "defter": "BILANÇO", "temsilci": "EREN", "aylikUcret": 10000, "durum": "Aktif"},
-            {"id": 32, "unvan": "Borcars Gayrimenkul Otomotiv Akaryakıt İnşaat Nakliyat Tur Tic Ltd Şti", "tel": "05300609127", "tel2": "05414409127", "defter": "BILANÇO", "temsilci": "EREN", "aylikUcret": 12500, "durum": "Aktif"},
-            {"id": 33, "unvan": "Byz Dağcılık Enerji Ve İnşaat Hizmetleri Sanayi Ticaret Limited Şirketi", "tel": "05380100777", "tel2": "05374965918", "tel3": "05546817977", "defter": "BILANÇO", "temsilci": "TUĞÇE TETİK", "aylikUcret": 10000, "durum": "Aktif"},
-            {"id": 34, "unvan": "Ç. Kale Ser-Tur Peyzaözel Eğt. Sağl. Serv. Taşm. Ltd. Şti.", "tel": "05309736121", "defter": "BILANÇO", "temsilci": "TUĞÇE TETİK", "aylikUcret": 15000, "durum": "Aktif"},
-            {"id": 35, "unvan": "Çanakkale Akıncı Özel Güvenlik Ve Eğt. Ltd. Şti.", "tel": "05056682793", "tel2": "05462463399", "tel3": "05538304464", "defter": "BILANÇO", "temsilci": "ÖZLEM", "aylikUcret": 10000, "durum": "Aktif"},
-            {"id": 36, "unvan": "Çanakkale Dlybnb Medya Temizlik Ve Gıda Ürünleri Pazarlama İthalat Ltd Şti", "tel": "05370276205", "defter": "BILANÇO", "temsilci": "ASLI", "aylikUcret": 5000, "durum": "Aktif"},
-            {"id": 37, "unvan": "Çanakkale Yıldız Dental Park Ağız Ve Diş Sağlığı Ticaret Limited Şirketi", "tel": "05077391498", "tel2": "05321553398", "tel3": "05065982442", "defter": "BILANÇO", "temsilci": "ÖZLEM", "aylikUcret": 14000, "durum": "Aktif"},
-            {"id": 38, "unvan": "Canan Yüksek", "tel": "05438708232", "tel2": "05423840017", "tel3": "05546507221", "defter": "İŞLETME", "temsilci": "EREN", "aylikUcret": 2500, "durum": "Aktif"},
-            {"id": 39, "unvan": "Cemil Basri Hınıslıoğlu", "tel": "05367006120", "tel2": "05322640873", "tel3": "05384421103", "defter": "İŞLETME", "temsilci": "ÖZLEM", "aylikUcret": 3000, "durum": "Aktif"},
-            {"id": 40, "unvan": "Cemil Yılmaz", "tel": "05526167064", "defter": "İŞLETME", "temsilci": "ASLI", "aylikUcret": 2500, "durum": "Aktif"},
-            {"id": 41, "unvan": "Cenk Kuru", "tel": "05325710438", "defter": "BILANÇO", "temsilci": "ASLI", "aylikUcret": 8000, "durum": "Aktif"},
-            {"id": 42, "unvan": "Çiçek Canöz", "tel": "05412134564", "defter": "KAPATYCAZ", "temsilci": "EREN", "aylikUcret": 3300, "durum": "Aktif"},
-            {"id": 43, "unvan": "Cihan Çetinkaya", "tel": "05423148939", "defter": "İŞLETME", "temsilci": "ÖMER", "aylikUcret": 3000, "durum": "Aktif"},
-            {"id": 44, "unvan": "Dabakoğlu Gıda İnşaatrz. Tesis İşltmetic. San. Ltd. Şti.", "tel": "05375943696", "defter": "BILANÇO", "temsilci": "ASLI", "aylikUcret": 10000, "durum": "Aktif"},
-            {"id": 45, "unvan": "Damla Ümmü Yetkin", "tel": "05079589926", "tel2": "05426500103", "defter": "İŞLETME", "temsilci": "EREN", "aylikUcret": 2500, "durum": "Aktif"},
-            {"id": 46, "unvan": "Dardanel Troya Özel Güvenlik Ve Eğitim Hizmetleri Ticaret Limited Şirketi", "tel": "05438155198", "tel2": "05417401122", "tel3": "05414762948", "defter": "BILANÇO", "temsilci": "ÖZLEM", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 47, "unvan": "Dardanel Vip Özel Güv. Ve Eğt. Hiz. Tic. Ltd. Şti.", "tel": "05438155198", "defter": "BILANÇO", "temsilci": "ÖZLEM", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 48, "unvan": "Dedeoğlu Motorlu Araçlar Sanayi Ve Ticaret Limited Şirketi", "tel": "05322922457", "defter": "BILANÇO", "temsilci": "ASLI", "aylikUcret": 12500, "durum": "Aktif"},
-            {"id": 49, "unvan": "Demiralp Üretim Gayrimenkul İnşaat Turizm Otomotiv Sanayi Ticaret Limited Ş", "tel": "05337400537", "tel2": "05325666932", "defter": "BILANÇO", "temsilci": "ASLI", "aylikUcret": 9000, "durum": "Aktif"},
-            {"id": 50, "unvan": "Doğa Dabakoğlu", "tel": "05425462429", "defter": "İŞLETME", "temsilci": "EREN", "aylikUcret": 3000, "durum": "Aktif"},
-            {"id": 51, "unvan": "Ebru Meraklı", "tel": "05436140121", "defter": "BILANÇO", "temsilci": "ÖMER", "aylikUcret": 8000, "durum": "Aktif"},
-            {"id": 52, "unvan": "Elçin Aydın", "tel": "05512585443", "defter": "BILANÇO", "temsilci": "ÖZLEM", "aylikUcret": 9000, "durum": "Aktif"},
-            {"id": 53, "unvan": "Elif Karagöz", "tel": "05533179815", "defter": "İŞLETME", "temsilci": "ASLI", "aylikUcret": 3000, "durum": "Aktif"},
-            {"id": 54, "unvan": "Elixir Sağlık Turizm Danışmanlık Ve Organizasyon Hizmetleri Limited Şirketi", "tel": "05445304051", "defter": "BILANÇO", "temsilci": "ÖMER", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 55, "unvan": "Emir Can Temizlik Hiz. Tur. Emlak. Oto. İnş. Taah. Tic. Ltd. Şti.", "tel": "05324190450", "tel2": "05362629620", "defter": "BILANÇO", "temsilci": "ASLI", "aylikUcret": 12000, "durum": "Aktif"},
-            {"id": 56, "unvan": "Eniz Akarsu", "tel": "05309250617", "defter": "İŞLETME", "temsilci": "ASLI", "aylikUcret": 3300, "durum": "Aktif"},
-            {"id": 57, "unvan": "Ersin Yılmazer", "tel": "05322184110", "defter": "BILANÇO", "temsilci": "ASLI", "aylikUcret": 8333, "durum": "Aktif"},
-            {"id": 58, "unvan": "Ertan Özgür", "tel": "05327309221", "defter": "BILANÇO", "temsilci": "TUĞÇE KUTLU", "aylikUcret": 8000, "durum": "Aktif"},
-            {"id": 59, "unvan": "Eskaş A. Ş", "tel": "05384421103", "tel2": "05322640873", "tel3": "05321654793", "defter": "BILANÇO", "temsilci": "ÖZLEM", "aylikUcret": 13000, "durum": "Aktif"},
-            {"id": 60, "unvan": "Esra Alıcı", "tel": "05335117230", "defter": "İŞLETME", "temsilci": "ASLI", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 61, "unvan": "Etis Ekolojik Tarım Ürünleri Ve Turizm İşletmesi Sanayi Ve Tic. Ltd. Şti.", "tel": "05322823110", "defter": "BILANÇO", "temsilci": "TUĞÇE KUTLU", "aylikUcret": 13500, "durum": "Aktif"},
-            {"id": 62, "unvan": "Fahretin Gülperen", "tel": "05365836747", "tel2": "05462171256", "defter": "İŞLETME", "temsilci": "ÖMER", "aylikUcret": 3000, "durum": "Aktif"},
-            {"id": 63, "unvan": "Fahrettin Umay", "tel": "05553225693", "defter": "İŞLETME", "temsilci": "ÖMER", "aylikUcret": 3000, "durum": "Aktif"},
-            {"id": 64, "unvan": "Fatih Abat", "tel": "05065376544", "defter": "İŞLETME", "temsilci": "ASLI", "aylikUcret": 3000, "durum": "Aktif"},
-            {"id": 65, "unvan": "Feder Kuyumculuk İnşaat Otomotiv Gıda Ticaret Limited Şirketi", "tel": "05324628232", "defter": "BILANÇO", "temsilci": "ASLI", "aylikUcret": 9000, "durum": "Aktif"},
-            {"id": 66, "unvan": "Ferman Ötü", "tel": "05079978219", "tel2": "05533795149", "defter": "BILANÇO", "temsilci": "EREN", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 67, "unvan": "Fuzy Gıda İşletmeciliği Ticaret Anonim Şirketi", "tel": "05336073894", "tel2": "05336073895", "defter": "BILANÇO", "temsilci": "EREN", "aylikUcret": 13500, "durum": "Aktif"},
-            {"id": 68, "unvan": "Gencay Turan", "tel": "05445066988", "defter": "İŞLETME", "temsilci": "EREN", "aylikUcret": 3000, "durum": "Aktif"},
-            {"id": 69, "unvan": "Gizem Yıllar Adalı", "tel": "05388414384", "defter": "GİDECEK", "temsilci": "TUĞÇE TETİK", "aylikUcret": 10000, "durum": "Aktif"},
-            {"id": 70, "unvan": "Gökçe Demiralp", "tel": "05337400537", "defter": "İŞLETME", "temsilci": "TUĞÇE TETİK", "aylikUcret": 3000, "durum": "Aktif"},
-            {"id": 71, "unvan": "Gökmen Doğan", "tel": "05359518599", "defter": "İŞLETME", "temsilci": "ÖMER", "aylikUcret": 3000, "durum": "Aktif"},
-            {"id": 72, "unvan": "Güçlüler Teks. Orm. Ür. Gıd. Nak. Inş. Ve Zirai Ür. Tic. Ltd.", "tel": "05323715419", "tel2": "05356050208", "defter": "BILANÇO", "temsilci": "TUĞÇE TETİK", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 73, "unvan": "Gülce Kılıçlar", "tel": "05342914807", "defter": "KAPANACAK", "temsilci": "ÖMER", "aylikUcret": 3000, "durum": "Aktif"},
-            {"id": 74, "unvan": "Gülfer Erdem", "tel": "05456769387", "defter": "BILANÇO", "temsilci": "ÖZLEM", "aylikUcret": 3000, "durum": "Aktif"},
-            {"id": 75, "unvan": "Güngör Altundal", "tel": "05367011749", "defter": "BILANÇO", "temsilci": "ÖMER", "aylikUcret": 7000, "durum": "Aktif"},
-            {"id": 76, "unvan": "Gürkan Karalı", "tel": "05453302629", "tel2": "05388620848", "defter": "İŞLETME", "temsilci": "TUĞÇE TETİK", "aylikUcret": 2500, "durum": "Aktif"},
-            {"id": 77, "unvan": "Gürsoy Petrol İnş. Taah. Tur. Oto. San. Ith. Ihr. Ve Tic. Ltd. Şti.", "tel": "05322433164", "tel2": "05465727343", "defter": "BILANÇO", "temsilci": "ÖZLEM", "aylikUcret": 20000, "durum": "Aktif"},
-            {"id": 78, "unvan": "Halil İbrahim Bozkurt", "tel": "05438065243", "defter": "BILANÇO", "temsilci": "ASLI", "aylikUcret": 8000, "durum": "Aktif"},
-            {"id": 79, "unvan": "Halil Kılınç", "tel": "05365613944", "defter": "BASİT OLACAK", "temsilci": "ASLI", "aylikUcret": 3000, "durum": "Aktif"},
-            {"id": 80, "unvan": "Haluk Balcı", "tel": "05542987485", "defter": "İŞLETME", "temsilci": "ASLI", "aylikUcret": 3000, "durum": "Aktif"},
-            {"id": 81, "unvan": "Hamiyet Arabacı", "tel": "05444573826", "defter": "İŞLETME", "temsilci": "TUĞÇE TETİK", "aylikUcret": 2500, "durum": "Aktif"},
-            {"id": 82, "unvan": "Hasan Küçük", "tel": "05416438747", "defter": "BILANÇO", "temsilci": "ASLI", "aylikUcret": 3000, "durum": "Aktif"},
-            {"id": 83, "unvan": "Hasan Pınarcıoğlu", "tel": "05380572236", "defter": "İŞLETME", "temsilci": "ÖMER", "aylikUcret": 3300, "durum": "Aktif"},
-            {"id": 84, "unvan": "Hasan Şahin", "tel": "05011343096", "tel2": "05525603096", "defter": "İŞLETME", "temsilci": "ÖMER", "aylikUcret": 5000, "durum": "Aktif"},
-            {"id": 85, "unvan": "Hilmi Kırtık", "tel": "05393238219", "defter": "BILANÇO", "temsilci": "ÖZLEM", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 86, "unvan": "Hira Med İnşaat İthalat İhracat Sanayi Ticaret Limited Şirketi", "tel": "05327223790", "defter": "BILANÇO", "temsilci": "TUĞÇE TETİK", "aylikUcret": 12500, "durum": "Aktif"},
-            {"id": 87, "unvan": "İbrahim Demir", "tel": "05428937491", "defter": "BILANÇO", "temsilci": "TUĞÇE TETİK", "aylikUcret": 6500, "durum": "Aktif"},
-            {"id": 88, "unvan": "İbrahim Koçoğlu İnşaat Taahhüt Sanayi Ticaret Limited Şirketi", "tel": "05321654793", "tel2": "05322640873", "tel3": "05384421103", "defter": "BILANÇO", "temsilci": "ÖZLEM", "aylikUcret": 10000, "durum": "Aktif"},
-            {"id": 89, "unvan": "İhsan Atay", "tel": "05353388926", "defter": "İŞLETME", "temsilci": "TUĞÇE TETİK", "aylikUcret": 3000, "durum": "Aktif"},
-            {"id": 90, "unvan": "İkizler Gurup Mad. Inş. Taah. Tur. Nak. It. Ih. San. Ve Tic. Ltd. Şti.", "tel": "05457979745", "tel2": "05323744991", "defter": "BILANÇO", "temsilci": "TUĞÇE TETİK", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 91, "unvan": "İlker Taş", "tel": "05079344436", "defter": "BILANÇO", "temsilci": "EREN", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 92, "unvan": "İrem Atar", "tel": "05532243048", "defter": "İŞLETME", "temsilci": "ÖMER", "aylikUcret": 3000, "durum": "Aktif"},
-            {"id": 93, "unvan": "İsmail Kaya", "tel": "05443513081", "defter": "İŞLETME", "temsilci": "TUĞÇE TETİK", "aylikUcret": 2000, "durum": "Aktif"},
-            {"id": 94, "unvan": "Kalpak Tarım Anonim Şirketi", "tel": "05322771137", "tel2": "05423620250", "tel3": "05532227799", "defter": "BILANÇO", "temsilci": "TUĞÇE KUTLU", "aylikUcret": 21000, "durum": "Aktif"},
-            {"id": 95, "unvan": "Kemal Ateş", "tel": "05418742178", "tel2": "05436200328", "tel3": "05443916691", "defter": "BILANÇO", "temsilci": "EREN", "aylikUcret": 10000, "durum": "Aktif"},
-            {"id": 96, "unvan": "Keten Grup Mağazacılık Yapı İnşaat Ve Taahhüt San. Tic. Ltd. Şti.", "tel": "05322303033", "defter": "BILANÇO", "temsilci": "TUĞÇE KUTLU", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 97, "unvan": "Kocasoy İnşaat Paz. Trz. Gıda Tar. Hay. Taş. San. Tic. Ltd. Şti.", "tel": "05327792604", "defter": "BILANÇO", "temsilci": "ASLI", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 98, "unvan": "Kocasoylar Grup İnş. Taah. Trz. Gı. Tar. Hayv. San. Ith. Ihr. Tic. Ltd. Şti", "tel": "05327792604", "tel2": "05447438476", "tel3": "05331955404", "defter": "BILANÇO", "temsilci": "ASLI", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 99, "unvan": "Koçoğlu Yapı Elemanları Lojistik Tarım Ltd Şti", "tel": "05321654793", "tel2": "05322640873", "tel3": "05384421103", "defter": "BILANÇO", "temsilci": "ÖZLEM", "aylikUcret": 12000, "durum": "Aktif"},
-            {"id": 100, "unvan": "Koçoğulları Eğitim Sağlık Turizm İnşaat Ve Malz. Ltd Şti", "tel": "05384421103", "tel2": "05321654793", "tel3": "05322640873", "defter": "BILANÇO", "temsilci": "ÖZLEM", "aylikUcret": 10000, "durum": "Aktif"},
-            {"id": 101, "unvan": "Koçyiğit Restoran Ve Gıda Hizmetleri İnşaat Otomotiv Ticaret Limited Şirket", "tel": "05334246561", "defter": "BILANÇO", "temsilci": "ASLI", "aylikUcret": 10000, "durum": "Aktif"},
-            {"id": 102, "unvan": "Koruköy Konaklama Turizm Ve Gıda Pazarlama Ticaret Limited Şirketi", "tel": "05323224404", "defter": "BILANÇO", "temsilci": "TUĞÇE TETİK", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 103, "unvan": "Kubilay Yıldız", "tel": "05522909320", "defter": "GÖNDER", "temsilci": "ASLI", "aylikUcret": 3000, "durum": "Aktif"},
-            {"id": 104, "unvan": "Kübra Kılınç", "tel": "05320649112", "defter": "BILANÇO", "temsilci": "TUĞÇE TETİK", "aylikUcret": 8000, "durum": "Aktif"},
-            {"id": 105, "unvan": "Kuvvet Özel Tarım Ürünleri Gıda İnşaat Sanayi Ticaret Limited Şirketi", "tel": "05462771840", "defter": "BILANÇO", "temsilci": "ÖZLEM", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 106, "unvan": "Kuzeybatı Turizm Yatırımları Ve Tanıtımhiz. Ltd. Şti.", "tel": "05334164524", "defter": "BILANÇO", "temsilci": "ÖMER", "aylikUcret": 10000, "durum": "Aktif"},
-            {"id": 107, "unvan": "Lasersan Lazer Teknolojileri Ve Ekipmanları Güzellik Akademisi İnşaat İthal", "tel": "05464506703", "tel2": "05524309049", "defter": "BILANÇO", "temsilci": "TUĞÇE TETİK", "aylikUcret": 10000, "durum": "Aktif"},
-            {"id": 108, "unvan": "Livestetic Güzellik Hiz. İnş. Tic. Ltd. Şti.", "tel": "05464506703", "defter": "BILANÇO", "temsilci": "EREN", "aylikUcret": 12500, "durum": "Aktif"},
-            {"id": 109, "unvan": "M Sıddık Yeler", "tel": "05336434296", "defter": "GÖNDER", "temsilci": "ÖMER", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 110, "unvan": "Mayadağ İçecek Mad. Dağ. Ve Gıda Paz. Tic. Ve San. Ltd. Şti.", "tel": "05334916801", "tel2": "05369672307", "tel3": "05308509359", "defter": "BILANÇO", "temsilci": "TUĞÇE KUTLU", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 111, "unvan": "Mehmet Berkay Polat", "tel": "05422709017", "defter": "BILANÇO", "temsilci": "ÖZLEM", "aylikUcret": 4000, "durum": "Aktif"},
-            {"id": 112, "unvan": "Mehmet Dilber", "tel": "05529270241", "defter": "BILANÇO", "temsilci": "EREN", "aylikUcret": 3300, "durum": "Aktif"},
-            {"id": 113, "unvan": "Mehmet Emin Altunbaş", "tel": "05322277756", "defter": "BILANÇO", "temsilci": "TUĞÇE KUTLU", "aylikUcret": 10000, "durum": "Aktif"},
-            {"id": 114, "unvan": "Mehmet Engin", "tel": "05382585354", "defter": "BILANÇO", "temsilci": "ASLI", "aylikUcret": 10000, "durum": "Aktif"},
-            {"id": 115, "unvan": "Mehmet Şahin", "tel": "05373725795", "defter": "İŞLETME", "temsilci": "EREN", "aylikUcret": 2750, "durum": "Aktif"},
-            {"id": 116, "unvan": "Melih Can Uzun", "tel": "05344114555", "defter": "İŞLETME", "temsilci": "ASLI", "aylikUcret": 3000, "durum": "Aktif"},
-            {"id": 117, "unvan": "Merve Akgül", "tel": "05437131866", "defter": "İŞLETME", "temsilci": "ÖMER", "aylikUcret": 3000, "durum": "Aktif"},
-            {"id": 118, "unvan": "Metal Güven Demir Çelik Makina Tarım Ve Orman Ekipmanları İmalatı Nakliyat", "tel": "05393238219", "tel2": "05510328322", "defter": "BILANÇO", "temsilci": "ÖZLEM", "aylikUcret": 50000, "durum": "Aktif"},
-            {"id": 119, "unvan": "Mete Şahin", "tel": "05439293843", "defter": "BILANÇO", "temsilci": "ASLI", "aylikUcret": 2750, "durum": "Aktif"},
-            {"id": 120, "unvan": "Metin Ünal", "tel": "05427262284", "defter": "BILANÇO", "temsilci": "TUĞÇE TETİK", "aylikUcret": 15000, "durum": "Aktif"},
-            {"id": 121, "unvan": "Metin Ünal Taşımacılık İnşaat Turizm Galeri Ve Organizasyon Hizmetleri Tica", "tel": "05427262284", "defter": "BILANÇO", "temsilci": "TUĞÇE TETİK", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 122, "unvan": "Mevlüt Baran", "tel": "05427802074", "defter": "İŞLETME", "temsilci": "EREN", "aylikUcret": 2750, "durum": "Aktif"},
-            {"id": 123, "unvan": "Mine Tuban", "tel": "05539775599", "defter": "İŞLETME", "temsilci": "ÖZLEM", "aylikUcret": 2500, "durum": "Aktif"},
-            {"id": 124, "unvan": "Mısra Pancaroğlu", "tel": "05073854112", "defter": "İŞLETME", "temsilci": "TUĞÇE TETİK", "aylikUcret": 3000, "durum": "Aktif"},
-            {"id": 125, "unvan": "Muhammed Emre Coşkun", "tel": "05413420800", "defter": "GİTTİ", "temsilci": "EREN", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 126, "unvan": "Muhammed Enes Yiğit", "tel": "05442207404", "defter": "GÖNDER", "temsilci": "ÖMER", "aylikUcret": 3300, "durum": "Aktif"},
-            {"id": 127, "unvan": "Muhammet Yasin Atik", "tel": "05308791754", "defter": "İŞLETME", "temsilci": "ÖMER", "aylikUcret": 3000, "durum": "Aktif"},
-            {"id": 128, "unvan": "Muharrem Altıntaş", "tel": "05326330934", "defter": "İŞLETME", "temsilci": "ASLI", "aylikUcret": 3000, "durum": "Aktif"},
-            {"id": 129, "unvan": "Murat Akburak", "tel": "05417630752", "tel2": "05303229644", "defter": "İŞLETME", "temsilci": "ASLI", "aylikUcret": 3000, "durum": "Aktif"},
-            {"id": 130, "unvan": "Murat Eryılmaz", "tel": "05469266674", "tel2": "05525602403", "defter": "İŞLETME", "temsilci": "ASLI", "aylikUcret": 3000, "durum": "Aktif"},
-            {"id": 131, "unvan": "Mustafa Koca", "tel": "05459002090", "defter": "İŞLETME", "temsilci": "ASLI", "aylikUcret": 3000, "durum": "Aktif"},
-            {"id": 132, "unvan": "Nil Estetik", "tel": "05076263290", "tel2": "05379945940", "defter": "BILANÇO", "temsilci": "TUĞÇE KUTLU", "aylikUcret": 7000, "durum": "Aktif"},
-            {"id": 133, "unvan": "Ninka Bira Ve Malt", "tel": "05363511697", "tel2": "05394106802", "defter": "BILANÇO", "temsilci": "TUĞÇE KUTLU", "aylikUcret": 12000, "durum": "Aktif"},
-            {"id": 134, "unvan": "Nisanur Kayar", "tel": "05527285430", "defter": "İŞLETME", "temsilci": "TUĞÇE TETİK", "aylikUcret": 3300, "durum": "Aktif"},
-            {"id": 135, "unvan": "Nympha Organik", "tel": "05322650341", "tel2": "05324248698", "defter": "BILANÇO", "temsilci": "TUĞÇE KUTLU", "aylikUcret": 10000, "durum": "Aktif"},
-            {"id": 136, "unvan": "Obuz Gıda", "tel": "05336073894", "defter": "BILANÇO", "temsilci": "ÖMER", "aylikUcret": 15000, "durum": "Aktif"},
-            {"id": 137, "unvan": "Özak Zeytincilik", "tel": "05325271220", "defter": "BILANÇO", "temsilci": "TUĞÇE KUTLU", "aylikUcret": 10000, "durum": "Aktif"},
-            {"id": 138, "unvan": "Özel Anafartalar Sür. Kursu", "tel": "05055427793", "defter": "BILANÇO", "temsilci": "ÖZLEM", "aylikUcret": 8000, "durum": "Aktif"},
-            {"id": 139, "unvan": "Özel Çanakkale Deha", "tel": "05380100777", "tel2": "05527891717", "defter": "BILANÇO", "temsilci": "ÖZLEM", "aylikUcret": 10000, "durum": "Aktif"},
-            {"id": 140, "unvan": "Özlem Serdaroğlu", "tel": "05422909951", "tel2": "05522886144", "defter": "İŞLETME", "temsilci": "ASLI", "aylikUcret": 3300, "durum": "Aktif"},
-            {"id": 141, "unvan": "Parion Turizm", "tel": "05448602914", "tel2": "05412132017", "defter": "BILANÇO", "temsilci": "TUĞÇE TETİK", "aylikUcret": 12500, "durum": "Aktif"},
-            {"id": 142, "unvan": "Pastayap Gıda", "tel": "05426360075", "tel2": "05337030757", "defter": "BILANÇO", "temsilci": "ÖMER", "aylikUcret": 8500, "durum": "Aktif"},
-            {"id": 143, "unvan": "Peldan İnşaat", "tel": "05456037502", "tel2": "05327694590", "defter": "BILANÇO", "temsilci": "ASLI", "aylikUcret": 6000, "durum": "Aktif"},
-            {"id": 144, "unvan": "Pelin Gözütok Utgu", "tel": "05442912840", "defter": "İŞLETME", "temsilci": "TUĞÇE TETİK", "aylikUcret": 3000, "durum": "Aktif"},
-            {"id": 145, "unvan": "Plas İnşaat", "tel": "05324986620", "defter": "BILANÇO", "temsilci": "TUĞÇE TETİK", "aylikUcret": 6000, "durum": "Aktif"},
-            {"id": 146, "unvan": "Polar Spa İnşaat", "tel": "05327494464", "tel2": "05352849020", "defter": "BILANÇO", "temsilci": "TUĞÇE KUTLU", "aylikUcret": 8000, "durum": "Aktif"},
-            {"id": 147, "unvan": "Pozitif 20 Özel Güvenlik", "tel": "05438155198", "defter": "BILANÇO", "temsilci": "ÖZLEM", "aylikUcret": 8000, "durum": "Aktif"},
-            {"id": 148, "unvan": "Proaktif Yedek Parça", "tel": "05466752936", "tel2": "05446752936", "defter": "BILANÇO", "temsilci": "ÖMER", "aylikUcret": 7000, "durum": "Aktif"},
-            {"id": 149, "unvan": "Raf17 Reklam", "tel": "05380100777", "defter": "BILANÇO", "temsilci": "TUĞÇE TETİK", "aylikUcret": 5000, "durum": "Aktif"},
-            {"id": 150, "unvan": "Rahime Gök", "tel": "05363300059", "defter": "İŞLETME", "temsilci": "ASLI", "aylikUcret": 3000, "durum": "Aktif"},
-            {"id": 151, "unvan": "Rıfkı Yasaç", "tel": "05442881322", "tel2": "05445120726", "defter": "İŞLETME", "temsilci": "ASLI", "aylikUcret": 3000, "durum": "Aktif"},
-            {"id": 152, "unvan": "Şahika Organik Ürünler", "tel": "05326330934", "defter": "BILANÇO", "temsilci": "TUĞÇE KUTLU", "aylikUcret": 7000, "durum": "Aktif"},
-            {"id": 153, "unvan": "Şans Dondurmaları", "tel": "05335496969", "tel2": "05534505186", "defter": "BILANÇO", "temsilci": "ÖMER", "aylikUcret": 12000, "durum": "Aktif"},
-            {"id": 154, "unvan": "Şarköy Arslan Dayanıklı Tüketim", "tel": "05334916801", "defter": "BILANÇO", "temsilci": "TUĞÇE TETİK", "aylikUcret": 8000, "durum": "Aktif"},
-            {"id": 155, "unvan": "Şarköy Mila Çiftliği", "tel": "05316411907", "tel2": "05468503084", "defter": "BILANÇO", "temsilci": "TUĞÇE KUTLU", "aylikUcret": 10000, "durum": "Aktif"},
-            {"id": 156, "unvan": "Seler Alkollü İçecekler", "tel": "05308509359", "tel2": "05334916801", "defter": "BILANÇO", "temsilci": "TUĞÇE TETİK", "aylikUcret": 12000, "durum": "Aktif"},
-            {"id": 157, "unvan": "Serkan Gönültaş", "tel": "05327098853", "defter": "BILANÇO", "temsilci": "ÖMER", "aylikUcret": 6000, "durum": "Aktif"},
-            {"id": 158, "unvan": "Serkan Gönültaş Otomotiv", "tel": "05327098853", "defter": "BILANÇO", "temsilci": "ÖMER", "aylikUcret": 8000, "durum": "Aktif"},
-            {"id": 159, "unvan": "Serkan Gültekin", "tel": "05453973280", "defter": "İŞLETME", "temsilci": "ASLI", "aylikUcret": 3300, "durum": "Aktif"},
-            {"id": 160, "unvan": "Sezida Gıda", "tel": "05437106315", "defter": "BILANÇO", "temsilci": "TUĞÇE KUTLU", "aylikUcret": 7000, "durum": "Aktif"},
-            {"id": 161, "unvan": "Sibel Demir", "tel": "05013616337", "defter": "İŞLETME", "temsilci": "ASLI", "aylikUcret": 3300, "durum": "Aktif"},
-            {"id": 162, "unvan": "Simay Betül Yıldız", "tel": "05537050834", "defter": "İŞLETME", "temsilci": "TUĞÇE TETİK", "aylikUcret": 3000, "durum": "Aktif"},
-            {"id": 163, "unvan": "Sinem Arabacıbaşı 2025", "tel": "05336600899", "defter": "İŞLETME", "temsilci": "TUĞÇE TETİK", "aylikUcret": 3300, "durum": "Aktif"},
-            {"id": 164, "unvan": "Su-Ser Bulut Un San.", "tel": "05438730058", "defter": "BILANÇO", "temsilci": "TUĞÇE KUTLU", "aylikUcret": 10000, "durum": "Aktif"},
-            {"id": 165, "unvan": "Suat Berber", "tel": "05426360075", "tel2": "05337030757", "defter": "İŞLETME", "temsilci": "ASLI", "aylikUcret": 3300, "durum": "Aktif"},
-            {"id": 166, "unvan": "Tan Özel Sağlık", "tel": "05323224404", "tel2": "05334356011", "defter": "BILANÇO", "temsilci": "ÖZLEM", "aylikUcret": 10000, "durum": "Aktif"},
-            {"id": 167, "unvan": "Tanem İnşaat", "tel": "05321654793", "tel2": "05322640873", "defter": "BILANÇO", "temsilci": "ASLI", "aylikUcret": 6000, "durum": "Aktif"},
-            {"id": 168, "unvan": "Tasarım Mutfak", "tel": "05336565797", "defter": "İŞLETME", "temsilci": "ASLI", "aylikUcret": 3300, "durum": "Aktif"},
-            {"id": 169, "unvan": "Taşçıoğulları Otomotiv", "tel": "054474342917", "defter": "BILANÇO", "temsilci": "ÖMER", "aylikUcret": 8000, "durum": "Aktif"},
-            {"id": 170, "unvan": "Tenedos Kozmetik", "tel": "05428937491", "defter": "İŞLETME", "temsilci": "TUĞÇE TETİK", "aylikUcret": 3300, "durum": "Aktif"},
-            {"id": 171, "unvan": "Tenedos Trz. Tşm.", "tel": "05444953993", "tel2": "05448602914", "defter": "BILANÇO", "temsilci": "ÖMER", "aylikUcret": 7000, "durum": "Aktif"},
-            {"id": 172, "unvan": "Tevfik Güreşçi", "tel": "05339260917", "defter": "İŞLETME", "temsilci": "ASLI", "aylikUcret": 3300, "durum": "Aktif"},
-            {"id": 173, "unvan": "The Piden Restoran", "tel": "05422352722", "defter": "BILANÇO", "temsilci": "TUĞÇE KUTLU", "aylikUcret": 8000, "durum": "Aktif"},
-            {"id": 174, "unvan": "Tm Elektronik", "tel": "05321654793", "tel2": "05322640873", "defter": "BILANÇO", "temsilci": "ÖZLEM", "aylikUcret": 10000, "durum": "Aktif"},
-            {"id": 175, "unvan": "Troya Pasta Ekipmanları", "tel": "05522181915", "defter": "BILANÇO", "temsilci": "TUĞÇE TETİK", "aylikUcret": 7000, "durum": "Aktif"},
-            {"id": 176, "unvan": "Tuncay Sarı Mühendislik", "tel": "05423463939", "defter": "BILANÇO", "temsilci": "ÖZLEM", "aylikUcret": 10000, "durum": "Aktif"},
-            {"id": 177, "unvan": "Ufema Yapı İnşaat", "tel": "05316411907", "tel2": "05374212450", "defter": "BILANÇO", "temsilci": "ASLI", "aylikUcret": 6000, "durum": "Aktif"},
-            {"id": 178, "unvan": "Vipro Oto Kiralama", "tel": "05438155198", "defter": "BILANÇO", "temsilci": "ÖZLEM", "aylikUcret": 6000, "durum": "Aktif"},
-            {"id": 179, "unvan": "Wens Dış Ticaret", "tel": "05327494464", "defter": "BILANÇO", "temsilci": "TUĞÇE TETİK", "aylikUcret": 7000, "durum": "Aktif"},
-            {"id": 180, "unvan": "Yasin Saraç", "tel": "05339116106", "defter": "İŞLETME", "temsilci": "TUĞÇE TETİK", "aylikUcret": 3000, "durum": "Aktif"},
-            {"id": 181, "unvan": "Yener Yalım", "tel": "05325120132", "defter": "BILANÇO", "temsilci": "TUĞÇE TETİK", "aylikUcret": 8500, "durum": "Aktif"},
-            {"id": 182, "unvan": "Yenir Çanakkale Paz", "tel": "05321654793", "tel2": "05322277756", "defter": "BILANÇO", "temsilci": "TUĞÇE KUTLU", "aylikUcret": 8000, "durum": "Aktif"},
-            {"id": 183, "unvan": "Yerel Emlak Sos.", "tel": "05066000909", "defter": "İŞLETME", "temsilci": "ASLI", "aylikUcret": 3300, "durum": "Aktif"},
-            {"id": 184, "unvan": "Yıldıray Aydın Gayrimenkul", "tel": "05438707034", "defter": "BILANÇO", "temsilci": "ÖMER", "aylikUcret": 6000, "durum": "Aktif"},
-            {"id": 185, "unvan": "Yıldıray Ölçek", "tel": "05524211191", "tel2": "05324211191", "defter": "SERBEST MESLEK", "temsilci": "ASLI", "aylikUcret": 4000, "durum": "Aktif"},
-            {"id": 186, "unvan": "Yorgi Vulgarel Varisleri", "tel": "05302092875", "tel2": "05423190257", "defter": "BILANÇO", "temsilci": "ÖZLEM", "aylikUcret": 8000, "durum": "Aktif"},
-            {"id": 187, "unvan": "Yücel Yurdaer", "tel": "05339249774", "defter": "İŞLETME", "temsilci": "ASLI", "aylikUcret": 3300, "durum": "Aktif"},
-            {"id": 188, "unvan": "Zafer Güner", "tel": "05426728811", "defter": "İŞLETME", "temsilci": "ASLI", "aylikUcret": 3300, "durum": "Aktif"},
-            {"id": 189, "unvan": "Zarif Biçer", "tel": "05070831903", "defter": "İŞLETME", "temsilci": "TUĞÇE TETİK", "aylikUcret": 3300, "durum": "Aktif"},
-            {"id": 190, "unvan": "Zerrin Oruzbeyi", "tel": "05322924076", "defter": "İŞLETME", "temsilci": "TUĞÇE TETİK", "aylikUcret": 3000, "durum": "Aktif"},
-            {"id": 191, "unvan": "Ali Baki Usta", "tel": "05334164524", "tel2": "05327233803", "defter": "ÖZEL BİNA İNŞAATI", "temsilci": "ASLI", "aylikUcret": 4000, "durum": "Aktif"},
-            {"id": 192, "unvan": "Ali Korukçu", "tel": "05414330897", "defter": "PASİF", "temsilci": "NAN", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 193, "unvan": "Ali Tırnak", "tel": "05423519457", "tel2": "05524211191", "defter": "GİDECEK", "temsilci": "EREN", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 194, "unvan": "Ay Gyo İnşaat Enerji", "tel": "05323428130", "defter": "GİDECEK", "temsilci": "EREN", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 195, "unvan": "Bayram Kaptı", "tel": "05378110795", "defter": "NAN", "temsilci": "NAN", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 196, "unvan": "Berke Seven", "tel": "05456774893", "defter": "GİTTİ", "temsilci": "EREN", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 197, "unvan": "Çanakkale Onsekiz Mart Üniversitesi", "tel": "", "defter": "NAN", "temsilci": "NAN", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 198, "unvan": "Çanakkale Seramik", "tel": "", "defter": "NAN", "temsilci": "NAN", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 199, "unvan": "Çanakkale Ticaret Ve Sanayi Odası", "tel": "", "defter": "NAN", "temsilci": "NAN", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 200, "unvan": "Çanakkale Ziraat Odası", "tel": "", "defter": "NAN", "temsilci": "NAN", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 201, "unvan": "Demircioğlu", "tel": "", "defter": "NAN", "temsilci": "NAN", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 202, "unvan": "Denizbank", "tel": "", "defter": "NAN", "temsilci": "NAN", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 203, "unvan": "Doğtaş Kelebek Mobilya", "tel": "", "defter": "NAN", "temsilci": "NAN", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 204, "unvan": "Ercanlar", "tel": "", "defter": "NAN", "temsilci": "NAN", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 205, "unvan": "Gestaş", "tel": "", "defter": "NAN", "temsilci": "NAN", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 206, "unvan": "Halkbank", "tel": "", "defter": "NAN", "temsilci": "NAN", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 207, "unvan": "İçdaş", "tel": "", "defter": "NAN", "temsilci": "NAN", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 208, "unvan": "Kale Grubu", "tel": "", "defter": "NAN", "temsilci": "NAN", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 209, "unvan": "Kaleseramik", "tel": "", "defter": "NAN", "temsilci": "NAN", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 210, "unvan": "Kaptanlar", "tel": "", "defter": "NAN", "temsilci": "NAN", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 211, "unvan": "Kepez Belediyesi", "tel": "", "defter": "NAN", "temsilci": "NAN", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 212, "unvan": "Miller", "tel": "", "defter": "NAN", "temsilci": "NAN", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 213, "unvan": "Opet", "tel": "", "defter": "NAN", "temsilci": "NAN", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 214, "unvan": "Süleyman Demirel", "tel": "", "defter": "NAN", "temsilci": "NAN", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 215, "unvan": "Tatlan", "tel": "", "defter": "NAN", "temsilci": "NAN", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 216, "unvan": "Troya Müzesi", "tel": "", "defter": "NAN", "temsilci": "NAN", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 217, "unvan": "Tuğçe Güçlü", "tel": "05525971517", "tel2": "05312575046", "defter": "BILANÇO", "temsilci": "ASLI", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 218, "unvan": "Tuncay Sarı", "tel": "", "defter": "NAN", "temsilci": "NAN", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 219, "unvan": "Türkiye İş Bankası", "tel": "", "defter": "NAN", "temsilci": "NAN", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 220, "unvan": "UEDAŞ", "tel": "", "defter": "NAN", "temsilci": "NAN", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 221, "unvan": "Uludağ Elektrik", "tel": "", "defter": "NAN", "temsilci": "NAN", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 222, "unvan": "Ünzüle Gamsız", "tel": "05072041978", "defter": "İŞLETME", "temsilci": "ASLI", "aylikUcret": 3000, "durum": "Aktif"},
-            {"id": 223, "unvan": "Vakıfbank", "tel": "", "defter": "NAN", "temsilci": "NAN", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 224, "unvan": "Yapı Kredi", "tel": "", "defter": "NAN", "temsilci": "NAN", "aylikUcret": 0, "durum": "Aktif"},
-            {"id": 225, "unvan": "Yusuf Güneş", "tel": "05443019663", "defter": "İŞLETME", "temsilci": "ASLI", "aylikUcret": 2500, "durum": "Aktif"},
-            {"id": 226, "unvan": "Zafer Durmaz", "tel": "05457380102", "defter": "İŞLETME", "temsilci": "TUĞÇE TETİK", "aylikUcret": 2000, "durum": "Aktif"},
-            {"id": 227, "unvan": "Ziraat Bankası", "tel": "", "defter": "NAN", "temsilci": "NAN", "aylikUcret": 0, "durum": "Aktif"}
+            {"id":1,"unvan":"18 Mart Özel Güvenlik Ve Eğitim Hiz. Tic. Ltd. Şti.","tel":"05419353101","tel2":"05362629620","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":14500,"durum":"Aktif"},
+            {"id":2,"unvan":"1915 Çanakkale Transport Nakliyat","tel":"05448602914","tel2":"05444953993","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":0,"durum":"Aktif"},
+            {"id":3,"unvan":"Abdulkadir Ceylan","tel":"05394831765","defter":"İŞLETME","temsilci":"ÖMER","aylikUcret":3300,"durum":"Aktif"},
+            {"id":4,"unvan":"Ali Baki USTA","tel":"05334164524","defter":"ÖZEL BİNA İNŞAATI","temsilci":"ASLI","aylikUcret":4000,"durum":"Aktif"},
+            {"id":5,"unvan":"Ahmet Çelik","tel":"05366407632","defter":"BASİT USUL","temsilci":"ASLI","aylikUcret":3300,"durum":"Aktif"},
+            {"id":6,"unvan":"Ahmet Eker","tel":"05455433041","defter":"GÖNDER","temsilci":"ÖMER","aylikUcret":3000,"durum":"Aktif"},
+            {"id":7,"unvan":"Ahmet Öner","tel":"05535041774","defter":"BILANÇO","temsilci":"ÖMER","aylikUcret":6000,"durum":"Aktif"},
+            {"id":8,"unvan":"Ainos Şarapçılık Turz. San. Ve Tic. A. Ş.","tel":"05327309221","defter":"BILANÇO","temsilci":"TUĞÇE KUTLU","aylikUcret":10000,"durum":"Aktif"},
+            {"id":9,"unvan":"Altıüstü Organizasyon Moda Tasarım Tic Ltd Şti","tel":"05464788173","defter":"BILANÇO","temsilci":"ASLI","aylikUcret":4500,"durum":"Aktif"},
+            {"id":10,"unvan":"Angeliki Muhali","tel":"05312178249","defter":"BILANÇO","temsilci":"ÖMER","aylikUcret":17500,"durum":"Aktif"},
+            {"id":11,"unvan":"Ar Oto-Ali Tırnak Ve Rahim Meriç","tel":"05423519457","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":6000,"durum":"Aktif"},
+            {"id":12,"unvan":"Areti Sozo Kostalas","tel":"05302502737","defter":"İŞLETME","temsilci":"EREN","aylikUcret":3000,"durum":"Aktif"},
+            {"id":13,"unvan":"Areto Turizm Otelcilik","tel":"05302502737","defter":"BILANÇO","temsilci":"EREN","aylikUcret":13000,"durum":"Aktif"},
+            {"id":14,"unvan":"Arslan Gıda Pazarlama","tel":"05334916801","defter":"BILANÇO","temsilci":"TUĞÇE KUTLU","aylikUcret":40000,"durum":"Aktif"},
+            {"id":15,"unvan":"Arzu Güleğlen","tel":"05324579556","defter":"NAN","temsilci":"EREN","aylikUcret":7000,"durum":"Aktif"},
+            {"id":16,"unvan":"As-Il Tekstil İnşaat","tel":"05322303033","defter":"BILANÇO","temsilci":"EREN","aylikUcret":16000,"durum":"Aktif"},
+            {"id":17,"unvan":"Aslı Gizem Garip","tel":"05557629762","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":2000,"durum":"Aktif"},
+            {"id":18,"unvan":"Asmas Organik Tarım","tel":"05322823110","defter":"BILANÇO","temsilci":"ASLI","aylikUcret":10000,"durum":"Aktif"},
+            {"id":19,"unvan":"Ayhan Çınar","tel":"05435400288","defter":"İŞLETME","temsilci":"ÖMER","aylikUcret":3300,"durum":"Aktif"},
+            {"id":20,"unvan":"Ayhan Mengüş","tel":"05322830950","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":20000,"durum":"Aktif"},
+            {"id":21,"unvan":"Aynur Kutlu","tel":"05058747718","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":3000,"durum":"Aktif"},
+            {"id":22,"unvan":"Aysel Güven","tel":"05432082576","defter":"İŞLETME","temsilci":"ÖZLEM","aylikUcret":3000,"durum":"Aktif"},
+            {"id":23,"unvan":"Aytaç Yılmaz","tel":"05445385691","defter":"İŞLETME","temsilci":"TUĞÇE TETİK","aylikUcret":3000,"durum":"Aktif"},
+            {"id":24,"unvan":"Aytuğ Şah Gıda Pazl.","tel":"05373725795","defter":"BILANÇO","temsilci":"EREN","aylikUcret":10000,"durum":"Aktif"},
+            {"id":25,"unvan":"Barış Koç","tel":"05330276543","defter":"KAPATCAZ","temsilci":"ASLI","aylikUcret":3300,"durum":"Aktif"},
+            {"id":26,"unvan":"Bbk Tarım Anonim Şirketi","tel":"05322771137","defter":"BILANÇO","temsilci":"TUĞÇE KUTLU","aylikUcret":17000,"durum":"Aktif"},
+            {"id":27,"unvan":"Bernis Harita Mimarlık","tel":"05324509908","defter":"BILANÇO","temsilci":"ASLI","aylikUcret":10000,"durum":"Aktif"},
+            {"id":28,"unvan":"Biga Demir Enerji","tel":"05380100777","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":20000,"durum":"Aktif"},
+            {"id":29,"unvan":"Bigfoot Kafeterya Ltd Şti","tel":"05369311982","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":12500,"durum":"Aktif"},
+            {"id":30,"unvan":"Birsen Ergün","tel":"05322919323","defter":"BILANÇO","temsilci":"EREN","aylikUcret":7000,"durum":"Aktif"},
+            {"id":31,"unvan":"Boğaz Cy Planlama","tel":"05466934871","defter":"BILANÇO","temsilci":"EREN","aylikUcret":10000,"durum":"Aktif"},
+            {"id":32,"unvan":"Borcars Gayrimenkul Otomotiv","tel":"05300609127","defter":"BILANÇO","temsilci":"EREN","aylikUcret":12500,"durum":"Aktif"},
+            {"id":33,"unvan":"Byz Dağcılık Enerji","tel":"05380100777","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":10000,"durum":"Aktif"},
+            {"id":34,"unvan":"Ç. Kale Ser-Tur Peyzaözel","tel":"05309736121","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":15000,"durum":"Aktif"},
+            {"id":35,"unvan":"Çanakkale Akıncı Özel Güvenlik","tel":"05056682793","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":10000,"durum":"Aktif"},
+            {"id":36,"unvan":"Çanakkale Dlybnb Medya","tel":"05370276205","defter":"BILANÇO","temsilci":"ASLI","aylikUcret":5000,"durum":"Aktif"},
+            {"id":37,"unvan":"Çanakkale Yıldız Dental Park","tel":"05077391498","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":14000,"durum":"Aktif"},
+            {"id":38,"unvan":"Canan Yüksek","tel":"05438708232","defter":"İŞLETME","temsilci":"EREN","aylikUcret":2500,"durum":"Aktif"},
+            {"id":39,"unvan":"Cemil Basri Hınıslıoğlu","tel":"05367006120","defter":"İŞLETME","temsilci":"ÖZLEM","aylikUcret":3000,"durum":"Aktif"},
+            {"id":40,"unvan":"Cemil Yılmaz","tel":"05526167064","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":2500,"durum":"Aktif"},
+            {"id":41,"unvan":"Cenk Kuru","tel":"05325710438","defter":"BILANÇO","temsilci":"ASLI","aylikUcret":8000,"durum":"Aktif"},
+            {"id":42,"unvan":"Çiçek Canöz","tel":"05412134564","defter":"KAPATYCAZ","temsilci":"EREN","aylikUcret":3300,"durum":"Aktif"},
+            {"id":43,"unvan":"Cihan Çetinkaya","tel":"05423148939","defter":"İŞLETME","temsilci":"ÖMER","aylikUcret":3000,"durum":"Aktif"},
+            {"id":44,"unvan":"Dabakoğlu Gıda İnşaat","tel":"05375943696","defter":"BILANÇO","temsilci":"ASLI","aylikUcret":10000,"durum":"Aktif"},
+            {"id":45,"unvan":"Damla Ümmü Yetkin","tel":"05079589926","defter":"İŞLETME","temsilci":"EREN","aylikUcret":2500,"durum":"Aktif"},
+            {"id":46,"unvan":"Dardanel Troya Özel Güvenlik","tel":"05438155198","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":0,"durum":"Aktif"},
+            {"id":47,"unvan":"Dardanel Vip Özel Güv.","tel":"05438155198","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":0,"durum":"Aktif"},
+            {"id":48,"unvan":"Dedeoğlu Motorlu Araçlar","tel":"05322922457","defter":"BILANÇO","temsilci":"ASLI","aylikUcret":12500,"durum":"Aktif"},
+            {"id":49,"unvan":"Demiralp Üretim Gayrimenkul","tel":"05337400537","defter":"BILANÇO","temsilci":"ASLI","aylikUcret":9000,"durum":"Aktif"},
+            {"id":50,"unvan":"Doğa Dabakoğlu","tel":"05425462429","defter":"İŞLETME","temsilci":"EREN","aylikUcret":3000,"durum":"Aktif"},
+            {"id":51,"unvan":"Ebru Meraklı","tel":"05436140121","defter":"BILANÇO","temsilci":"ÖMER","aylikUcret":8000,"durum":"Aktif"},
+            {"id":52,"unvan":"Elçin Aydın","tel":"05512585443","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":9000,"durum":"Aktif"},
+            {"id":53,"unvan":"Elif Karagöz","tel":"05533179815","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":3000,"durum":"Aktif"},
+            {"id":54,"unvan":"Elixir Sağlık Turizm","tel":"05445304051","defter":"BILANÇO","temsilci":"ÖMER","aylikUcret":0,"durum":"Aktif"},
+            {"id":55,"unvan":"Emir Can Temizlik Hiz.","tel":"05324190450","defter":"BILANÇO","temsilci":"ASLI","aylikUcret":12000,"durum":"Aktif"},
+            {"id":56,"unvan":"Eniz Akarsu","tel":"05309250617","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":3300,"durum":"Aktif"},
+            {"id":57,"unvan":"Ersin Yılmazer","tel":"05322184110","defter":"BILANÇO","temsilci":"ASLI","aylikUcret":8333,"durum":"Aktif"},
+            {"id":58,"unvan":"Ertan Özgür","tel":"05327309221","defter":"BILANÇO","temsilci":"TUĞÇE KUTLU","aylikUcret":8000,"durum":"Aktif"},
+            {"id":59,"unvan":"Eskaş A. Ş","tel":"05384421103","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":13000,"durum":"Aktif"},
+            {"id":60,"unvan":"Esra Alıcı","tel":"05335117230","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":0,"durum":"Aktif"},
+            {"id":61,"unvan":"Etis Ekolojik Tarım","tel":"05322823110","defter":"BILANÇO","temsilci":"TUĞÇE KUTLU","aylikUcret":13500,"durum":"Aktif"},
+            {"id":62,"unvan":"Fahretin Gülperen","tel":"05365836747","defter":"İŞLETME","temsilci":"ÖMER","aylikUcret":3000,"durum":"Aktif"},
+            {"id":63,"unvan":"Fahrettin Umay","tel":"05553225693","defter":"İŞLETME","temsilci":"ÖMER","aylikUcret":3000,"durum":"Aktif"},
+            {"id":64,"unvan":"Fatih Abat","tel":"05065376544","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":3000,"durum":"Aktif"},
+            {"id":65,"unvan":"Feder Kuyumculuk İnşaat","tel":"05324628232","defter":"BILANÇO","temsilci":"ASLI","aylikUcret":9000,"durum":"Aktif"},
+            {"id":66,"unvan":"Ferman Ötü","tel":"05079978219","defter":"BILANÇO","temsilci":"EREN","aylikUcret":0,"durum":"Aktif"},
+            {"id":67,"unvan":"Fuzy Gıda İşletmeciliği","tel":"05336073894","defter":"BILANÇO","temsilci":"EREN","aylikUcret":13500,"durum":"Aktif"},
+            {"id":68,"unvan":"Gencay Turan","tel":"05445066988","defter":"İŞLETME","temsilci":"EREN","aylikUcret":3000,"durum":"Aktif"},
+            {"id":69,"unvan":"Gizem Yıllar Adalı","tel":"05388414384","defter":"GİDECEK","temsilci":"TUĞÇE TETİK","aylikUcret":10000,"durum":"Aktif"},
+            {"id":70,"unvan":"Gökçe Demiralp","tel":"05337400537","defter":"İŞLETME","temsilci":"TUĞÇE TETİK","aylikUcret":3000,"durum":"Aktif"},
+            {"id":71,"unvan":"Gökmen Doğan","tel":"05359518599","defter":"İŞLETME","temsilci":"ÖMER","aylikUcret":3000,"durum":"Aktif"},
+            {"id":72,"unvan":"Güçlüler Teks. Orm. Ür.","tel":"05323715419","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":0,"durum":"Aktif"},
+            {"id":73,"unvan":"Gülce Kılıçlar","tel":"05342914807","defter":"KAPANACAK","temsilci":"ÖMER","aylikUcret":3000,"durum":"Aktif"},
+            {"id":74,"unvan":"Gülfer Erdem","tel":"05456769387","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":3000,"durum":"Aktif"},
+            {"id":75,"unvan":"Güngör Altundal","tel":"05367011749","defter":"BILANÇO","temsilci":"ÖMER","aylikUcret":7000,"durum":"Aktif"},
+            {"id":76,"unvan":"Gürkan Karalı","tel":"05453302629","defter":"İŞLETME","temsilci":"TUĞÇE TETİK","aylikUcret":2500,"durum":"Aktif"},
+            {"id":77,"unvan":"Gürsoy Petrol İnş.","tel":"05322433164","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":20000,"durum":"Aktif"},
+            {"id":78,"unvan":"Halil İbrahim Bozkurt","tel":"05438065243","defter":"BILANÇO","temsilci":"ASLI","aylikUcret":8000,"durum":"Aktif"},
+            {"id":79,"unvan":"Halil Kılınç","tel":"05365613944","defter":"BASİT OLACAK","temsilci":"ASLI","aylikUcret":3000,"durum":"Aktif"},
+            {"id":80,"unvan":"Haluk Balcı","tel":"05542987485","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":3000,"durum":"Aktif"},
+            {"id":81,"unvan":"Hamiyet Arabacı","tel":"05444573826","defter":"İŞLETME","temsilci":"TUĞÇE TETİK","aylikUcret":2500,"durum":"Aktif"},
+            {"id":82,"unvan":"Hasan Küçük","tel":"05416438747","defter":"BILANÇO","temsilci":"ASLI","aylikUcret":3000,"durum":"Aktif"},
+            {"id":83,"unvan":"Hasan Pınarcıoğlu","tel":"05380572236","defter":"İŞLETME","temsilci":"ÖMER","aylikUcret":3300,"durum":"Aktif"},
+            {"id":84,"unvan":"Hasan Şahin","tel":"05011343096","defter":"İŞLETME","temsilci":"ÖMER","aylikUcret":5000,"durum":"Aktif"},
+            {"id":85,"unvan":"Hilmi Kırtık","tel":"05393238219","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":0,"durum":"Aktif"},
+            {"id":86,"unvan":"Hira Med İnşaat","tel":"05327223790","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":12500,"durum":"Aktif"},
+            {"id":87,"unvan":"İbrahim Demir","tel":"05428937491","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":6500,"durum":"Aktif"},
+            {"id":88,"unvan":"İbrahim Koçoğlu İnşaat","tel":"05321654793","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":10000,"durum":"Aktif"},
+            {"id":89,"unvan":"İhsan Atay","tel":"05353388926","defter":"İŞLETME","temsilci":"TUĞÇE TETİK","aylikUcret":3000,"durum":"Aktif"},
+            {"id":90,"unvan":"İkizler Gurup Mad.","tel":"05457979745","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":0,"durum":"Aktif"},
+            {"id":91,"unvan":"İlker Taş","tel":"05079344436","defter":"BILANÇO","temsilci":"EREN","aylikUcret":0,"durum":"Aktif"},
+            {"id":92,"unvan":"İrem Atar","tel":"05532243048","defter":"İŞLETME","temsilci":"ÖMER","aylikUcret":3000,"durum":"Aktif"},
+            {"id":93,"unvan":"İsmail Kaya","tel":"05443513081","defter":"İŞLETME","temsilci":"TUĞÇE TETİK","aylikUcret":2000,"durum":"Aktif"},
+            {"id":94,"unvan":"Kalpak Tarım A.Ş.","tel":"05322771137","defter":"BILANÇO","temsilci":"TUĞÇE KUTLU","aylikUcret":21000,"durum":"Aktif"},
+            {"id":95,"unvan":"Kemal Ateş","tel":"05418742178","defter":"BILANÇO","temsilci":"EREN","aylikUcret":10000,"durum":"Aktif"},
+            {"id":96,"unvan":"Keten Grup Mağazacılık","tel":"05322303033","defter":"BILANÇO","temsilci":"TUĞÇE KUTLU","aylikUcret":0,"durum":"Aktif"},
+            {"id":97,"unvan":"Kocasoy İnşaat","tel":"05327792604","defter":"BILANÇO","temsilci":"ASLI","aylikUcret":0,"durum":"Aktif"},
+            {"id":98,"unvan":"Kocasoylar Grup","tel":"05327792604","defter":"BILANÇO","temsilci":"ASLI","aylikUcret":0,"durum":"Aktif"},
+            {"id":99,"unvan":"Koçoğlu Yapı Elemanları","tel":"05321654793","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":12000,"durum":"Aktif"},
+            {"id":100,"unvan":"Koçoğulları Eğitim Sağlık","tel":"05384421103","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":10000,"durum":"Aktif"},
+            {"id":101,"unvan":"Koçyiğit Restoran","tel":"05334246561","defter":"BILANÇO","temsilci":"ASLI","aylikUcret":10000,"durum":"Aktif"},
+            {"id":102,"unvan":"Koruköy Konaklama","tel":"05323224404","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":0,"durum":"Aktif"},
+            {"id":103,"unvan":"Kubilay Yıldız","tel":"05522909320","defter":"GÖNDER","temsilci":"ASLI","aylikUcret":3000,"durum":"Aktif"},
+            {"id":104,"unvan":"Kübra Kılınç","tel":"05320649112","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":8000,"durum":"Aktif"},
+            {"id":105,"unvan":"Kuvvet Özel Tarım","tel":"05462771840","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":0,"durum":"Aktif"},
+            {"id":106,"unvan":"Kuzeybatı Turizm","tel":"05334164524","defter":"BILANÇO","temsilci":"ÖMER","aylikUcret":10000,"durum":"Aktif"},
+            {"id":107,"unvan":"Lasersan Lazer","tel":"05464506703","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":10000,"durum":"Aktif"},
+            {"id":108,"unvan":"Livestetic Güzellik","tel":"05464506703","defter":"BILANÇO","temsilci":"EREN","aylikUcret":12500,"durum":"Aktif"},
+            {"id":109,"unvan":"M Sıddık Yeler","tel":"05336434296","defter":"GÖNDER","temsilci":"ÖMER","aylikUcret":0,"durum":"Aktif"},
+            {"id":110,"unvan":"Mayadağ İçecek","tel":"05334916801","defter":"BILANÇO","temsilci":"TUĞÇE KUTLU","aylikUcret":0,"durum":"Aktif"},
+            {"id":111,"unvan":"Mehmet Berkay Polat","tel":"05422709017","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":4000,"durum":"Aktif"},
+            {"id":112,"unvan":"Mehmet Dilber","tel":"05529270241","defter":"BILANÇO","temsilci":"EREN","aylikUcret":3300,"durum":"Aktif"},
+            {"id":113,"unvan":"Mehmet Emin Altunbaş","tel":"05322277756","defter":"BILANÇO","temsilci":"TUĞÇE KUTLU","aylikUcret":10000,"durum":"Aktif"},
+            {"id":114,"unvan":"Mehmet Engin","tel":"05382585354","defter":"BILANÇO","temsilci":"ASLI","aylikUcret":10000,"durum":"Aktif"},
+            {"id":115,"unvan":"Mehmet Şahin","tel":"05373725795","defter":"İŞLETME","temsilci":"EREN","aylikUcret":2750,"durum":"Aktif"},
+            {"id":116,"unvan":"Melih Can Uzun","tel":"05344114555","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":3000,"durum":"Aktif"},
+            {"id":117,"unvan":"Merve Akgül","tel":"05437131866","defter":"İŞLETME","temsilci":"ÖMER","aylikUcret":3000,"durum":"Aktif"},
+            {"id":118,"unvan":"Metal Güven Demir","tel":"05393238219","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":50000,"durum":"Aktif"},
+            {"id":119,"unvan":"Mete Şahin","tel":"05439293843","defter":"BILANÇO","temsilci":"ASLI","aylikUcret":2750,"durum":"Aktif"},
+            {"id":120,"unvan":"Metin Ünal","tel":"05427262284","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":15000,"durum":"Aktif"},
+            {"id":121,"unvan":"Metin Ünal Taşımacılık","tel":"05427262284","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":0,"durum":"Aktif"},
+            {"id":122,"unvan":"Mevlüt Baran","tel":"05427802074","defter":"İŞLETME","temsilci":"EREN","aylikUcret":2750,"durum":"Aktif"},
+            {"id":123,"unvan":"Mine Tuban","tel":"05539775599","defter":"İŞLETME","temsilci":"ÖZLEM","aylikUcret":2500,"durum":"Aktif"},
+            {"id":124,"unvan":"Mısra Pancaroğlu","tel":"05073854112","defter":"İŞLETME","temsilci":"TUĞÇE TETİK","aylikUcret":3000,"durum":"Aktif"},
+            {"id":125,"unvan":"Muhammed Emre Coşkun","tel":"05413420800","defter":"GİTTİ","temsilci":"EREN","aylikUcret":0,"durum":"Aktif"},
+            {"id":126,"unvan":"Muhammed Enes Yiğit","tel":"05442207404","defter":"GÖNDER","temsilci":"ÖMER","aylikUcret":3300,"durum":"Aktif"},
+            {"id":127,"unvan":"Muhammet Yasin Atik","tel":"05308791754","defter":"İŞLETME","temsilci":"ÖMER","aylikUcret":3000,"durum":"Aktif"},
+            {"id":128,"unvan":"Muharrem Altıntaş","tel":"05326330934","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":3000,"durum":"Aktif"},
+            {"id":129,"unvan":"Murat Akburak","tel":"05417630752","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":3000,"durum":"Aktif"},
+            {"id":130,"unvan":"Murat Eryılmaz","tel":"05469266674","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":3000,"durum":"Aktif"},
+            {"id":131,"unvan":"Mustafa Koca","tel":"05459002090","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":3000,"durum":"Aktif"},
+            {"id":132,"unvan":"Nil Estetik","tel":"05076263290","defter":"BILANÇO","temsilci":"TUĞÇE KUTLU","aylikUcret":7000,"durum":"Aktif"},
+            {"id":133,"unvan":"Ninka Bira Ve Malt","tel":"05363511697","defter":"BILANÇO","temsilci":"TUĞÇE KUTLU","aylikUcret":12000,"durum":"Aktif"},
+            {"id":134,"unvan":"Nisanur Kayar","tel":"05527285430","defter":"İŞLETME","temsilci":"TUĞÇE TETİK","aylikUcret":3300,"durum":"Aktif"},
+            {"id":135,"unvan":"Nympha Organik","tel":"05322650341","defter":"BILANÇO","temsilci":"TUĞÇE KUTLU","aylikUcret":10000,"durum":"Aktif"},
+            {"id":136,"unvan":"Obuz Gıda","tel":"05336073894","defter":"BILANÇO","temsilci":"ÖMER","aylikUcret":15000,"durum":"Aktif"},
+            {"id":137,"unvan":"Özak Zeytincilik","tel":"05325271220","defter":"BILANÇO","temsilci":"TUĞÇE KUTLU","aylikUcret":10000,"durum":"Aktif"},
+            {"id":138,"unvan":"Özel Anafartalar Sür. Kursu","tel":"05055427793","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":8000,"durum":"Aktif"},
+            {"id":139,"unvan":"Özel Çanakkale Deha","tel":"05380100777","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":10000,"durum":"Aktif"},
+            {"id":140,"unvan":"Özlem Serdaroğlu","tel":"05422909951","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":3300,"durum":"Aktif"},
+            {"id":141,"unvan":"Parion Turizm","tel":"05448602914","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":12500,"durum":"Aktif"},
+            {"id":142,"unvan":"Pastayap Gıda","tel":"05426360075","defter":"BILANÇO","temsilci":"ÖMER","aylikUcret":8500,"durum":"Aktif"},
+            {"id":143,"unvan":"Peldan İnşaat","tel":"05456037502","defter":"BILANÇO","temsilci":"ASLI","aylikUcret":6000,"durum":"Aktif"},
+            {"id":144,"unvan":"Pelin Gözütok Utgu","tel":"05442912840","defter":"İŞLETME","temsilci":"TUĞÇE TETİK","aylikUcret":3000,"durum":"Aktif"},
+            {"id":145,"unvan":"Plas İnşaat","tel":"05324986620","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":6000,"durum":"Aktif"},
+            {"id":146,"unvan":"Polar Spa İnşaat","tel":"05327494464","defter":"BILANÇO","temsilci":"TUĞÇE KUTLU","aylikUcret":8000,"durum":"Aktif"},
+            {"id":147,"unvan":"Pozitif 20 Özel Güvenlik","tel":"05438155198","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":8000,"durum":"Aktif"},
+            {"id":148,"unvan":"Proaktif Yedek Parça","tel":"05466752936","defter":"BILANÇO","temsilci":"ÖMER","aylikUcret":7000,"durum":"Aktif"},
+            {"id":149,"unvan":"Raf17 Reklam","tel":"05380100777","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":5000,"durum":"Aktif"},
+            {"id":150,"unvan":"Rahime Gök","tel":"05363300059","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":3000,"durum":"Aktif"},
+            {"id":151,"unvan":"Rıfkı Yasaç","tel":"05442881322","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":3000,"durum":"Aktif"},
+            {"id":152,"unvan":"Şahika Organik Ürünler","tel":"05326330934","defter":"BILANÇO","temsilci":"TUĞÇE KUTLU","aylikUcret":7000,"durum":"Aktif"},
+            {"id":153,"unvan":"Şans Dondurmaları","tel":"05335496969","defter":"BILANÇO","temsilci":"ÖMER","aylikUcret":12000,"durum":"Aktif"},
+            {"id":154,"unvan":"Şarköy Arslan Dayanıklı Tüketim","tel":"05334916801","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":8000,"durum":"Aktif"},
+            {"id":155,"unvan":"Şarköy Mila Çiftliği","tel":"05316411907","defter":"BILANÇO","temsilci":"TUĞÇE KUTLU","aylikUcret":10000,"durum":"Aktif"},
+            {"id":156,"unvan":"Seler Alkollü İçecekler","tel":"05308509359","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":12000,"durum":"Aktif"},
+            {"id":157,"unvan":"Serkan Gönültaş","tel":"05327098853","defter":"BILANÇO","temsilci":"ÖMER","aylikUcret":6000,"durum":"Aktif"},
+            {"id":158,"unvan":"Serkan Gönültaş Otomotiv","tel":"05327098853","defter":"BILANÇO","temsilci":"ÖMER","aylikUcret":8000,"durum":"Aktif"},
+            {"id":159,"unvan":"Serkan Gültekin","tel":"05453973280","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":3300,"durum":"Aktif"},
+            {"id":160,"unvan":"Sezida Gıda","tel":"05437106315","defter":"BILANÇO","temsilci":"TUĞÇE KUTLU","aylikUcret":7000,"durum":"Aktif"},
+            {"id":161,"unvan":"Sibel Demir","tel":"05013616337","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":3300,"durum":"Aktif"},
+            {"id":162,"unvan":"Simay Betül Yıldız","tel":"05537050834","defter":"İŞLETME","temsilci":"TUĞÇE TETİK","aylikUcret":3000,"durum":"Aktif"},
+            {"id":163,"unvan":"Sinem Arabacıbaşı 2025","tel":"05336600899","defter":"İŞLETME","temsilci":"TUĞÇE TETİK","aylikUcret":3300,"durum":"Aktif"},
+            {"id":164,"unvan":"Su-Ser Bulut Un San.","tel":"05438730058","defter":"BILANÇO","temsilci":"TUĞÇE KUTLU","aylikUcret":10000,"durum":"Aktif"},
+            {"id":165,"unvan":"Suat Berber","tel":"05426360075","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":3300,"durum":"Aktif"},
+            {"id":166,"unvan":"Tan Özel Sağlık","tel":"05323224404","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":10000,"durum":"Aktif"},
+            {"id":167,"unvan":"Tanem İnşaat","tel":"05321654793","defter":"BILANÇO","temsilci":"ASLI","aylikUcret":6000,"durum":"Aktif"},
+            {"id":168,"unvan":"Tasarım Mutfak","tel":"05336565797","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":3300,"durum":"Aktif"},
+            {"id":169,"unvan":"Taşçıoğulları Otomotiv","tel":"054474342917","defter":"BILANÇO","temsilci":"ÖMER","aylikUcret":8000,"durum":"Aktif"},
+            {"id":170,"unvan":"Tenedos Kozmetik","tel":"05428937491","defter":"İŞLETME","temsilci":"TUĞÇE TETİK","aylikUcret":3300,"durum":"Aktif"},
+            {"id":171,"unvan":"Tenedos Trz. Tşm.","tel":"05444953993","defter":"BILANÇO","temsilci":"ÖMER","aylikUcret":7000,"durum":"Aktif"},
+            {"id":172,"unvan":"Tevfik Güreşçi","tel":"05339260917","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":3300,"durum":"Aktif"},
+            {"id":173,"unvan":"The Piden Restoran","tel":"05422352722","defter":"BILANÇO","temsilci":"TUĞÇE KUTLU","aylikUcret":8000,"durum":"Aktif"},
+            {"id":174,"unvan":"Tm Elektronik","tel":"05321654793","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":10000,"durum":"Aktif"},
+            {"id":175,"unvan":"Troya Pasta Ekipmanları","tel":"05522181915","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":7000,"durum":"Aktif"},
+            {"id":176,"unvan":"Tuncay Sarı Mühendislik","tel":"05423463939","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":10000,"durum":"Aktif"},
+            {"id":177,"unvan":"Ufema Yapı İnşaat","tel":"05316411907","defter":"BILANÇO","temsilci":"ASLI","aylikUcret":6000,"durum":"Aktif"},
+            {"id":178,"unvan":"Vipro Oto Kiralama","tel":"05438155198","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":6000,"durum":"Aktif"},
+            {"id":179,"unvan":"Wens Dış Ticaret","tel":"05327494464","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":7000,"durum":"Aktif"},
+            {"id":180,"unvan":"Yasin Saraç","tel":"05339116106","defter":"İŞLETME","temsilci":"TUĞÇE TETİK","aylikUcret":3000,"durum":"Aktif"},
+            {"id":181,"unvan":"Yener Yalım","tel":"05325120132","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":8500,"durum":"Aktif"},
+            {"id":182,"unvan":"Yenir Çanakkale Paz","tel":"05321654793","defter":"BILANÇO","temsilci":"TUĞÇE KUTLU","aylikUcret":8000,"durum":"Aktif"},
+            {"id":183,"unvan":"Yerel Emlak Sos.","tel":"05066000909","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":3300,"durum":"Aktif"},
+            {"id":184,"unvan":"Yıldıray Aydın Gayrimenkul","tel":"05438707034","defter":"BILANÇO","temsilci":"ÖMER","aylikUcret":6000,"durum":"Aktif"},
+            {"id":185,"unvan":"Yıldıray Ölçek","tel":"05524211191","defter":"SERBEST MESLEK","temsilci":"ASLI","aylikUcret":4000,"durum":"Aktif"},
+            {"id":186,"unvan":"Yorgi Vulgarel Varisleri","tel":"05302092875","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":8000,"durum":"Aktif"},
+            {"id":187,"unvan":"Yücel Yurdaer","tel":"05339249774","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":3300,"durum":"Aktif"},
+            {"id":188,"unvan":"Zafer Güner","tel":"05426728811","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":3300,"durum":"Aktif"},
+            {"id":189,"unvan":"Zarif Biçer","tel":"05070831903","defter":"İŞLETME","temsilci":"TUĞÇE TETİK","aylikUcret":3300,"durum":"Aktif"},
+            {"id":190,"unvan":"Zerrin Oruzbeyi","tel":"05322924076","defter":"İŞLETME","temsilci":"TUĞÇE TETİK","aylikUcret":3000,"durum":"Aktif"},
+            {"id":191,"unvan":"Ali Baki Usta","tel":"05334164524","defter":"ÖZEL BİNA İNŞAATI","temsilci":"ASLI","aylikUcret":4000,"durum":"Aktif"},
+            {"id":192,"unvan":"Ali Korukçu","tel":"05414330897","defter":"PASİF","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":193,"unvan":"Ali Tırnak","tel":"05423519457","defter":"GİDECEK","temsilci":"EREN","aylikUcret":0,"durum":"Aktif"},
+            {"id":194,"unvan":"Ay Gyo İnşaat Enerji","tel":"05323428130","defter":"GİDECEK","temsilci":"EREN","aylikUcret":0,"durum":"Aktif"},
+            {"id":195,"unvan":"Bayram Kaptı","tel":"05378110795","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":196,"unvan":"Berke Seven","tel":"05456774893","defter":"GİTTİ","temsilci":"EREN","aylikUcret":0,"durum":"Aktif"},
+            {"id":197,"unvan":"Çanakkale Onsekiz Mart Üniversitesi","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":198,"unvan":"Çanakkale Seramik","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":199,"unvan":"Çanakkale Ticaret Ve Sanayi Odası","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":200,"unvan":"Çanakkale Ziraat Odası","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":201,"unvan":"Demircioğlu","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":202,"unvan":"Denizbank","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":203,"unvan":"Doğtaş Kelebek Mobilya","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":204,"unvan":"Ercanlar","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":205,"unvan":"Gestaş","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":206,"unvan":"Halkbank","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":207,"unvan":"İçdaş","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":208,"unvan":"Kale Grubu","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":209,"unvan":"Kaleseramik","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":210,"unvan":"Kaptanlar","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":211,"unvan":"Kepez Belediyesi","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":212,"unvan":"Miller","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":213,"unvan":"Opet","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":214,"unvan":"Süleyman Demirel","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":215,"unvan":"Tatlan","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":216,"unvan":"Troya Müzesi","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":217,"unvan":"Tuğçe Güçlü","tel":"05525971517","tel2":"05312575046","defter":"BILANÇO","temsilci":"ASLI","aylikUcret":0,"durum":"Aktif"},
+            {"id":218,"unvan":"Tuncay Sarı","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":219,"unvan":"Türkiye İş Bankası","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":220,"unvan":"UEDAŞ","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":221,"unvan":"Uludağ Elektrik","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":222,"unvan":"Ünzüle Gamsız","tel":"05072041978","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":3000,"durum":"Aktif"},
+            {"id":223,"unvan":"Vakıfbank","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":224,"unvan":"Yapı Kredi","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":225,"unvan":"Yusuf Güneş","tel":"05443019663","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":2500,"durum":"Aktif"},
+            {"id":226,"unvan":"Zafer Durmaz","tel":"05457380102","defter":"İŞLETME","temsilci":"TUĞÇE TETİK","aylikUcret":2000,"durum":"Aktif"},
+            {"id":227,"unvan":"Ziraat Bankası","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"}
         ];
 
         function App() {
@@ -297,57 +296,46 @@
 
             const handleLogin = (e) => {
                 e.preventDefault();
-                if(password === SISTEM_SIFRESI) {
-                    setPage('dashboard');
-                } else {
-                    setError("Hatalı Şifre!");
-                }
+                if(password === SISTEM_SIFRESI) { setPage('dashboard'); } 
+                else { setError("Hatalı Şifre!"); }
             };
 
-            return (
-                <>
-                    {page === 'login' ? (
-                        <div className="flex h-screen w-full bg-[#0f172a] items-center justify-center fade-in">
-                            <div className="glass-panel p-10 rounded-3xl border border-slate-700 w-96 text-center shadow-2xl">
-                                <div className="w-20 h-20 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-blue-600/30">
-                                    <i className="fas fa-lock text-3xl text-white"></i>
-                                </div>
-                                <h2 className="text-2xl font-bold text-white mb-2">Akça ERP v24.0</h2>
-                                <p className="text-slate-400 text-sm mb-6">Sisteme girmek için güvenlik şifresini giriniz.</p>
-                                <form onSubmit={handleLogin} className="space-y-4">
-                                    <input 
-                                        type="password" 
-                                        className="w-full bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-xl focus:border-blue-500 focus:outline-none text-center tracking-widest text-lg" 
-                                        placeholder="••••" 
-                                        value={password}
-                                        onChange={e=>setPassword(e.target.value)}
-                                        autoFocus
-                                    />
-                                    {error && <p className="text-red-500 text-xs font-bold">{error}</p>}
-                                    <button className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl transition shadow-lg">Giriş Yap</button>
-                                </form>
-                                <p className="text-slate-600 text-xs mt-6">Halil Akça S.M.M.M. | Güvenli Erişim</p>
-                            </div>
+            return page === 'login' ? (
+                <div className="flex h-screen w-full bg-[#0f172a] items-center justify-center fade-in">
+                    <div className="glass-panel p-10 rounded-3xl border border-slate-700 w-96 text-center shadow-2xl">
+                        <div className="w-20 h-20 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-blue-600/30">
+                            <i className="fas fa-lock text-3xl text-white"></i>
                         </div>
-                    ) : (
-                        <DashboardLayout />
-                    )}
-                </>
-            );
+                        <h2 className="text-2xl font-bold text-white mb-2">Akça ERP v25.0</h2>
+                        <form onSubmit={handleLogin} className="space-y-4">
+                            <input 
+                                type="password" 
+                                className="w-full bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-xl focus:border-blue-500 focus:outline-none text-center tracking-widest text-lg" 
+                                placeholder="••••" 
+                                value={password}
+                                onChange={e=>setPassword(e.target.value)}
+                                autoFocus
+                            />
+                            {error && <p className="text-red-500 text-xs font-bold">{error}</p>}
+                            <button className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl transition shadow-lg">Giriş Yap</button>
+                        </form>
+                    </div>
+                </div>
+            ) : <DashboardLayout />;
         }
 
         function DashboardLayout() {
-            const [page, setPage] = useState('dashboard'); // Varsayılan sayfa: Dashboard (Genel Özet)
-            const [personel, setPersonel] = useState(() => JSON.parse(localStorage.getItem('akca_v24_personel')) || INITIAL_PERSONEL);
-            const [mukellef, setMukellef] = useState(() => JSON.parse(localStorage.getItem('akca_v24_mukellef')) || FULL_DATA);
-            const [hareketler, setHareketler] = useState(() => JSON.parse(localStorage.getItem('akca_v24_hareketler')) || []);
-            const [logs, setLogs] = useState(() => JSON.parse(localStorage.getItem('akca_v24_logs')) || []);
+            const [page, setPage] = useState('dashboard');
+            const [personel, setPersonel] = useState(() => JSON.parse(localStorage.getItem('akca_v25_personel')) || INITIAL_PERSONEL);
+            const [mukellef, setMukellef] = useState(() => JSON.parse(localStorage.getItem('akca_v25_mukellef')) || FULL_DATA);
+            const [hareketler, setHareketler] = useState(() => JSON.parse(localStorage.getItem('akca_v25_hareketler')) || []);
+            const [logs, setLogs] = useState(() => JSON.parse(localStorage.getItem('akca_v25_logs')) || []);
 
             useEffect(() => {
-                localStorage.setItem('akca_v24_personel', JSON.stringify(personel));
-                localStorage.setItem('akca_v24_mukellef', JSON.stringify(mukellef));
-                localStorage.setItem('akca_v24_hareketler', JSON.stringify(hareketler));
-                localStorage.setItem('akca_v24_logs', JSON.stringify(logs));
+                localStorage.setItem('akca_v25_personel', JSON.stringify(personel));
+                localStorage.setItem('akca_v25_mukellef', JSON.stringify(mukellef));
+                localStorage.setItem('akca_v25_hareketler', JSON.stringify(hareketler));
+                localStorage.setItem('akca_v25_logs', JSON.stringify(logs));
             }, [personel, mukellef, hareketler, logs]);
 
             const getBakiye = (mId) => {
@@ -361,39 +349,37 @@
                 let cleanNumber = tel.replace(/\D/g, '');
                 if (cleanNumber.length === 10) cleanNumber = '90' + cleanNumber;
                 const chatId = `${cleanNumber}@c.us`;
-                const url = `${API_CONFIG.baseUrl}/waInstance${API_CONFIG.id}/SendMessage/${API_CONFIG.token}`;
-
                 try {
-                    const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chatId, message: msg }) });
+                    const response = await fetch(`${API_CONFIG.baseUrl}/waInstance${API_CONFIG.id}/SendMessage/${API_CONFIG.token}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ chatId, message: msg })
+                    });
                     const result = await response.json();
                     if (result.idMessage) {
-                        const newLog = { id: Date.now(), to: cleanNumber, msg: msg, time: new Date().toLocaleTimeString(), status: 'API OK' };
-                        setLogs(prev => [newLog, ...prev]);
+                        setLogs(prev => [{ id: Date.now(), to: cleanNumber, msg, time: new Date().toLocaleTimeString(), status: 'API OK' }, ...prev]);
                         return { success: true };
                     }
-                    throw new Error("API Fail");
-                } catch (error) {
-                    console.log("Manuel:", error);
                     return { success: false };
-                }
+                } catch { return { success: false }; }
             };
 
             return (
                 <div className="flex h-screen w-full bg-[#0f172a] text-slate-300">
                     <aside className="w-72 glass-sidebar flex flex-col z-20">
-                        <div className="p-8"><h1 className="text-2xl font-black text-white tracking-tight">AKÇA<span className="text-blue-500">ERP</span></h1><p className="text-[10px] font-bold text-slate-500 uppercase mt-1">v24.0 Final</p></div>
-                        <nav className="flex-1 px-4 space-y-2 overflow-y-auto">
+                        <div className="p-8"><h1 className="text-2xl font-black text-white tracking-tight">AKÇA<span className="text-blue-500">ERP</span></h1><p className="text-[10px] font-bold text-slate-500 uppercase mt-1">v25.0 Final</p></div>
+                        <nav className="flex-1 px-4 space-y-1 overflow-y-auto custom-scrollbar">
                             <MenuBtn icon="fa-chart-pie" text="Genel Özet" active={page==='dashboard'} onClick={()=>setPage('dashboard')} />
-                            <MenuBtn icon="fa-users" text="Mükellef Listesi" active={page==='mukellef'} onClick={()=>setPage('mukellef')} badge={mukellef.length} />
-                            <MenuBtn icon="fa-users-cog" text="Personel Verimlilik" active={page==='personel'} onClick={()=>setPage('personel')} />
-                            <MenuBtn icon="fa-file-invoice-dollar" text="Finans & Tahakkuk" active={page==='finans'} onClick={()=>setPage('finans')} />
-                            <MenuBtn icon="fab fa-whatsapp" text="Toplu Mesaj Robotu" active={page==='robot'} onClick={()=>setPage('robot')} />
-                            <MenuBtn icon="fa-database" text="Yedekleme" active={page==='yedek'} onClick={()=>setPage('yedek')} />
+                            <MenuBtn icon="fa-users" text="Mükellef Portföyü" active={page==='mukellef'} onClick={()=>setPage('mukellef')} badge={mukellef.length} />
+                            <MenuBtn icon="fa-user-tie" text="Personel & Kârlılık" active={page==='personel'} onClick={()=>setPage('personel')} />
+                            <MenuBtn icon="fa-money-bill-transfer" text="Cari & Tahakkuk" active={page==='finans'} onClick={()=>setPage('finans')} />
+                            <MenuBtn icon="fab fa-whatsapp" text="Toplu Robot" active={page==='robot'} onClick={()=>setPage('robot')} />
+                            <MenuBtn icon="fa-shield-halved" text="Veri Güvenliği" active={page==='yedek'} onClick={()=>setPage('yedek')} />
                         </nav>
-                        <div className="p-4 text-center"><span className="text-xs text-green-400 font-bold bg-green-900/30 px-3 py-1 rounded-full border border-green-800">Veri Tabanı: 230</span></div>
+                        <div className="p-6 border-t border-slate-800"><div className="bg-slate-900/50 p-3 rounded-xl border border-slate-800 text-center"><p className="text-[10px] font-bold text-slate-500 uppercase">Aktif Veritabanı</p><p className="text-sm font-black text-blue-500">ÇANAKKALE / MERKEZ</p></div></div>
                     </aside>
                     <main className="flex-1 flex flex-col bg-slate-900 relative overflow-hidden">
-                        <header className="h-16 border-b border-slate-800 flex items-center justify-between px-8 bg-slate-900/90 z-10 sticky top-0"><h2 className="font-bold text-white text-lg">{page==='mukellef' && 'Mükellef Veritabanı'}{page==='personel' && 'Personel Kârlılık'}{page==='dashboard' && 'Ofis Durumu'}{page==='finans' && 'Cari İşlemler'}{page==='robot' && 'Mesaj Robotu'}{page==='yedek' && 'Ayarlar'}</h2><div className="flex items-center gap-3"><span className="text-sm font-bold text-white">Halil Akça</span><div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">HA</div></div></header>
+                        <header className="h-16 border-b border-slate-800 flex items-center justify-between px-8 bg-slate-900/90 z-10 sticky top-0"><h2 className="font-bold text-white text-lg uppercase italic">{page}</h2><div className="flex items-center gap-4"><div className="text-right"><p className="text-xs font-bold text-white leading-none">HALİL AKÇA</p><p className="text-[10px] text-slate-500 uppercase mt-1">Yönetici</p></div><div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold shadow-lg shadow-blue-600/20">HA</div></div></header>
                         <div className="flex-1 overflow-y-auto p-8 relative custom-scrollbar">
                             {page === 'dashboard' && <DashboardPage personel={personel} mukellef={mukellef} getBakiye={getBakiye} />}
                             {page === 'mukellef' && <MukellefPage mukellef={mukellef} setMukellef={setMukellef} personel={personel} getBakiye={getBakiye} />}
@@ -407,15 +393,17 @@
             );
         }
 
-        // --- DASHBOARD (YENİLENMİŞ) ---
         function DashboardPage({ personel, mukellef, getBakiye }) {
-            const toplamAlacak = mukellef.reduce((a,b)=>a+getBakiye(b.id),0);
+            const toplamAlacak = useMemo(() => mukellef.reduce((a,b)=>a+getBakiye(b.id),0), [mukellef, getBakiye]);
+            const toplamCiro = useMemo(() => mukellef.reduce((a,b)=>a+ (b.aylikUcret || 0), 0), [mukellef]);
+
             return (
                 <div className="space-y-6 fade-in">
-                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                        <StatCard title="Aktif Mükellef" val={mukellef.length} icon="fa-users" color="text-blue-500" />
-                        <StatCard title="Toplam Alacak" val={`${toplamAlacak.toLocaleString()} ₺`} icon="fa-wallet" color="text-red-500" />
-                        <StatCard title="Personel" val={personel.length} icon="fa-user-tie" color="text-green-500" />
+                     <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                        <StatCard title="Portföy" val={mukellef.length} icon="fa-building" color="text-blue-500" />
+                        <StatCard title="Beklenen Tahakkuk" val={`${toplamCiro.toLocaleString()} ₺`} icon="fa-file-invoice-dollar" color="text-emerald-500" />
+                        <StatCard title="Piyasa Alacağı" val={`${toplamAlacak.toLocaleString()} ₺`} icon="fa-hand-holding-dollar" color="text-red-500" />
+                        <StatCard title="Personel Gücü" val={personel.length} icon="fa-user-tie" color="text-purple-500" />
                     </div>
                     
                     <h3 className="text-xl font-bold text-white mb-4">Personel Bazlı Defter Dağılımı</h3>
@@ -452,35 +440,71 @@
             )
         }
 
-        // --- MUKELLEF PAGE ---
         function MukellefPage({ mukellef, setMukellef, personel, getBakiye }) {
             const [search, setSearch] = useState("");
+            const [filterTemsilci, setFilterTemsilci] = useState("all");
             const [modal, setModal] = useState(null);
-            const filtered = mukellef.filter(m => m.unvan.toLowerCase().includes(search.toLowerCase()));
-            const saveM = (m) => { if(m.id) setMukellef(mukellef.map(x=>x.id===m.id?m:x)); else setMukellef([...mukellef, {...m, id: Date.now()}]); setModal(null); };
+
+            const filtered = useMemo(() => mukellef.filter(m => {
+                const s = m.unvan.toLowerCase().includes(search.toLowerCase());
+                const t = filterTemsilci === "all" || m.temsilci === filterTemsilci;
+                return s && t;
+            }), [mukellef, search, filterTemsilci]);
+
+            const saveM = (m) => { 
+                if(m.id) setMukellef(prev => prev.map(x=>x.id===m.id?m:x)); 
+                else setMukellef(prev => [...prev, {...m, id: Date.now()}]); 
+                setModal(null); 
+            };
 
             return (
                 <div className="space-y-6 fade-in">
-                    <div className="flex justify-between gap-4"><input className="input-dark w-96" placeholder="Ara..." value={search} onChange={e=>setSearch(e.target.value)} /><button onClick={()=>setModal({unvan:"", tel:"", defter:"İşletme", aylikUcret:0, temsilci:personel[0]?.ad})} className="btn btn-primary">+ Ekle</button></div>
-                    <div className="glass-panel rounded-xl overflow-hidden">
-                        <table className="w-full text-left text-sm">
-                            <thead className="bg-slate-900 text-slate-500 font-bold uppercase"><tr><th className="p-4">Tip</th><th className="p-4">Firma</th><th className="p-4">Telefon</th><th className="p-4">Temsilci</th><th className="p-4 text-right">Ücret</th><th className="p-4 text-right">Bakiye</th><th className="p-4 text-center">İşlem</th></tr></thead>
-                            <tbody className="divide-y divide-slate-700">
-                                {filtered.map(m => (
-                                    <tr key={m.id} className="hover:bg-slate-800/50 group">
-                                        <td className="p-4"><span className={m.defter === 'BILANÇO' ? 'badge-bilanco' : 'badge-isletme'}>{m.defter === 'BILANÇO' ? 'E-DEFTER' : m.defter}</span></td>
-                                        <td className="p-4 font-bold text-white max-w-xs truncate" title={m.unvan}>{m.unvan}</td>
-                                        <td className="p-4 text-xs text-slate-400 font-mono">{m.tel}</td>
-                                        <td className="p-4"><span className="bg-slate-700 px-2 py-1 rounded text-xs text-slate-300">{m.temsilci}</span></td>
-                                        <td className="p-4 text-right font-mono text-blue-400">{m.aylikUcret.toLocaleString()} ₺</td>
-                                        <td className={`p-4 text-right font-mono font-bold ${getBakiye(m.id)>0?'text-red-500':'text-green-500'}`}>{getBakiye(m.id).toLocaleString()} ₺</td>
-                                        <td className="p-4 text-center"><button onClick={()=>setModal(m)} className="text-blue-400 hover:text-white p-2"><i className="fas fa-edit"></i></button></td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                    <div className="flex flex-wrap gap-4 items-center justify-between">
+                        <div className="flex gap-4">
+                            <input className="input-dark w-80 shadow-inner" placeholder="Mükellef veya Telefon Ara..." value={search} onChange={e=>setSearch(e.target.value)} />
+                            <select className="input-dark w-48" value={filterTemsilci} onChange={e=>setFilterTemsilci(e.target.value)}>
+                                <option value="all">Tüm Personeller</option>
+                                {personel.map(p=><option key={p.id} value={p.ad}>{p.ad}</option>)}
+                            </select>
+                        </div>
+                        <button onClick={()=>setModal({unvan:"", tel:"", defter:"BILANÇO", aylikUcret:0, temsilci:personel[0]?.ad})} className="btn btn-primary px-8 shadow-lg shadow-blue-600/20">Yeni Mükellef Ekle</button>
                     </div>
-                    {modal && <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 fade-in"><div className="bg-slate-800 p-8 rounded-2xl w-96 border border-slate-600"><h3 className="text-xl font-bold text-white mb-4">Mükellef Kartı</h3><div className="space-y-3"><select className="input-dark" value={modal.defter} onChange={e=>setModal({...modal, defter:e.target.value})}><option>BILANÇO</option><option>İŞLETME</option><option>SERBEST MESLEK</option><option>BASİT USUL</option><option>KİRA</option><option>ÖZEL İNŞAAT</option></select><input className="input-dark" placeholder="Firma Ünvanı" value={modal.unvan} onChange={e=>setModal({...modal, unvan:e.target.value})} /><input className="input-dark" placeholder="Telefon" value={modal.tel} onChange={e=>setModal({...modal, tel:e.target.value})} /><input className="input-dark" placeholder="Tel 2" value={modal.tel2 || ""} onChange={e=>setModal({...modal, tel2:e.target.value})} /><select className="input-dark" value={modal.temsilci} onChange={e=>setModal({...modal, temsilci:e.target.value})}>{personel.map(p=><option key={p.id} value={p.ad}>{p.ad}</option>)}</select><input className="input-dark" type="number" placeholder="Aylık Ücret" value={modal.aylikUcret} onChange={e=>setModal({...modal, aylikUcret:parseInt(e.target.value)})} /><div className="flex gap-2 mt-4"><button onClick={()=>saveM(modal)} className="btn btn-primary flex-1">Kaydet</button><button onClick={()=>setModal(null)} className="btn bg-slate-700 flex-1">İptal</button></div></div></div></div>}
+
+                    <div className="glass-panel rounded-[2rem] overflow-hidden border border-slate-700 shadow-2xl">
+                        <div className="overflow-x-auto custom-scrollbar">
+                            <table className="w-full text-left text-sm">
+                                <thead className="bg-slate-900/80 text-slate-500 font-bold uppercase sticky top-0 backdrop-blur-md">
+                                    <tr>
+                                        <th className="p-5">Portföy / Tip</th>
+                                        <th className="p-5">Firma Ünvanı</th>
+                                        <th className="p-5">İletişim</th>
+                                        <th className="p-5">Temsilci</th>
+                                        <th className="p-5 text-right">Ücret (Aylık)</th>
+                                        <th className="p-5 text-right">Cari Bakiye</th>
+                                        <th className="p-5 text-center">Aksiyon</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-slate-800/50">
+                                    {filtered.map(m => (
+                                        <tr key={m.id} className="hover:bg-blue-600/5 transition-colors group">
+                                            <td className="p-5"><span className={m.defter === 'BILANÇO' ? 'badge-bilanco' : 'badge-isletme'}>{m.defter === 'BILANÇO' ? 'E-DEFTER' : m.defter}</span></td>
+                                            <td className="p-5 font-bold text-white group-hover:text-blue-400 transition-colors">
+                                                <div className="max-w-xs truncate" title={m.unvan}>{m.unvan}</div>
+                                            </td>
+                                            <td className="p-5 text-xs text-slate-500 font-mono italic">{m.tel}</td>
+                                            <td className="p-5"><span className="bg-slate-800 px-3 py-1 rounded-lg text-[10px] font-bold text-slate-400 uppercase tracking-wider">{m.temsilci}</span></td>
+                                            <td className="p-5 text-right font-mono text-emerald-500 font-bold">{m.aylikUcret.toLocaleString()} ₺</td>
+                                            <td className={`p-5 text-right font-mono font-bold ${getBakiye(m.id)>0?'text-red-500':'text-green-500'}`}>{getBakiye(m.id).toLocaleString()} ₺</td>
+                                            <td className="p-5 text-center">
+                                                <button onClick={()=>setModal(m)} className="w-8 h-8 rounded-lg bg-slate-800 text-blue-400 hover:bg-blue-600 hover:text-white transition-all flex items-center justify-center mx-auto shadow-sm"><i className="fas fa-pen-to-square text-xs"></i></button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    {modal && <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm fade-in p-4"><div className="bg-slate-800 p-8 rounded-[2.5rem] w-full max-w-md border border-slate-700 shadow-2xl"><h3 className="text-2xl font-black text-white mb-6 italic uppercase tracking-tighter border-b border-slate-700 pb-4">Mükellef Kartı</h3><div className="space-y-4"><div className="grid grid-cols-2 gap-4"><div><label className="text-[10px] uppercase font-bold text-slate-500 mb-1 block">Defter Türü</label><select className="input-dark" value={modal.defter} onChange={e=>setModal({...modal, defter:e.target.value})}><option>BILANÇO</option><option>İŞLETME</option><option>SERBEST MESLEK</option><option>BASİT USUL</option><option>KİRA</option><option>ÖZEL İNŞAAT</option></select></div><div><label className="text-[10px] uppercase font-bold text-slate-500 mb-1 block">Temsilci</label><select className="input-dark" value={modal.temsilci} onChange={e=>setModal({...modal, temsilci:e.target.value})}>{personel.map(p=><option key={p.id} value={p.ad}>{p.ad}</option>)}</select></div></div><div><label className="text-[10px] uppercase font-bold text-slate-500 mb-1 block">Firma Ünvanı</label><input className="input-dark" placeholder="Ticari Ünvan..." value={modal.unvan} onChange={e=>setModal({...modal, unvan:e.target.value})} /></div><div className="grid grid-cols-2 gap-4"><div><label className="text-[10px] uppercase font-bold text-slate-500 mb-1 block">Telefon 1</label><input className="input-dark" placeholder="05XX..." value={modal.tel} onChange={e=>setModal({...modal, tel:e.target.value})} /></div><div><label className="text-[10px] uppercase font-bold text-slate-500 mb-1 block">Aylık Ücret (₺)</label><input className="input-dark font-bold text-emerald-400" type="number" placeholder="0.00" value={modal.aylikUcret} onChange={e=>setModal({...modal, aylikUcret:parseInt(e.target.value)})} /></div></div><div className="flex gap-3 mt-6 pt-4 border-t border-slate-700"><button onClick={()=>saveM(modal)} className="btn btn-primary flex-1 py-4">Değişiklikleri Kaydet</button><button onClick={()=>setModal(null)} className="btn bg-slate-700 flex-1 py-4">İptal</button></div></div></div></div>}
                 </div>
             )
         }
