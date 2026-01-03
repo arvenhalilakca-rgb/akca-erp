@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AKÇA ERP 2026 v19 | Full Data</title>
+    <title>AKÇA ERP 2026 v20 | Premium</title>
     
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
@@ -13,24 +13,29 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-        body { font-family: 'Outfit', sans-serif; background: #0f172a; color: #e2e8f0; overflow: hidden; }
+        body { font-family: 'Outfit', sans-serif; background: #020617; color: #e2e8f0; overflow: hidden; }
         ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: #1e293b; }
-        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 10px; }
-        .glass-sidebar { background: rgba(15, 23, 42, 0.95); border-right: 1px solid rgba(255, 255, 255, 0.05); }
-        .glass-panel { background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.08); transition: 0.3s; }
-        .glass-panel:hover { border-color: rgba(255, 255, 255, 0.15); }
-        .fade-in { animation: fadeIn 0.5s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .input-dark { background: #1e293b; border: 1px solid #334155; color: white; padding: 10px; border-radius: 8px; width: 100%; outline: none; transition: 0.2s; }
-        .input-dark:focus { border-color: #3b82f6; ring: 2px solid #3b82f6; }
-        .btn { padding: 8px 16px; border-radius: 8px; font-weight: 600; transition: 0.2s; cursor: pointer; display: inline-flex; items-center; justify-content: center; gap: 8px; }
-        .btn-primary { background: #2563eb; color: white; } .btn-primary:hover { background: #1d4ed8; }
-        .btn-wa { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: 1px solid #34d399; }
-        .ai-badge { background: linear-gradient(90deg, #6366f1, #a855f7); color: white; padding: 2px 8px; border-radius: 4px; font-size: 9px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
-        .segment-vip { border-left: 4px solid #10b981; } 
-        .segment-risk { border-left: 4px solid #f59e0b; } 
-        .segment-bad { border-left: 4px solid #ef4444; } 
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #10b981; border-radius: 10px; }
+        .glass-sidebar { background: rgba(2, 6, 23, 0.95); border-right: 1px solid rgba(16, 185, 129, 0.1); }
+        .glass-panel { background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); transition: 0.3s; }
+        .glass-panel:hover { border-color: rgba(16, 185, 129, 0.3); }
+        .fade-in { animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        
+        .input-dark { background: #0f172a; border: 1px solid #334155; color: white; padding: 12px; border-radius: 12px; width: 100%; outline: none; transition: 0.2s; font-size: 0.9rem; }
+        .input-dark:focus { border-color: #10b981; box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1); }
+        
+        .btn { padding: 10px 20px; border-radius: 12px; font-weight: 700; transition: 0.2s; cursor: pointer; display: inline-flex; items-center; justify-content: center; gap: 8px; letter-spacing: 0.5px; }
+        .btn-primary { background: #3b82f6; color: white; } .btn-primary:hover { background: #2563eb; }
+        
+        /* Premium WhatsApp Stili */
+        .btn-wa { background: linear-gradient(135deg, #10b981 0%, #047857 100%); color: white; border: 1px solid #34d399; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+        .btn-wa:hover { transform: translateY(-2px); box-shadow: 0 10px 20px -5px rgba(16, 185, 129, 0.4); border-color: #6ee7b7; }
+        
+        /* Login Animasyon */
+        .login-bg { background: radial-gradient(circle at center, #064e3b 0%, #020617 70%); }
+        .glow-text { text-shadow: 0 0 30px rgba(16, 185, 129, 0.5); }
     </style>
 </head>
 <body>
@@ -56,11 +61,10 @@
             { id: 7, ad: "HALİL AKÇA", unvan: "Yönetici", giris: "2010-01-01", maas: 0, sgk: 0, yemek: 0, vergi: 0, diger: 0 }
         ];
 
-        // --- DİKKAT: BURASI SİZİN VERİ KASANIZDIR. SİLİNMESİN. ---
-        // 227 Mükellefin Tamamı Burada Gömülüdür.
+        // --- VERİ GÜVENLİĞİ İÇİN TAM LİSTE ---
         const FULL_DATA = [
-            {"id":1,"unvan":"18 Mart Özel Güvenlik Ve Eğitim Hiz. Tic. Ltd. Şti.","tel":"05419353101","tel2":"05362629620","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":14500,"durum":"Aktif"},
-            {"id":2,"unvan":"1915 Çanakkale Transport Nakliyat","tel":"05448602914","tel2":"05444953993","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":0,"durum":"Aktif"},
+            {"id":1,"unvan":"18 Mart Özel Güvenlik Ve Eğitim Hiz. Tic. Ltd. Şti.","tel":"05419353101","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":14500,"durum":"Aktif"},
+            {"id":2,"unvan":"1915 Çanakkale Transport Nakliyat","tel":"05448602914","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":0,"durum":"Aktif"},
             {"id":3,"unvan":"Abdulkadir Ceylan","tel":"05394831765","defter":"İŞLETME","temsilci":"ÖMER","aylikUcret":3300,"durum":"Aktif"},
             {"id":4,"unvan":"Ali Baki USTA","tel":"05334164524","defter":"ÖZEL BİNA İNŞAATI","temsilci":"ASLI","aylikUcret":4000,"durum":"Aktif"},
             {"id":5,"unvan":"Ahmet Çelik","tel":"05366407632","defter":"BASİT USUL","temsilci":"ASLI","aylikUcret":3300,"durum":"Aktif"},
@@ -148,7 +152,7 @@
             {"id":87,"unvan":"İbrahim Demir","tel":"05428937491","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":6500,"durum":"Aktif"},
             {"id":88,"unvan":"İbrahim Koçoğlu İnşaat","tel":"05321654793","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":10000,"durum":"Aktif"},
             {"id":89,"unvan":"İhsan Atay","tel":"05353388926","defter":"İŞLETME","temsilci":"TUĞÇE TETİK","aylikUcret":3000,"durum":"Aktif"},
-            {"id":90,"unvan":"İkizler Gurup Mad.","tel":"05457979745","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":0,"durum":"Aktif"},
+            {"id":90,"unvan":"İikizler Gurup Mad.","tel":"05457979745","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":0,"durum":"Aktif"},
             {"id":91,"unvan":"İlker Taş","tel":"05079344436","defter":"BILANÇO","temsilci":"EREN","aylikUcret":0,"durum":"Aktif"},
             {"id":92,"unvan":"İrem Atar","tel":"05532243048","defter":"İŞLETME","temsilci":"ÖMER","aylikUcret":3000,"durum":"Aktif"},
             {"id":93,"unvan":"İsmail Kaya","tel":"05443513081","defter":"İŞLETME","temsilci":"TUĞÇE TETİK","aylikUcret":2000,"durum":"Aktif"},
@@ -296,27 +300,22 @@
             const handleLogin = (e) => {
                 e.preventDefault();
                 if(password === SISTEM_SIFRESI) { setPage('dashboard'); } 
-                else { setError("Hatalı Şifre!"); }
+                else { setError("Erişim Reddedildi: Hatalı Şifre"); }
             };
 
             return page === 'login' ? (
-                <div className="flex h-screen w-full bg-[#0f172a] items-center justify-center fade-in">
-                    <div className="glass-panel p-10 rounded-3xl border border-slate-700 w-96 text-center shadow-2xl">
-                        <div className="w-20 h-20 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-blue-600/30">
-                            <i className="fas fa-lock text-3xl text-white"></i>
+                <div className="flex h-screen w-full bg-[#020617] items-center justify-center fade-in relative login-bg">
+                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
+                    <div className="glass-panel p-12 rounded-[3rem] border border-emerald-900/50 w-96 text-center shadow-2xl z-10 relative">
+                        <div className="w-24 h-24 bg-gradient-to-br from-emerald-500 to-teal-700 rounded-full flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-emerald-500/40 animate-pulse">
+                            <i className="fas fa-fingerprint text-4xl text-white"></i>
                         </div>
-                        <h2 className="text-2xl font-bold text-white mb-2">AKÇA ERP 2026 v19</h2>
+                        <h2 className="text-3xl font-black text-white mb-2 tracking-tighter glow-text">AKÇA ERP</h2>
+                        <p className="text-emerald-500 font-bold text-xs uppercase tracking-widest mb-8">v20 Premium Edition</p>
                         <form onSubmit={handleLogin} className="space-y-4">
-                            <input 
-                                type="password" 
-                                className="w-full bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-xl focus:border-blue-500 focus:outline-none text-center tracking-widest text-lg" 
-                                placeholder="••••" 
-                                value={password}
-                                onChange={e=>setPassword(e.target.value)}
-                                autoFocus
-                            />
-                            {error && <p className="text-red-500 text-xs font-bold">{error}</p>}
-                            <button className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl transition shadow-lg">Giriş Yap</button>
+                            <input type="password" className="input-dark text-center text-xl tracking-[0.5em] font-bold border-emerald-900/50 focus:border-emerald-500" placeholder="••••" value={password} onChange={e=>setPassword(e.target.value)} autoFocus />
+                            {error && <p className="text-red-500 text-xs font-bold bg-red-500/10 py-2 rounded animate-bounce">{error}</p>}
+                            <button className="w-full btn btn-wa py-4 text-lg shadow-emerald-500/20 shadow-xl">GÜVENLİ GİRİŞ</button>
                         </form>
                     </div>
                 </div>
@@ -326,15 +325,14 @@
         function DashboardLayout() {
             const [page, setPage] = useState('dashboard');
             
-            // VERİ YÜKLEME STRATEJİSİ:
-            // 1. Önce LocalStorage'a bak.
-            // 2. Eğer LocalStorage boşsa veya eksikse, yukarıdaki FULL_DATA'yı yükle.
-            // 3. Bu sayede "Veri Kaybı" riski sıfıra iner.
+            // --- MERKEZİ VERİ YÖNETİMİ ---
+            // 1. Önce LocalStorage'ı kontrol et.
+            // 2. Eğer boşsa veya eksikse, FULL_DATA'yı yükle.
             const [personel, setPersonel] = useState(() => JSON.parse(localStorage.getItem('akca_v25_personel')) || INITIAL_PERSONEL);
+            
             const [mukellef, setMukellef] = useState(() => {
                 const saved = localStorage.getItem('akca_v25_mukellef');
                 if (!saved || JSON.parse(saved).length < 227) {
-                    // MIGRATION: Yeni özellikleri (Zorluk Puanı vb) Full Listeye ekle
                     return FULL_DATA.map(m => ({
                         ...m,
                         zorlukPuani: m.zorlukPuani || 5, 
@@ -352,7 +350,7 @@
 
             useEffect(() => {
                 localStorage.setItem('akca_v25_personel', JSON.stringify(personel));
-                localStorage.setItem('akca_v25_mukellef', JSON.stringify(mukellef));
+                localStorage.setItem('akca_v25_mukellef', JSON.stringify(mukellef)); // Mükellef listesi güncellenince burası çalışır ve diğer sayfalar bu state'i kullanır.
                 localStorage.setItem('akca_v25_hareketler', JSON.stringify(hareketler));
                 localStorage.setItem('akca_v25_logs', JSON.stringify(logs));
                 localStorage.setItem('akca_v25_scheduled', JSON.stringify(scheduledMsgs));
@@ -409,9 +407,12 @@
             };
 
             return (
-                <div className="flex h-screen w-full bg-[#0f172a] text-slate-300">
+                <div className="flex h-screen w-full bg-[#020617] text-slate-300">
                     <aside className="w-72 glass-sidebar flex flex-col z-20">
-                        <div className="p-8"><h1 className="text-2xl font-black text-white tracking-tight">AKÇA ERP<span className="text-blue-500">2026</span></h1><p className="text-[10px] font-bold text-slate-500 uppercase mt-1">v19 Full Data</p></div>
+                        <div className="p-8">
+                            <h1 className="text-2xl font-black text-white tracking-tight">AKÇA ERP <span className="text-emerald-500">v20</span></h1>
+                            <p className="text-[10px] font-bold text-slate-500 uppercase mt-1 flex items-center gap-2"><span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span> Sistem Aktif</p>
+                        </div>
                         <nav className="flex-1 px-4 space-y-1 overflow-y-auto custom-scrollbar">
                             <MenuBtn icon="fa-chart-pie" text="Genel Özet" active={page==='dashboard'} onClick={()=>setPage('dashboard')} />
                             <MenuBtn icon="fa-users" text="Mükellef Portföyü" active={page==='mukellef'} onClick={()=>setPage('mukellef')} badge={mukellef.length} />
@@ -420,10 +421,21 @@
                             <MenuBtn icon="fab fa-whatsapp" text="WhatsApp Motoru" active={page==='robot'} onClick={()=>setPage('robot')} isSpecial={true} />
                             <MenuBtn icon="fa-shield-halved" text="Veri Güvenliği" active={page==='yedek'} onClick={()=>setPage('yedek')} />
                         </nav>
-                        <div className="p-6 border-t border-slate-800"><div className="bg-slate-900/50 p-3 rounded-xl border border-slate-800 text-center"><p className="text-[10px] font-bold text-slate-500 uppercase">Aktif Veritabanı</p><p className="text-sm font-black text-blue-500">ÇANAKKALE / MERKEZ</p></div></div>
+                        <div className="p-6 border-t border-slate-800">
+                            <div className="bg-slate-900/50 p-3 rounded-xl border border-slate-800 text-center">
+                                <p className="text-[10px] font-bold text-slate-500 uppercase">Aktif Veritabanı</p>
+                                <p className="text-sm font-black text-emerald-500">ÇANAKKALE / MERKEZ</p>
+                            </div>
+                        </div>
                     </aside>
                     <main className="flex-1 flex flex-col bg-slate-900 relative overflow-hidden">
-                        <header className="h-16 border-b border-slate-800 flex items-center justify-between px-8 bg-slate-900/90 z-10 sticky top-0"><h2 className="font-bold text-white text-lg uppercase italic">{page === 'robot' ? 'WhatsApp İletişim Motoru' : page}</h2><div className="flex items-center gap-4"><div className="text-right"><p className="text-xs font-bold text-white leading-none">HALİL AKÇA</p><p className="text-[10px] text-slate-500 uppercase mt-1">Mali Müşavir</p></div><div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold shadow-lg shadow-blue-600/20">HA</div></div></header>
+                        <header className="h-16 border-b border-slate-800 flex items-center justify-between px-8 bg-slate-900/90 z-10 sticky top-0 backdrop-blur-md">
+                            <h2 className="font-bold text-white text-lg uppercase italic">{page === 'robot' ? 'WhatsApp İletişim Motoru' : page}</h2>
+                            <div className="flex items-center gap-4">
+                                <div className="text-right"><p className="text-xs font-bold text-white leading-none">HALİL AKÇA</p><p className="text-[10px] text-slate-500 uppercase mt-1">Mali Müşavir</p></div>
+                                <div className="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white font-bold shadow-lg shadow-emerald-600/20">HA</div>
+                            </div>
+                        </header>
                         <div className="flex-1 overflow-y-auto p-8 relative custom-scrollbar">
                             {page === 'dashboard' && <DashboardPage personel={personel} mukellef={mukellef} getBakiye={getBakiye} />}
                             {page === 'mukellef' && <MukellefPage mukellef={mukellef} setMukellef={setMukellef} personel={personel} getBakiye={getBakiye} />}
@@ -437,28 +449,22 @@
             );
         }
 
-        // --- DASHBOARD ---
+        // --- DASHBOARD (AI) ---
         function DashboardPage({ personel, mukellef, getBakiye }) {
             const toplamAlacak = useMemo(() => mukellef.reduce((a,b)=>a+getBakiye(b.id),0), [mukellef, getBakiye]);
             const toplamCiro = useMemo(() => mukellef.reduce((a,b)=>a+ (b.aylikUcret || 0), 0), [mukellef]);
-
-            // AI ANALİZ
             const aiAnaliz = useMemo(() => {
                 const totalMaas = personel.reduce((a,b) => a + (b.maas + b.sgk + b.yemek), 0);
                 const netKar = toplamCiro - totalMaas;
-                let maxMusteri = 0;
-                let yildizPersonel = "Veri Yok";
-                personel.forEach(p => {
-                    const count = mukellef.filter(m => m.temsilci === p.ad).length;
-                    if(count > maxMusteri) { maxMusteri = count; yildizPersonel = p.ad; }
-                });
+                let maxMusteri = 0; let yildizPersonel = "Veri Yok";
+                personel.forEach(p => { const count = mukellef.filter(m => m.temsilci === p.ad).length; if(count > maxMusteri) { maxMusteri = count; yildizPersonel = p.ad; } });
                 const riskliMusteri = mukellef.filter(m => m.aylikUcret === 0).length;
                 return { netKar, yildizPersonel, riskliMusteri };
             }, [personel, mukellef, toplamCiro]);
 
             return (
                 <div className="space-y-6 fade-in">
-                    <div className="ai-panel p-6 rounded-2xl relative overflow-hidden">
+                    <div className="ai-panel p-6 rounded-2xl relative overflow-hidden bg-slate-800/50">
                         <div className="absolute top-0 right-0 p-4 opacity-10"><i className="fas fa-brain text-6xl text-white"></i></div>
                         <h3 className="text-lg font-bold text-white mb-4 ai-glow flex items-center gap-2"><i className="fas fa-robot text-purple-400"></i> YAPAY ZEKA OFİS ANALİZİ</h3>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -473,42 +479,11 @@
                         <StatCard title="Piyasa Alacağı" val={`${toplamAlacak.toLocaleString()} ₺`} icon="fa-hand-holding-dollar" color="text-red-500" />
                         <StatCard title="Personel Gücü" val={personel.length} icon="fa-user-tie" color="text-purple-500" />
                     </div>
-                    
-                    <h3 className="text-xl font-bold text-white mb-4">Personel Bazlı Defter Dağılımı</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {personel.map(p => {
-                            const pMukellef = mukellef.filter(m => m.temsilci === p.ad);
-                            const eDefterSayisi = pMukellef.filter(m => m.defter === 'BILANÇO').length;
-                            return (
-                                <div key={p.id} className="bg-slate-800 p-6 rounded-2xl border border-slate-700 hover:border-blue-500/50 transition">
-                                    <div className="flex items-center gap-4 mb-4">
-                                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-600 to-cyan-500 flex items-center justify-center font-bold text-white text-lg">
-                                            {p.ad.charAt(0)}
-                                        </div>
-                                        <div>
-                                            <h4 className="font-bold text-white">{p.ad}</h4>
-                                            <p className="text-xs text-slate-400">{p.unvan}</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex justify-between items-center text-sm border-t border-slate-700 pt-3">
-                                        <div className="text-center">
-                                            <span className="block text-xl font-bold text-white">{pMukellef.length}</span>
-                                            <span className="text-xs text-slate-500">Toplam Defter</span>
-                                        </div>
-                                        <div className="text-center">
-                                            <span className="block text-xl font-bold text-green-400">{eDefterSayisi}</span>
-                                            <span className="text-xs text-slate-500">E-Defter</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            )
-                        })}
-                    </div>
                 </div>
             )
         }
 
-        // --- WHATSAPP MOTORU ---
+        // --- WHATSAPP MOTORU (ARAMA ÖZELLİĞİ EKLENDİ) ---
         function WhatsAppEngine({ mukellef, logs, sendApiMessage, setLogs, scheduledMsgs, setScheduledMsgs, groups, setGroups, getBakiye, botSettings, setBotSettings }) {
             const [selected, setSelected] = useState([]);
             const [message, setMessage] = useState("");
@@ -518,6 +493,8 @@
             const [scheduleDate, setScheduleDate] = useState("");
             const [tab, setTab] = useState('compose'); 
             const [filterMode, setFilterMode] = useState("all");
+            // YENİ: ARAMA TERİMİ
+            const [searchTerm, setSearchTerm] = useState("");
 
             const templates = [
                 { label: "💰 Ödeme Hatırlatma", text: "Sayın Mükellefimiz, muhasebe ücreti ödemeniz gecikmiştir. Ödemenizi rica eder, iyi çalışmalar dileriz. - SMMM Halil Akça" },
@@ -526,12 +503,22 @@
                 { label: "🎉 Bayram", text: "Sevdiklerinizle beraber sağlıklı ve mutlu bir bayram geçirmenizi dilerim. - Halil Akça" }
             ];
 
+            // Akıllı Filtreleme + Arama Mantığı
             const filteredList = useMemo(() => {
-                if (filterMode === 'debt') return mukellef.filter(m => getBakiye(m.id) > 0);
-                if (filterMode === 'risky') return mukellef.filter(m => m.odemeAliskanligi === 'Geciktiren');
-                if (filterMode === 'safe') return mukellef.filter(m => m.odemeAliskanligi === 'Sözünün Eri');
-                return mukellef;
-            }, [mukellef, filterMode, getBakiye]);
+                let list = mukellef;
+                
+                // 1. Önce Arama Yap
+                if (searchTerm) {
+                    list = list.filter(m => m.unvan.toLowerCase().includes(searchTerm.toLowerCase()));
+                }
+
+                // 2. Sonra Filtre Uygula
+                if (filterMode === 'debt') return list.filter(m => getBakiye(m.id) > 0);
+                if (filterMode === 'risky') return list.filter(m => m.odemeAliskanligi === 'Geciktiren');
+                if (filterMode === 'safe') return list.filter(m => m.odemeAliskanligi === 'Sözünün Eri');
+                
+                return list;
+            }, [mukellef, filterMode, getBakiye, searchTerm]);
 
             const toggleSelect = (id) => setSelected(selected.includes(id) ? selected.filter(x=>x!==id) : [...selected, id]);
             const toggleAll = () => (selected.length === mukellef.length) ? setSelected([]) : setSelected(mukellef.map(m => m.id));
@@ -571,6 +558,10 @@
                     <div className="lg:col-span-3 bg-slate-800 rounded-3xl border border-slate-700 flex flex-col overflow-hidden">
                         <div className="p-4 border-b border-slate-700 bg-slate-900/50">
                             <h3 className="font-bold text-white mb-3 text-xs uppercase">Akıllı Filtreler</h3>
+                            
+                            {/* YENİ: ARAMA ÇUBUĞU */}
+                            <input className="input-dark mb-3 text-xs border-emerald-900 focus:border-emerald-500" placeholder="İsimle Hızlı Ara..." value={searchTerm} onChange={e=>setSearchTerm(e.target.value)} />
+
                             <div className="grid grid-cols-2 gap-2 mb-3">
                                 <button onClick={()=>setFilterMode('all')} className={`text-[10px] p-2 rounded ${filterMode==='all'?'bg-blue-600 text-white':'bg-slate-700 text-slate-400'}`}>Tümü</button>
                                 <button onClick={()=>setFilterMode('debt')} className={`text-[10px] p-2 rounded ${filterMode==='debt'?'bg-red-600 text-white':'bg-slate-700 text-slate-400'}`}>Borçlular</button>
@@ -719,8 +710,15 @@
             }), [mukellef, search, filterTemsilci]);
 
             const saveM = (m) => { 
-                if(m.id) setMukellef(prev => prev.map(x=>x.id===m.id?m:x)); 
-                else setMukellef(prev => [...prev, {...m, id: Date.now()}]); 
+                // YENİ EKLEME MANTIĞI DÜZELTİLDİ:
+                // Sadece setMukellef'i çağırmak yeterli, useEffect sayesinde bu değişiklik localStorage'a yazılır 
+                // ve diğer componentler (WhatsAppEngine) güncel state'i alır.
+                if(m.id) {
+                    setMukellef(prev => prev.map(x=>x.id===m.id?m:x)); 
+                } else {
+                    const newM = {...m, id: Date.now()};
+                    setMukellef(prev => [newM, ...prev]); 
+                }
                 setModal(null); 
             };
 
@@ -782,7 +780,7 @@
                                                 </div>
                                             </td>
                                             <td className="p-5 text-right font-mono text-emerald-500 font-bold">{m.aylikUcret.toLocaleString()} ₺</td>
-                                            <td className={`p-5 text-right font-mono font-bold ${getBakiye(m.id)>0?'text-red-500':'text-green-500'}`}>{getBakiye(m.id).toLocaleString()} ₺</td>
+                                            <td className={`p-5 text-right font-mono font-bold ${bakiye>0?'text-red-500':'text-green-500'}`}>{getBakiye(m.id).toLocaleString()} ₺</td>
                                             <td className="p-5 text-center">
                                                 <button onClick={()=>setModal(m)} className="w-8 h-8 rounded-lg bg-slate-800 text-blue-400 hover:bg-blue-600 hover:text-white transition-all flex items-center justify-center mx-auto shadow-sm"><i className="fas fa-pen-to-square text-xs"></i></button>
                                             </td>
