@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AKÇA ERP 2026 v20 | Premium</title>
+    <title>AKÇA ERP 2026 v21 | Final</title>
     
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
@@ -36,6 +36,19 @@
         /* Login Animasyon */
         .login-bg { background: radial-gradient(circle at center, #064e3b 0%, #020617 70%); }
         .glow-text { text-shadow: 0 0 30px rgba(16, 185, 129, 0.5); }
+        
+        /* AI Panel */
+        .ai-panel { background: linear-gradient(135deg, rgba(79, 70, 229, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%); border: 1px solid rgba(124, 58, 237, 0.3); }
+        .ai-glow { text-shadow: 0 0 10px rgba(167, 139, 250, 0.5); }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+        
+        .badge-bilanco { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 800; letter-spacing: 0.5px; display: inline-block; min-width: 70px; text-align: center; }
+        .badge-isletme { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4); padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; display: inline-block; min-width: 70px; text-align: center; }
+        
+        .segment-vip { border-left: 4px solid #10b981; } 
+        .segment-risk { border-left: 4px solid #f59e0b; } 
+        .segment-bad { border-left: 4px solid #ef4444; }
     </style>
 </head>
 <body>
@@ -311,7 +324,7 @@
                             <i className="fas fa-fingerprint text-4xl text-white"></i>
                         </div>
                         <h2 className="text-3xl font-black text-white mb-2 tracking-tighter glow-text">AKÇA ERP</h2>
-                        <p className="text-emerald-500 font-bold text-xs uppercase tracking-widest mb-8">v20 Premium Edition</p>
+                        <p className="text-emerald-500 font-bold text-xs uppercase tracking-widest mb-8">v21 Final Edition</p>
                         <form onSubmit={handleLogin} className="space-y-4">
                             <input type="password" className="input-dark text-center text-xl tracking-[0.5em] font-bold border-emerald-900/50 focus:border-emerald-500" placeholder="••••" value={password} onChange={e=>setPassword(e.target.value)} autoFocus />
                             {error && <p className="text-red-500 text-xs font-bold bg-red-500/10 py-2 rounded animate-bounce">{error}</p>}
@@ -325,13 +338,12 @@
         function DashboardLayout() {
             const [page, setPage] = useState('dashboard');
             
-            // --- MERKEZİ VERİ YÖNETİMİ ---
-            // 1. Önce LocalStorage'ı kontrol et.
-            // 2. Eğer boşsa veya eksikse, FULL_DATA'yı yükle.
             const [personel, setPersonel] = useState(() => JSON.parse(localStorage.getItem('akca_v25_personel')) || INITIAL_PERSONEL);
             
+            // --- VERİ MİGRASYONU ---
             const [mukellef, setMukellef] = useState(() => {
                 const saved = localStorage.getItem('akca_v25_mukellef');
+                // Eğer veri yoksa veya eksikse FULL_DATA'yı yükle
                 if (!saved || JSON.parse(saved).length < 227) {
                     return FULL_DATA.map(m => ({
                         ...m,
@@ -350,7 +362,7 @@
 
             useEffect(() => {
                 localStorage.setItem('akca_v25_personel', JSON.stringify(personel));
-                localStorage.setItem('akca_v25_mukellef', JSON.stringify(mukellef)); // Mükellef listesi güncellenince burası çalışır ve diğer sayfalar bu state'i kullanır.
+                localStorage.setItem('akca_v25_mukellef', JSON.stringify(mukellef));
                 localStorage.setItem('akca_v25_hareketler', JSON.stringify(hareketler));
                 localStorage.setItem('akca_v25_logs', JSON.stringify(logs));
                 localStorage.setItem('akca_v25_scheduled', JSON.stringify(scheduledMsgs));
@@ -358,7 +370,6 @@
                 localStorage.setItem('akca_v18_bot', JSON.stringify(botSettings));
             }, [personel, mukellef, hareketler, logs, scheduledMsgs, groups, botSettings]);
 
-            // ZAMANLAYICI MOTORU
             useEffect(() => {
                 const timer = setInterval(() => {
                     const now = new Date();
@@ -384,11 +395,19 @@
                 return borc - alacak;
             };
 
+            // --- GÜNCELLENMİŞ NUMARA DÜZELTME MANTIĞI ---
             const sendApiMessage = async (tel, msg, fileUrl = null) => {
                 if(!tel) return { success: false };
+                
+                // 1. Temizlik
                 let cleanNumber = tel.replace(/\D/g, '');
+                
+                // 2. Formatlama (90 Ekleme)
                 if (cleanNumber.length === 10) cleanNumber = '90' + cleanNumber;
+                else if (cleanNumber.length === 11 && cleanNumber.startsWith('0')) cleanNumber = '90' + cleanNumber.substring(1);
+                
                 const chatId = `${cleanNumber}@c.us`;
+                
                 try {
                     let url = `${API_CONFIG.baseUrl}/waInstance${API_CONFIG.id}/SendMessage/${API_CONFIG.token}`;
                     let body = { chatId, message: msg };
@@ -410,7 +429,7 @@
                 <div className="flex h-screen w-full bg-[#020617] text-slate-300">
                     <aside className="w-72 glass-sidebar flex flex-col z-20">
                         <div className="p-8">
-                            <h1 className="text-2xl font-black text-white tracking-tight">AKÇA ERP <span className="text-emerald-500">v20</span></h1>
+                            <h1 className="text-2xl font-black text-white tracking-tight">AKÇA ERP <span className="text-emerald-500">v21</span></h1>
                             <p className="text-[10px] font-bold text-slate-500 uppercase mt-1 flex items-center gap-2"><span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span> Sistem Aktif</p>
                         </div>
                         <nav className="flex-1 px-4 space-y-1 overflow-y-auto custom-scrollbar">
@@ -483,7 +502,7 @@
             )
         }
 
-        // --- WHATSAPP MOTORU (ARAMA ÖZELLİĞİ EKLENDİ) ---
+        // --- WHATSAPP MOTORU ---
         function WhatsAppEngine({ mukellef, logs, sendApiMessage, setLogs, scheduledMsgs, setScheduledMsgs, groups, setGroups, getBakiye, botSettings, setBotSettings }) {
             const [selected, setSelected] = useState([]);
             const [message, setMessage] = useState("");
@@ -493,7 +512,6 @@
             const [scheduleDate, setScheduleDate] = useState("");
             const [tab, setTab] = useState('compose'); 
             const [filterMode, setFilterMode] = useState("all");
-            // YENİ: ARAMA TERİMİ
             const [searchTerm, setSearchTerm] = useState("");
 
             const templates = [
@@ -503,20 +521,14 @@
                 { label: "🎉 Bayram", text: "Sevdiklerinizle beraber sağlıklı ve mutlu bir bayram geçirmenizi dilerim. - Halil Akça" }
             ];
 
-            // Akıllı Filtreleme + Arama Mantığı
             const filteredList = useMemo(() => {
                 let list = mukellef;
-                
-                // 1. Önce Arama Yap
                 if (searchTerm) {
                     list = list.filter(m => m.unvan.toLowerCase().includes(searchTerm.toLowerCase()));
                 }
-
-                // 2. Sonra Filtre Uygula
                 if (filterMode === 'debt') return list.filter(m => getBakiye(m.id) > 0);
                 if (filterMode === 'risky') return list.filter(m => m.odemeAliskanligi === 'Geciktiren');
                 if (filterMode === 'safe') return list.filter(m => m.odemeAliskanligi === 'Sözünün Eri');
-                
                 return list;
             }, [mukellef, filterMode, getBakiye, searchTerm]);
 
@@ -554,14 +566,11 @@
 
             return (
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-[80vh] fade-in">
-                    {/* SOL PANEL: FİLTRE VE LİSTE */}
+                    {/* SOL PANEL */}
                     <div className="lg:col-span-3 bg-slate-800 rounded-3xl border border-slate-700 flex flex-col overflow-hidden">
                         <div className="p-4 border-b border-slate-700 bg-slate-900/50">
                             <h3 className="font-bold text-white mb-3 text-xs uppercase">Akıllı Filtreler</h3>
-                            
-                            {/* YENİ: ARAMA ÇUBUĞU */}
                             <input className="input-dark mb-3 text-xs border-emerald-900 focus:border-emerald-500" placeholder="İsimle Hızlı Ara..." value={searchTerm} onChange={e=>setSearchTerm(e.target.value)} />
-
                             <div className="grid grid-cols-2 gap-2 mb-3">
                                 <button onClick={()=>setFilterMode('all')} className={`text-[10px] p-2 rounded ${filterMode==='all'?'bg-blue-600 text-white':'bg-slate-700 text-slate-400'}`}>Tümü</button>
                                 <button onClick={()=>setFilterMode('debt')} className={`text-[10px] p-2 rounded ${filterMode==='debt'?'bg-red-600 text-white':'bg-slate-700 text-slate-400'}`}>Borçlular</button>
@@ -591,8 +600,6 @@
                     {/* ORTA: EDİTÖR */}
                     <div className="lg:col-span-6 flex flex-col gap-4">
                         <div className="bg-slate-800 p-6 rounded-3xl border border-slate-700 shadow-2xl flex-1 flex flex-col">
-                            
-                            {/* OTO-TAHSİLAT BOTU AYARLARI */}
                             <div className="bg-gradient-to-r from-slate-800 to-slate-900 p-3 rounded-xl border border-purple-500/30 flex items-center justify-between mb-4">
                                 <div>
                                     <h4 className="text-xs font-bold text-white flex items-center gap-2"><i className="fas fa-robot text-purple-400"></i> Otomatik Tahsilat Botu</h4>
@@ -710,9 +717,6 @@
             }), [mukellef, search, filterTemsilci]);
 
             const saveM = (m) => { 
-                // YENİ EKLEME MANTIĞI DÜZELTİLDİ:
-                // Sadece setMukellef'i çağırmak yeterli, useEffect sayesinde bu değişiklik localStorage'a yazılır 
-                // ve diğer componentler (WhatsAppEngine) güncel state'i alır.
                 if(m.id) {
                     setMukellef(prev => prev.map(x=>x.id===m.id?m:x)); 
                 } else {
