@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HALİL AKÇA 2026 | Yönetim Paneli</title>
+    <title>HALİL AKÇA 2026 | AI Yönetim Paneli</title>
     
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
@@ -26,9 +26,13 @@
         .btn { padding: 8px 16px; border-radius: 8px; font-weight: 600; transition: 0.2s; cursor: pointer; display: inline-flex; items-center; justify-content: center; gap: 8px; }
         .btn-primary { background: #2563eb; color: white; } .btn-primary:hover { background: #1d4ed8; }
         
-        /* WhatsApp Özelleştirmeleri */
+        /* WhatsApp & AI Özelleştirmeleri */
         .btn-wa { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: 1px solid #34d399; }
         .btn-wa:hover { transform: translateY(-1px); box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3); }
+        
+        .ai-panel { background: linear-gradient(135deg, rgba(79, 70, 229, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%); border: 1px solid rgba(124, 58, 237, 0.3); }
+        .ai-glow { text-shadow: 0 0 10px rgba(167, 139, 250, 0.5); }
+
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
         
@@ -59,7 +63,7 @@
             { id: 7, ad: "HALİL AKÇA", unvan: "Yönetici", giris: "2010-01-01", maas: 0, sgk: 0, yemek: 0, vergi: 0, diger: 0 }
         ];
 
-        // --- 227 MÜKELLEF TAM LİSTE (EKSİKSİZ) ---
+        // --- 227 MÜKELLEF TAM LİSTE ---
         const FULL_DATA = [
             {"id":1,"unvan":"18 Mart Özel Güvenlik Ve Eğitim Hiz. Tic. Ltd. Şti.","tel":"05419353101","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":14500,"durum":"Aktif"},
             {"id":2,"unvan":"1915 Çanakkale Transport Nakliyat","tel":"05448602914","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":0,"durum":"Aktif"},
@@ -328,20 +332,18 @@
         function DashboardLayout() {
             const [page, setPage] = useState('dashboard');
             
-            // VERİLER (ESKİ SİSTEM KEYLERİ KORUNDU - VERİ KAYBI YOK)
+            // VERİLER (VERİ KAYBI YOK - YEREL DEPOLAMAYI KONTROL ET VE EKSİKSE TAM LİSTEYİ YÜKLE)
             const [personel, setPersonel] = useState(() => JSON.parse(localStorage.getItem('akca_v25_personel')) || INITIAL_PERSONEL);
             
-            // MÜKELLEF LİSTESİ YÜKLEME MANTIĞI:
-            // Eğer kayıtlı veri yoksa VEYA kayıtlı veri eksikse (200'den azsa) TAM LİSTEYİ YÜKLE.
             const [mukellef, setMukellef] = useState(() => {
                 const saved = localStorage.getItem('akca_v25_mukellef');
+                // Eğer kayıtlı veri yoksa veya eksikse (örn: 200'den azsa) FULL_DATA'yı yükle
                 if (!saved || JSON.parse(saved).length < 200) return FULL_DATA;
                 return JSON.parse(saved);
             });
 
             const [hareketler, setHareketler] = useState(() => JSON.parse(localStorage.getItem('akca_v25_hareketler')) || []);
             const [logs, setLogs] = useState(() => JSON.parse(localStorage.getItem('akca_v25_logs')) || []);
-            // Yeni Motor İçin Veri Alanı
             const [scheduledMsgs, setScheduledMsgs] = useState(() => JSON.parse(localStorage.getItem('akca_v25_scheduled')) || []);
 
             useEffect(() => {
@@ -352,7 +354,7 @@
                 localStorage.setItem('akca_v25_scheduled', JSON.stringify(scheduledMsgs));
             }, [personel, mukellef, hareketler, logs, scheduledMsgs]);
 
-            // ZAMANLAYICI MOTORU (Arka Planda Çalışır)
+            // ZAMANLAYICI MOTORU
             useEffect(() => {
                 const timer = setInterval(() => {
                     const now = new Date();
@@ -430,14 +432,53 @@
             );
         }
 
-        // --- DASHBOARD (ESKİ TASARIM) ---
+        // --- DASHBOARD (AI ANALİZLİ) ---
         function DashboardPage({ personel, mukellef, getBakiye }) {
             const toplamAlacak = useMemo(() => mukellef.reduce((a,b)=>a+getBakiye(b.id),0), [mukellef, getBakiye]);
             const toplamCiro = useMemo(() => mukellef.reduce((a,b)=>a+ (b.aylikUcret || 0), 0), [mukellef]);
 
+            // AI ANALİZ HESAPLAMALARI
+            const aiAnaliz = useMemo(() => {
+                const totalMaas = personel.reduce((a,b) => a + (b.maas + b.sgk + b.yemek), 0);
+                const netKar = toplamCiro - totalMaas;
+                
+                // En çok müşterisi olan personel
+                let maxMusteri = 0;
+                let yildizPersonel = "Veri Yok";
+                personel.forEach(p => {
+                    const count = mukellef.filter(m => m.temsilci === p.ad).length;
+                    if(count > maxMusteri) { maxMusteri = count; yildizPersonel = p.ad; }
+                });
+
+                // Ücretsiz müşteri sayısı
+                const riskliMusteri = mukellef.filter(m => m.aylikUcret === 0).length;
+
+                return { netKar, yildizPersonel, riskliMusteri };
+            }, [personel, mukellef, toplamCiro]);
+
             return (
                 <div className="space-y-6 fade-in">
-                      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    {/* YENİ AI OFİS ZEKASI PANELİ */}
+                    <div className="ai-panel p-6 rounded-2xl relative overflow-hidden">
+                        <div className="absolute top-0 right-0 p-4 opacity-10"><i className="fas fa-brain text-6xl text-white"></i></div>
+                        <h3 className="text-lg font-bold text-white mb-4 ai-glow flex items-center gap-2"><i className="fas fa-robot text-purple-400"></i> YAPAY ZEKA OFİS ANALİZİ</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div className="bg-slate-900/50 p-4 rounded-xl border border-slate-700/50">
+                                <p className="text-xs text-purple-300 font-bold uppercase">Tahmini Aylık Net Kâr</p>
+                                <p className={`text-2xl font-black ${aiAnaliz.netKar > 0 ? 'text-emerald-400' : 'text-red-400'}`}>{aiAnaliz.netKar.toLocaleString()} ₺</p>
+                            </div>
+                            <div className="bg-slate-900/50 p-4 rounded-xl border border-slate-700/50">
+                                <p className="text-xs text-purple-300 font-bold uppercase">Ayın Yıldız Personeli</p>
+                                <p className="text-2xl font-black text-white">{aiAnaliz.yildizPersonel}</p>
+                            </div>
+                            <div className="bg-slate-900/50 p-4 rounded-xl border border-slate-700/50">
+                                <p className="text-xs text-purple-300 font-bold uppercase">Riskli (Ücretsiz) Mükellef</p>
+                                <p className="text-2xl font-black text-orange-400">{aiAnaliz.riskliMusteri} Adet</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
                         <StatCard title="Portföy" val={mukellef.length} icon="fa-building" color="text-blue-500" />
                         <StatCard title="Beklenen Tahakkuk" val={`${toplamCiro.toLocaleString()} ₺`} icon="fa-file-invoice-dollar" color="text-emerald-500" />
                         <StatCard title="Piyasa Alacağı" val={`${toplamAlacak.toLocaleString()} ₺`} icon="fa-hand-holding-dollar" color="text-red-500" />
@@ -478,7 +519,7 @@
             )
         }
 
-        // --- YENİ WHATSAPP MOTORU (ESKİ TASARIMIN İÇİNDE) ---
+        // --- WHATSAPP MOTORU (TAHSİLAT LİNKİ ÖZELLİKLİ) ---
         function WhatsAppEngine({ mukellef, logs, sendApiMessage, setLogs, scheduledMsgs, setScheduledMsgs }) {
             const [selected, setSelected] = useState([]);
             const [message, setMessage] = useState("");
@@ -497,6 +538,12 @@
 
             const toggleSelect = (id) => setSelected(selected.includes(id) ? selected.filter(x=>x!==id) : [...selected, id]);
             const toggleAll = () => (selected.length === mukellef.length) ? setSelected([]) : setSelected(mukellef.map(m => m.id));
+
+            // YENİ: TAHSİLAT LİNKİ EKLEME FONKSİYONU
+            const addPaymentLink = () => {
+                const link = `https://odeme.halilakca.com/tahsilat/${Date.now()}`;
+                setMessage(prev => prev + `\n\n💳 Güvenli Ödeme Linki:\n${link}`);
+            };
 
             const handleSend = async () => {
                 if(!message || selected.length === 0) return alert("Lütfen Mesaj ve Alıcı Seçin!");
@@ -558,7 +605,14 @@
                                     <button key={i} onClick={()=>setMessage(t.text)} className="whitespace-nowrap px-3 py-2 rounded-lg bg-emerald-900/30 border border-emerald-800 text-emerald-400 text-[10px] font-bold uppercase hover:bg-emerald-600 hover:text-white transition-all">{t.label}</button>
                                 ))}
                             </div>
-                            <textarea className="flex-1 input-dark mb-4 resize-none border-slate-600 focus:border-emerald-500 text-sm font-medium" placeholder="Mesajınızı buraya yazın..." value={message} onChange={e=>setMessage(e.target.value)}></textarea>
+                            
+                            <textarea className="flex-1 input-dark mb-2 resize-none border-slate-600 focus:border-emerald-500 text-sm font-medium" placeholder="Mesajınızı buraya yazın..." value={message} onChange={e=>setMessage(e.target.value)}></textarea>
+                            
+                            {/* YENİ: TAHSİLAT BUTONU */}
+                            <div className="mb-4">
+                                <button onClick={addPaymentLink} className="text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-lg flex items-center gap-2 transition-all"><i className="fas fa-credit-card"></i> Tahsilat Linki Üret & Ekle</button>
+                            </div>
+
                             <div className="grid grid-cols-2 gap-4 mb-4">
                                 <div>
                                     <label className="text-[10px] text-slate-500 uppercase font-bold mb-1 block">Dosya Ekle (URL)</label>
