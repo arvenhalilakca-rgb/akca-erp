@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HALİL AKÇA 2026 | AI Yönetim Paneli</title>
+    <title>AKÇA ERP 2026 v17 | Yönetim Paneli</title>
     
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
@@ -46,7 +46,8 @@
     <script type="text/babel">
         const { useState, useEffect, useMemo } = React;
 
-        const SISTEM_SIFRESI = "1453"; 
+        // --- GÜNCEL ŞİFRE ---
+        const SISTEM_SIFRESI = "1717"; 
         const API_CONFIG = {
             id: "7105435782",
             token: "9909ba226135436cb48ba61229ea6c7976122daff9b249b89c",
@@ -311,7 +312,7 @@
                         <div className="w-20 h-20 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-blue-600/30">
                             <i className="fas fa-lock text-3xl text-white"></i>
                         </div>
-                        <h2 className="text-2xl font-bold text-white mb-2">HALİL AKÇA 2026</h2>
+                        <h2 className="text-2xl font-bold text-white mb-2">AKÇA ERP 2026 v17</h2>
                         <form onSubmit={handleLogin} className="space-y-4">
                             <input 
                                 type="password" 
@@ -332,19 +333,19 @@
         function DashboardLayout() {
             const [page, setPage] = useState('dashboard');
             
-            // VERİLER (VERİ KAYBI YOK - YEREL DEPOLAMAYI KONTROL ET VE EKSİKSE TAM LİSTEYİ YÜKLE)
+            // VERİLER
             const [personel, setPersonel] = useState(() => JSON.parse(localStorage.getItem('akca_v25_personel')) || INITIAL_PERSONEL);
-            
+            // Mükellef verisi eksikse veya yoksa FULL_DATA'yı yükle
             const [mukellef, setMukellef] = useState(() => {
                 const saved = localStorage.getItem('akca_v25_mukellef');
-                // Eğer kayıtlı veri yoksa veya eksikse (örn: 200'den azsa) FULL_DATA'yı yükle
-                if (!saved || JSON.parse(saved).length < 200) return FULL_DATA;
+                if (!saved || JSON.parse(saved).length < 227) return FULL_DATA;
                 return JSON.parse(saved);
             });
-
             const [hareketler, setHareketler] = useState(() => JSON.parse(localStorage.getItem('akca_v25_hareketler')) || []);
             const [logs, setLogs] = useState(() => JSON.parse(localStorage.getItem('akca_v25_logs')) || []);
             const [scheduledMsgs, setScheduledMsgs] = useState(() => JSON.parse(localStorage.getItem('akca_v25_scheduled')) || []);
+            // YENİ: GRUP SİSTEMİ
+            const [groups, setGroups] = useState(() => JSON.parse(localStorage.getItem('akca_v25_groups')) || []);
 
             useEffect(() => {
                 localStorage.setItem('akca_v25_personel', JSON.stringify(personel));
@@ -352,14 +353,14 @@
                 localStorage.setItem('akca_v25_hareketler', JSON.stringify(hareketler));
                 localStorage.setItem('akca_v25_logs', JSON.stringify(logs));
                 localStorage.setItem('akca_v25_scheduled', JSON.stringify(scheduledMsgs));
-            }, [personel, mukellef, hareketler, logs, scheduledMsgs]);
+                localStorage.setItem('akca_v25_groups', JSON.stringify(groups));
+            }, [personel, mukellef, hareketler, logs, scheduledMsgs, groups]);
 
             // ZAMANLAYICI MOTORU
             useEffect(() => {
                 const timer = setInterval(() => {
                     const now = new Date();
                     const pending = scheduledMsgs.filter(m => m.status === 'Beklemede' && new Date(m.date) <= now);
-                    
                     if (pending.length > 0) {
                         pending.forEach(task => {
                             sendApiMessage(task.tel, task.msg, task.file);
@@ -406,7 +407,7 @@
             return (
                 <div className="flex h-screen w-full bg-[#0f172a] text-slate-300">
                     <aside className="w-72 glass-sidebar flex flex-col z-20">
-                        <div className="p-8"><h1 className="text-2xl font-black text-white tracking-tight">HALİL AKÇA<span className="text-blue-500">2026</span></h1><p className="text-[10px] font-bold text-slate-500 uppercase mt-1">Yönetici Sürümü</p></div>
+                        <div className="p-8"><h1 className="text-2xl font-black text-white tracking-tight">AKÇA ERP<span className="text-blue-500">2026</span></h1><p className="text-[10px] font-bold text-slate-500 uppercase mt-1">v17 Yönetici Paneli</p></div>
                         <nav className="flex-1 px-4 space-y-1 overflow-y-auto custom-scrollbar">
                             <MenuBtn icon="fa-chart-pie" text="Genel Özet" active={page==='dashboard'} onClick={()=>setPage('dashboard')} />
                             <MenuBtn icon="fa-users" text="Mükellef Portföyü" active={page==='mukellef'} onClick={()=>setPage('mukellef')} badge={mukellef.length} />
@@ -424,103 +425,56 @@
                             {page === 'mukellef' && <MukellefPage mukellef={mukellef} setMukellef={setMukellef} personel={personel} getBakiye={getBakiye} />}
                             {page === 'personel' && <PersonelPage personel={personel} setPersonel={setPersonel} mukellef={mukellef} setMukellef={setMukellef} />}
                             {page === 'finans' && <FinansPage mukellef={mukellef} hareketler={hareketler} setHareketler={setHareketler} getBakiye={getBakiye} />}
-                            {page === 'robot' && <WhatsAppEngine mukellef={mukellef} logs={logs} sendApiMessage={sendApiMessage} setLogs={setLogs} scheduledMsgs={scheduledMsgs} setScheduledMsgs={setScheduledMsgs} />}
-                            {page === 'yedek' && <YedekPage data={{personel, mukellef, hareketler, logs, scheduledMsgs}} setData={(d)=>{setPersonel(d.personel);setMukellef(d.mukellef);setHareketler(d.hareketler);setLogs(d.logs);setScheduledMsgs(d.scheduledMsgs)}} />}
+                            {page === 'robot' && <WhatsAppEngine mukellef={mukellef} logs={logs} sendApiMessage={sendApiMessage} setLogs={setLogs} scheduledMsgs={scheduledMsgs} setScheduledMsgs={setScheduledMsgs} groups={groups} setGroups={setGroups} />}
+                            {page === 'yedek' && <YedekPage data={{personel, mukellef, hareketler, logs, scheduledMsgs, groups}} setData={(d)=>{setPersonel(d.personel);setMukellef(d.mukellef);setHareketler(d.hareketler);setLogs(d.logs);setScheduledMsgs(d.scheduledMsgs);setGroups(d.groups || [])}} />}
                         </div>
                     </main>
                 </div>
             );
         }
 
-        // --- DASHBOARD (AI ANALİZLİ) ---
+        // --- DASHBOARD ---
         function DashboardPage({ personel, mukellef, getBakiye }) {
             const toplamAlacak = useMemo(() => mukellef.reduce((a,b)=>a+getBakiye(b.id),0), [mukellef, getBakiye]);
             const toplamCiro = useMemo(() => mukellef.reduce((a,b)=>a+ (b.aylikUcret || 0), 0), [mukellef]);
 
-            // AI ANALİZ HESAPLAMALARI
+            // AI ANALİZ
             const aiAnaliz = useMemo(() => {
                 const totalMaas = personel.reduce((a,b) => a + (b.maas + b.sgk + b.yemek), 0);
                 const netKar = toplamCiro - totalMaas;
-                
-                // En çok müşterisi olan personel
                 let maxMusteri = 0;
                 let yildizPersonel = "Veri Yok";
                 personel.forEach(p => {
                     const count = mukellef.filter(m => m.temsilci === p.ad).length;
                     if(count > maxMusteri) { maxMusteri = count; yildizPersonel = p.ad; }
                 });
-
-                // Ücretsiz müşteri sayısı
                 const riskliMusteri = mukellef.filter(m => m.aylikUcret === 0).length;
-
                 return { netKar, yildizPersonel, riskliMusteri };
             }, [personel, mukellef, toplamCiro]);
 
             return (
                 <div className="space-y-6 fade-in">
-                    {/* YENİ AI OFİS ZEKASI PANELİ */}
                     <div className="ai-panel p-6 rounded-2xl relative overflow-hidden">
                         <div className="absolute top-0 right-0 p-4 opacity-10"><i className="fas fa-brain text-6xl text-white"></i></div>
                         <h3 className="text-lg font-bold text-white mb-4 ai-glow flex items-center gap-2"><i className="fas fa-robot text-purple-400"></i> YAPAY ZEKA OFİS ANALİZİ</h3>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div className="bg-slate-900/50 p-4 rounded-xl border border-slate-700/50">
-                                <p className="text-xs text-purple-300 font-bold uppercase">Tahmini Aylık Net Kâr</p>
-                                <p className={`text-2xl font-black ${aiAnaliz.netKar > 0 ? 'text-emerald-400' : 'text-red-400'}`}>{aiAnaliz.netKar.toLocaleString()} ₺</p>
-                            </div>
-                            <div className="bg-slate-900/50 p-4 rounded-xl border border-slate-700/50">
-                                <p className="text-xs text-purple-300 font-bold uppercase">Ayın Yıldız Personeli</p>
-                                <p className="text-2xl font-black text-white">{aiAnaliz.yildizPersonel}</p>
-                            </div>
-                            <div className="bg-slate-900/50 p-4 rounded-xl border border-slate-700/50">
-                                <p className="text-xs text-purple-300 font-bold uppercase">Riskli (Ücretsiz) Mükellef</p>
-                                <p className="text-2xl font-black text-orange-400">{aiAnaliz.riskliMusteri} Adet</p>
-                            </div>
+                            <div className="bg-slate-900/50 p-4 rounded-xl border border-slate-700/50"><p className="text-xs text-purple-300 font-bold uppercase">Tahmini Aylık Net Kâr</p><p className={`text-2xl font-black ${aiAnaliz.netKar > 0 ? 'text-emerald-400' : 'text-red-400'}`}>{aiAnaliz.netKar.toLocaleString()} ₺</p></div>
+                            <div className="bg-slate-900/50 p-4 rounded-xl border border-slate-700/50"><p className="text-xs text-purple-300 font-bold uppercase">Ayın Yıldız Personeli</p><p className="text-2xl font-black text-white">{aiAnaliz.yildizPersonel}</p></div>
+                            <div className="bg-slate-900/50 p-4 rounded-xl border border-slate-700/50"><p className="text-xs text-purple-300 font-bold uppercase">Riskli (Ücretsiz) Mükellef</p><p className="text-2xl font-black text-orange-400">{aiAnaliz.riskliMusteri} Adet</p></div>
                         </div>
                     </div>
-
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
                         <StatCard title="Portföy" val={mukellef.length} icon="fa-building" color="text-blue-500" />
                         <StatCard title="Beklenen Tahakkuk" val={`${toplamCiro.toLocaleString()} ₺`} icon="fa-file-invoice-dollar" color="text-emerald-500" />
                         <StatCard title="Piyasa Alacağı" val={`${toplamAlacak.toLocaleString()} ₺`} icon="fa-hand-holding-dollar" color="text-red-500" />
                         <StatCard title="Personel Gücü" val={personel.length} icon="fa-user-tie" color="text-purple-500" />
                     </div>
-                    
-                    <h3 className="text-xl font-bold text-white mb-4">Personel Bazlı Defter Dağılımı</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {personel.map(p => {
-                            const pMukellef = mukellef.filter(m => m.temsilci === p.ad);
-                            const eDefterSayisi = pMukellef.filter(m => m.defter === 'BILANÇO').length;
-                            return (
-                                <div key={p.id} className="bg-slate-800 p-6 rounded-2xl border border-slate-700 hover:border-blue-500/50 transition">
-                                    <div className="flex items-center gap-4 mb-4">
-                                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-600 to-cyan-500 flex items-center justify-center font-bold text-white text-lg">
-                                            {p.ad.charAt(0)}
-                                        </div>
-                                        <div>
-                                            <h4 className="font-bold text-white">{p.ad}</h4>
-                                            <p className="text-xs text-slate-400">{p.unvan}</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex justify-between items-center text-sm border-t border-slate-700 pt-3">
-                                        <div className="text-center">
-                                            <span className="block text-xl font-bold text-white">{pMukellef.length}</span>
-                                            <span className="text-xs text-slate-500">Toplam Defter</span>
-                                        </div>
-                                        <div className="text-center">
-                                            <span className="block text-xl font-bold text-green-400">{eDefterSayisi}</span>
-                                            <span className="text-xs text-slate-500">E-Defter</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            )
-                        })}
-                    </div>
                 </div>
             )
         }
 
-        // --- WHATSAPP MOTORU (TAHSİLAT LİNKİ ÖZELLİKLİ) ---
-        function WhatsAppEngine({ mukellef, logs, sendApiMessage, setLogs, scheduledMsgs, setScheduledMsgs }) {
+        // --- WHATSAPP MOTORU (GRUP ÖZELLİKLİ) ---
+        function WhatsAppEngine({ mukellef, logs, sendApiMessage, setLogs, scheduledMsgs, setScheduledMsgs, groups, setGroups }) {
             const [selected, setSelected] = useState([]);
             const [message, setMessage] = useState("");
             const [fileUrl, setFileUrl] = useState(""); 
@@ -539,7 +493,29 @@
             const toggleSelect = (id) => setSelected(selected.includes(id) ? selected.filter(x=>x!==id) : [...selected, id]);
             const toggleAll = () => (selected.length === mukellef.length) ? setSelected([]) : setSelected(mukellef.map(m => m.id));
 
-            // YENİ: TAHSİLAT LİNKİ EKLEME FONKSİYONU
+            // YENİ: GRUP KAYDETME
+            const saveGroup = () => {
+                if(selected.length === 0) return alert("Gruba kaydetmek için önce kişi seçin.");
+                const name = prompt("Bu gruba bir isim verin (Örn: Şarapçılar):");
+                if(name) {
+                    setGroups([...groups, {id: Date.now(), name, members: selected}]);
+                    alert(`"${name}" grubu oluşturuldu!`);
+                }
+            };
+
+            // YENİ: GRUP SEÇME
+            const selectGroup = (members) => {
+                // Sadece mevcut listede hala var olanları seç (silinen mükellefler sorun yaratmasın)
+                const validMembers = members.filter(id => mukellef.find(m => m.id === id));
+                setSelected(validMembers);
+            };
+
+            const deleteGroup = (groupId) => {
+                if(confirm("Bu grubu silmek istediğinize emin misiniz?")) {
+                    setGroups(groups.filter(g => g.id !== groupId));
+                }
+            }
+
             const addPaymentLink = () => {
                 const link = `https://odeme.halilakca.com/tahsilat/${Date.now()}`;
                 setMessage(prev => prev + `\n\n💳 Güvenli Ödeme Linki:\n${link}`);
@@ -573,12 +549,30 @@
 
             return (
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-[80vh] fade-in">
-                    {/* SOL: LİSTE */}
+                    {/* SOL: LİSTE VE GRUPLAR */}
                     <div className="lg:col-span-3 bg-slate-800 rounded-3xl border border-slate-700 flex flex-col overflow-hidden">
                         <div className="p-4 border-b border-slate-700 bg-slate-900/50 flex justify-between items-center">
                             <h3 className="font-bold text-white text-xs uppercase tracking-widest">Alıcı Listesi ({selected.length})</h3>
                             <button onClick={toggleAll} className="text-[10px] text-emerald-400 hover:text-white underline">Tümünü Seç</button>
                         </div>
+                        
+                        {/* GRUPLAR ALANI */}
+                        <div className="p-2 border-b border-slate-700 bg-slate-800/80">
+                            <div className="flex justify-between items-center mb-2 px-2">
+                                <span className="text-[10px] font-bold text-slate-500 uppercase">Gruplarım</span>
+                                <button onClick={saveGroup} className="text-[10px] bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-500">+ Yeni Grup</button>
+                            </div>
+                            <div className="flex gap-2 overflow-x-auto pb-1 custom-scrollbar">
+                                {groups.map(g => (
+                                    <div key={g.id} className="flex items-center bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 shrink-0 group">
+                                        <button onClick={()=>selectGroup(g.members)} className="text-[10px] text-white font-bold mr-2 hover:text-emerald-400">{g.name}</button>
+                                        <button onClick={()=>deleteGroup(g.id)} className="text-[10px] text-red-500 opacity-0 group-hover:opacity-100"><i className="fas fa-times"></i></button>
+                                    </div>
+                                ))}
+                                {groups.length === 0 && <span className="text-[10px] text-slate-600 italic px-2">Henüz grup yok. Seçim yapıp ekleyin.</span>}
+                            </div>
+                        </div>
+
                         <div className="flex-1 overflow-y-auto p-2 custom-scrollbar space-y-1">
                             {mukellef.map(m => (
                                 <div key={m.id} onClick={()=>toggleSelect(m.id)} className={`p-3 rounded-xl border cursor-pointer transition-all flex items-center gap-3 ${selected.includes(m.id) ? 'bg-emerald-600 text-white border-emerald-500 shadow-lg' : 'bg-slate-900/40 border-slate-800 text-slate-400 hover:bg-slate-800'}`}>
@@ -608,7 +602,6 @@
                             
                             <textarea className="flex-1 input-dark mb-2 resize-none border-slate-600 focus:border-emerald-500 text-sm font-medium" placeholder="Mesajınızı buraya yazın..." value={message} onChange={e=>setMessage(e.target.value)}></textarea>
                             
-                            {/* YENİ: TAHSİLAT BUTONU */}
                             <div className="mb-4">
                                 <button onClick={addPaymentLink} className="text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-lg flex items-center gap-2 transition-all"><i className="fas fa-credit-card"></i> Tahsilat Linki Üret & Ekle</button>
                             </div>
@@ -698,8 +691,14 @@
             }), [mukellef, search, filterTemsilci]);
 
             const saveM = (m) => { 
-                if(m.id) setMukellef(prev => prev.map(x=>x.id===m.id?m:x)); 
-                else setMukellef(prev => [...prev, {...m, id: Date.now()}]); 
+                // YENİ KAYIT: ID oluştururken Date.now() kullanıyoruz, bu sayede WhatsApp listesinde de benzersiz görünür.
+                // State'i en tepedeki Dashboard'dan güncelliyoruz, bu da tüm uygulamayı (Whatsapp dahil) günceller.
+                if(m.id) {
+                    setMukellef(prev => prev.map(x=>x.id===m.id?m:x)); 
+                } else {
+                    const newM = {...m, id: Date.now()};
+                    setMukellef(prev => [...prev, newM]); 
+                }
                 setModal(null); 
             };
 
