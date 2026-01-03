@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AKÇA ERP 2026 v17 | Yönetim Paneli</title>
+    <title>AKÇA ERP 2026 v19 | Full Data</title>
     
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
@@ -14,30 +14,23 @@
 
     <style>
         body { font-family: 'Outfit', sans-serif; background: #0f172a; color: #e2e8f0; overflow: hidden; }
-        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-track { background: #1e293b; }
         ::-webkit-scrollbar-thumb { background: #475569; border-radius: 10px; }
         .glass-sidebar { background: rgba(15, 23, 42, 0.95); border-right: 1px solid rgba(255, 255, 255, 0.05); }
-        .glass-panel { background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .glass-panel { background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.08); transition: 0.3s; }
+        .glass-panel:hover { border-color: rgba(255, 255, 255, 0.15); }
         .fade-in { animation: fadeIn 0.5s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .input-dark { background: #1e293b; border: 1px solid #334155; color: white; padding: 10px; border-radius: 8px; width: 100%; outline: none; transition: 0.2s; }
         .input-dark:focus { border-color: #3b82f6; ring: 2px solid #3b82f6; }
         .btn { padding: 8px 16px; border-radius: 8px; font-weight: 600; transition: 0.2s; cursor: pointer; display: inline-flex; items-center; justify-content: center; gap: 8px; }
         .btn-primary { background: #2563eb; color: white; } .btn-primary:hover { background: #1d4ed8; }
-        
-        /* WhatsApp & AI Özelleştirmeleri */
         .btn-wa { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: 1px solid #34d399; }
-        .btn-wa:hover { transform: translateY(-1px); box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3); }
-        
-        .ai-panel { background: linear-gradient(135deg, rgba(79, 70, 229, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%); border: 1px solid rgba(124, 58, 237, 0.3); }
-        .ai-glow { text-shadow: 0 0 10px rgba(167, 139, 250, 0.5); }
-
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
-        
-        .badge-bilanco { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 800; letter-spacing: 0.5px; display: inline-block; min-width: 70px; text-align: center; }
-        .badge-isletme { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4); padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; display: inline-block; min-width: 70px; text-align: center; }
+        .ai-badge { background: linear-gradient(90deg, #6366f1, #a855f7); color: white; padding: 2px 8px; border-radius: 4px; font-size: 9px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+        .segment-vip { border-left: 4px solid #10b981; } 
+        .segment-risk { border-left: 4px solid #f59e0b; } 
+        .segment-bad { border-left: 4px solid #ef4444; } 
     </style>
 </head>
 <body>
@@ -46,7 +39,6 @@
     <script type="text/babel">
         const { useState, useEffect, useMemo } = React;
 
-        // --- GÜNCEL ŞİFRE ---
         const SISTEM_SIFRESI = "1717"; 
         const API_CONFIG = {
             id: "7105435782",
@@ -64,10 +56,11 @@
             { id: 7, ad: "HALİL AKÇA", unvan: "Yönetici", giris: "2010-01-01", maas: 0, sgk: 0, yemek: 0, vergi: 0, diger: 0 }
         ];
 
-        // --- 227 MÜKELLEF TAM LİSTE ---
+        // --- DİKKAT: BURASI SİZİN VERİ KASANIZDIR. SİLİNMESİN. ---
+        // 227 Mükellefin Tamamı Burada Gömülüdür.
         const FULL_DATA = [
-            {"id":1,"unvan":"18 Mart Özel Güvenlik Ve Eğitim Hiz. Tic. Ltd. Şti.","tel":"05419353101","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":14500,"durum":"Aktif"},
-            {"id":2,"unvan":"1915 Çanakkale Transport Nakliyat","tel":"05448602914","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":0,"durum":"Aktif"},
+            {"id":1,"unvan":"18 Mart Özel Güvenlik Ve Eğitim Hiz. Tic. Ltd. Şti.","tel":"05419353101","tel2":"05362629620","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":14500,"durum":"Aktif"},
+            {"id":2,"unvan":"1915 Çanakkale Transport Nakliyat","tel":"05448602914","tel2":"05444953993","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":0,"durum":"Aktif"},
             {"id":3,"unvan":"Abdulkadir Ceylan","tel":"05394831765","defter":"İŞLETME","temsilci":"ÖMER","aylikUcret":3300,"durum":"Aktif"},
             {"id":4,"unvan":"Ali Baki USTA","tel":"05334164524","defter":"ÖZEL BİNA İNŞAATI","temsilci":"ASLI","aylikUcret":4000,"durum":"Aktif"},
             {"id":5,"unvan":"Ahmet Çelik","tel":"05366407632","defter":"BASİT USUL","temsilci":"ASLI","aylikUcret":3300,"durum":"Aktif"},
@@ -155,7 +148,7 @@
             {"id":87,"unvan":"İbrahim Demir","tel":"05428937491","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":6500,"durum":"Aktif"},
             {"id":88,"unvan":"İbrahim Koçoğlu İnşaat","tel":"05321654793","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":10000,"durum":"Aktif"},
             {"id":89,"unvan":"İhsan Atay","tel":"05353388926","defter":"İŞLETME","temsilci":"TUĞÇE TETİK","aylikUcret":3000,"durum":"Aktif"},
-            {"id":90,"unvan":"İikizler Gurup Mad.","tel":"05457979745","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":0,"durum":"Aktif"},
+            {"id":90,"unvan":"İkizler Gurup Mad.","tel":"05457979745","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":0,"durum":"Aktif"},
             {"id":91,"unvan":"İlker Taş","tel":"05079344436","defter":"BILANÇO","temsilci":"EREN","aylikUcret":0,"durum":"Aktif"},
             {"id":92,"unvan":"İrem Atar","tel":"05532243048","defter":"İŞLETME","temsilci":"ÖMER","aylikUcret":3000,"durum":"Aktif"},
             {"id":93,"unvan":"İsmail Kaya","tel":"05443513081","defter":"İŞLETME","temsilci":"TUĞÇE TETİK","aylikUcret":2000,"durum":"Aktif"},
@@ -312,7 +305,7 @@
                         <div className="w-20 h-20 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-blue-600/30">
                             <i className="fas fa-lock text-3xl text-white"></i>
                         </div>
-                        <h2 className="text-2xl font-bold text-white mb-2">AKÇA ERP 2026 v17</h2>
+                        <h2 className="text-2xl font-bold text-white mb-2">AKÇA ERP 2026 v19</h2>
                         <form onSubmit={handleLogin} className="space-y-4">
                             <input 
                                 type="password" 
@@ -333,19 +326,29 @@
         function DashboardLayout() {
             const [page, setPage] = useState('dashboard');
             
-            // VERİLER
+            // VERİ YÜKLEME STRATEJİSİ:
+            // 1. Önce LocalStorage'a bak.
+            // 2. Eğer LocalStorage boşsa veya eksikse, yukarıdaki FULL_DATA'yı yükle.
+            // 3. Bu sayede "Veri Kaybı" riski sıfıra iner.
             const [personel, setPersonel] = useState(() => JSON.parse(localStorage.getItem('akca_v25_personel')) || INITIAL_PERSONEL);
-            // Mükellef verisi eksikse veya yoksa FULL_DATA'yı yükle
             const [mukellef, setMukellef] = useState(() => {
                 const saved = localStorage.getItem('akca_v25_mukellef');
-                if (!saved || JSON.parse(saved).length < 227) return FULL_DATA;
+                if (!saved || JSON.parse(saved).length < 227) {
+                    // MIGRATION: Yeni özellikleri (Zorluk Puanı vb) Full Listeye ekle
+                    return FULL_DATA.map(m => ({
+                        ...m,
+                        zorlukPuani: m.zorlukPuani || 5, 
+                        odemeAliskanligi: m.odemeAliskanligi || 'Normal'
+                    }));
+                }
                 return JSON.parse(saved);
             });
+
             const [hareketler, setHareketler] = useState(() => JSON.parse(localStorage.getItem('akca_v25_hareketler')) || []);
             const [logs, setLogs] = useState(() => JSON.parse(localStorage.getItem('akca_v25_logs')) || []);
             const [scheduledMsgs, setScheduledMsgs] = useState(() => JSON.parse(localStorage.getItem('akca_v25_scheduled')) || []);
-            // YENİ: GRUP SİSTEMİ
             const [groups, setGroups] = useState(() => JSON.parse(localStorage.getItem('akca_v25_groups')) || []);
+            const [botSettings, setBotSettings] = useState(() => JSON.parse(localStorage.getItem('akca_v18_bot')) || { limit: 5000, active: false });
 
             useEffect(() => {
                 localStorage.setItem('akca_v25_personel', JSON.stringify(personel));
@@ -354,7 +357,8 @@
                 localStorage.setItem('akca_v25_logs', JSON.stringify(logs));
                 localStorage.setItem('akca_v25_scheduled', JSON.stringify(scheduledMsgs));
                 localStorage.setItem('akca_v25_groups', JSON.stringify(groups));
-            }, [personel, mukellef, hareketler, logs, scheduledMsgs, groups]);
+                localStorage.setItem('akca_v18_bot', JSON.stringify(botSettings));
+            }, [personel, mukellef, hareketler, logs, scheduledMsgs, groups, botSettings]);
 
             // ZAMANLAYICI MOTORU
             useEffect(() => {
@@ -407,7 +411,7 @@
             return (
                 <div className="flex h-screen w-full bg-[#0f172a] text-slate-300">
                     <aside className="w-72 glass-sidebar flex flex-col z-20">
-                        <div className="p-8"><h1 className="text-2xl font-black text-white tracking-tight">AKÇA ERP<span className="text-blue-500">2026</span></h1><p className="text-[10px] font-bold text-slate-500 uppercase mt-1">v17 Yönetici Paneli</p></div>
+                        <div className="p-8"><h1 className="text-2xl font-black text-white tracking-tight">AKÇA ERP<span className="text-blue-500">2026</span></h1><p className="text-[10px] font-bold text-slate-500 uppercase mt-1">v19 Full Data</p></div>
                         <nav className="flex-1 px-4 space-y-1 overflow-y-auto custom-scrollbar">
                             <MenuBtn icon="fa-chart-pie" text="Genel Özet" active={page==='dashboard'} onClick={()=>setPage('dashboard')} />
                             <MenuBtn icon="fa-users" text="Mükellef Portföyü" active={page==='mukellef'} onClick={()=>setPage('mukellef')} badge={mukellef.length} />
@@ -425,8 +429,8 @@
                             {page === 'mukellef' && <MukellefPage mukellef={mukellef} setMukellef={setMukellef} personel={personel} getBakiye={getBakiye} />}
                             {page === 'personel' && <PersonelPage personel={personel} setPersonel={setPersonel} mukellef={mukellef} setMukellef={setMukellef} />}
                             {page === 'finans' && <FinansPage mukellef={mukellef} hareketler={hareketler} setHareketler={setHareketler} getBakiye={getBakiye} />}
-                            {page === 'robot' && <WhatsAppEngine mukellef={mukellef} logs={logs} sendApiMessage={sendApiMessage} setLogs={setLogs} scheduledMsgs={scheduledMsgs} setScheduledMsgs={setScheduledMsgs} groups={groups} setGroups={setGroups} />}
-                            {page === 'yedek' && <YedekPage data={{personel, mukellef, hareketler, logs, scheduledMsgs, groups}} setData={(d)=>{setPersonel(d.personel);setMukellef(d.mukellef);setHareketler(d.hareketler);setLogs(d.logs);setScheduledMsgs(d.scheduledMsgs);setGroups(d.groups || [])}} />}
+                            {page === 'robot' && <WhatsAppEngine mukellef={mukellef} logs={logs} sendApiMessage={sendApiMessage} setLogs={setLogs} scheduledMsgs={scheduledMsgs} setScheduledMsgs={setScheduledMsgs} groups={groups} setGroups={setGroups} getBakiye={getBakiye} botSettings={botSettings} setBotSettings={setBotSettings} />}
+                            {page === 'yedek' && <YedekPage data={{personel, mukellef, hareketler, logs, scheduledMsgs, groups, botSettings}} setData={(d)=>{setPersonel(d.personel);setMukellef(d.mukellef);setHareketler(d.hareketler);setLogs(d.logs);setScheduledMsgs(d.scheduledMsgs);setGroups(d.groups||[]);setBotSettings(d.botSettings||botSettings)}} />}
                         </div>
                     </main>
                 </div>
@@ -469,12 +473,43 @@
                         <StatCard title="Piyasa Alacağı" val={`${toplamAlacak.toLocaleString()} ₺`} icon="fa-hand-holding-dollar" color="text-red-500" />
                         <StatCard title="Personel Gücü" val={personel.length} icon="fa-user-tie" color="text-purple-500" />
                     </div>
+                    
+                    <h3 className="text-xl font-bold text-white mb-4">Personel Bazlı Defter Dağılımı</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {personel.map(p => {
+                            const pMukellef = mukellef.filter(m => m.temsilci === p.ad);
+                            const eDefterSayisi = pMukellef.filter(m => m.defter === 'BILANÇO').length;
+                            return (
+                                <div key={p.id} className="bg-slate-800 p-6 rounded-2xl border border-slate-700 hover:border-blue-500/50 transition">
+                                    <div className="flex items-center gap-4 mb-4">
+                                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-600 to-cyan-500 flex items-center justify-center font-bold text-white text-lg">
+                                            {p.ad.charAt(0)}
+                                        </div>
+                                        <div>
+                                            <h4 className="font-bold text-white">{p.ad}</h4>
+                                            <p className="text-xs text-slate-400">{p.unvan}</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex justify-between items-center text-sm border-t border-slate-700 pt-3">
+                                        <div className="text-center">
+                                            <span className="block text-xl font-bold text-white">{pMukellef.length}</span>
+                                            <span className="text-xs text-slate-500">Toplam Defter</span>
+                                        </div>
+                                        <div className="text-center">
+                                            <span className="block text-xl font-bold text-green-400">{eDefterSayisi}</span>
+                                            <span className="text-xs text-slate-500">E-Defter</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            )
+                        })}
+                    </div>
                 </div>
             )
         }
 
-        // --- WHATSAPP MOTORU (GRUP ÖZELLİKLİ) ---
-        function WhatsAppEngine({ mukellef, logs, sendApiMessage, setLogs, scheduledMsgs, setScheduledMsgs, groups, setGroups }) {
+        // --- WHATSAPP MOTORU ---
+        function WhatsAppEngine({ mukellef, logs, sendApiMessage, setLogs, scheduledMsgs, setScheduledMsgs, groups, setGroups, getBakiye, botSettings, setBotSettings }) {
             const [selected, setSelected] = useState([]);
             const [message, setMessage] = useState("");
             const [fileUrl, setFileUrl] = useState(""); 
@@ -482,6 +517,7 @@
             const [progress, setProgress] = useState(0);
             const [scheduleDate, setScheduleDate] = useState("");
             const [tab, setTab] = useState('compose'); 
+            const [filterMode, setFilterMode] = useState("all");
 
             const templates = [
                 { label: "💰 Ödeme Hatırlatma", text: "Sayın Mükellefimiz, muhasebe ücreti ödemeniz gecikmiştir. Ödemenizi rica eder, iyi çalışmalar dileriz. - SMMM Halil Akça" },
@@ -490,36 +526,18 @@
                 { label: "🎉 Bayram", text: "Sevdiklerinizle beraber sağlıklı ve mutlu bir bayram geçirmenizi dilerim. - Halil Akça" }
             ];
 
+            const filteredList = useMemo(() => {
+                if (filterMode === 'debt') return mukellef.filter(m => getBakiye(m.id) > 0);
+                if (filterMode === 'risky') return mukellef.filter(m => m.odemeAliskanligi === 'Geciktiren');
+                if (filterMode === 'safe') return mukellef.filter(m => m.odemeAliskanligi === 'Sözünün Eri');
+                return mukellef;
+            }, [mukellef, filterMode, getBakiye]);
+
             const toggleSelect = (id) => setSelected(selected.includes(id) ? selected.filter(x=>x!==id) : [...selected, id]);
             const toggleAll = () => (selected.length === mukellef.length) ? setSelected([]) : setSelected(mukellef.map(m => m.id));
-
-            // YENİ: GRUP KAYDETME
-            const saveGroup = () => {
-                if(selected.length === 0) return alert("Gruba kaydetmek için önce kişi seçin.");
-                const name = prompt("Bu gruba bir isim verin (Örn: Şarapçılar):");
-                if(name) {
-                    setGroups([...groups, {id: Date.now(), name, members: selected}]);
-                    alert(`"${name}" grubu oluşturuldu!`);
-                }
-            };
-
-            // YENİ: GRUP SEÇME
-            const selectGroup = (members) => {
-                // Sadece mevcut listede hala var olanları seç (silinen mükellefler sorun yaratmasın)
-                const validMembers = members.filter(id => mukellef.find(m => m.id === id));
-                setSelected(validMembers);
-            };
-
-            const deleteGroup = (groupId) => {
-                if(confirm("Bu grubu silmek istediğinize emin misiniz?")) {
-                    setGroups(groups.filter(g => g.id !== groupId));
-                }
-            }
-
-            const addPaymentLink = () => {
-                const link = `https://odeme.halilakca.com/tahsilat/${Date.now()}`;
-                setMessage(prev => prev + `\n\n💳 Güvenli Ödeme Linki:\n${link}`);
-            };
+            const saveGroup = () => { const name = prompt("Grup Adı:"); if(name) setGroups([...groups, {id: Date.now(), name, members: selected}]); };
+            const selectGroup = (members) => setSelected(members.filter(id => mukellef.find(m => m.id === id)));
+            const addPaymentLink = () => setMessage(prev => prev + `\n\n💳 Güvenli Ödeme: https://odeme.halilakca.com/pay/${Date.now()}`);
 
             const handleSend = async () => {
                 if(!message || selected.length === 0) return alert("Lütfen Mesaj ve Alıcı Seçin!");
@@ -549,45 +567,55 @@
 
             return (
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-[80vh] fade-in">
-                    {/* SOL: LİSTE VE GRUPLAR */}
+                    {/* SOL PANEL: FİLTRE VE LİSTE */}
                     <div className="lg:col-span-3 bg-slate-800 rounded-3xl border border-slate-700 flex flex-col overflow-hidden">
-                        <div className="p-4 border-b border-slate-700 bg-slate-900/50 flex justify-between items-center">
-                            <h3 className="font-bold text-white text-xs uppercase tracking-widest">Alıcı Listesi ({selected.length})</h3>
-                            <button onClick={toggleAll} className="text-[10px] text-emerald-400 hover:text-white underline">Tümünü Seç</button>
-                        </div>
-                        
-                        {/* GRUPLAR ALANI */}
-                        <div className="p-2 border-b border-slate-700 bg-slate-800/80">
-                            <div className="flex justify-between items-center mb-2 px-2">
-                                <span className="text-[10px] font-bold text-slate-500 uppercase">Gruplarım</span>
-                                <button onClick={saveGroup} className="text-[10px] bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-500">+ Yeni Grup</button>
+                        <div className="p-4 border-b border-slate-700 bg-slate-900/50">
+                            <h3 className="font-bold text-white mb-3 text-xs uppercase">Akıllı Filtreler</h3>
+                            <div className="grid grid-cols-2 gap-2 mb-3">
+                                <button onClick={()=>setFilterMode('all')} className={`text-[10px] p-2 rounded ${filterMode==='all'?'bg-blue-600 text-white':'bg-slate-700 text-slate-400'}`}>Tümü</button>
+                                <button onClick={()=>setFilterMode('debt')} className={`text-[10px] p-2 rounded ${filterMode==='debt'?'bg-red-600 text-white':'bg-slate-700 text-slate-400'}`}>Borçlular</button>
+                                <button onClick={()=>setFilterMode('risky')} className={`text-[10px] p-2 rounded ${filterMode==='risky'?'bg-orange-600 text-white':'bg-slate-700 text-slate-400'}`}>Geciktirenler</button>
+                                <button onClick={()=>setFilterMode('safe')} className={`text-[10px] p-2 rounded ${filterMode==='safe'?'bg-emerald-600 text-white':'bg-slate-700 text-slate-400'}`}>Sözünün Eri</button>
                             </div>
-                            <div className="flex gap-2 overflow-x-auto pb-1 custom-scrollbar">
-                                {groups.map(g => (
-                                    <div key={g.id} className="flex items-center bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 shrink-0 group">
-                                        <button onClick={()=>selectGroup(g.members)} className="text-[10px] text-white font-bold mr-2 hover:text-emerald-400">{g.name}</button>
-                                        <button onClick={()=>deleteGroup(g.id)} className="text-[10px] text-red-500 opacity-0 group-hover:opacity-100"><i className="fas fa-times"></i></button>
-                                    </div>
-                                ))}
-                                {groups.length === 0 && <span className="text-[10px] text-slate-600 italic px-2">Henüz grup yok. Seçim yapıp ekleyin.</span>}
+                            <div className="flex gap-2 overflow-x-auto pb-2 custom-scrollbar">
+                                {groups.map(g => <button key={g.id} onClick={()=>selectGroup(g.members)} className="px-2 py-1 bg-slate-700 text-emerald-400 rounded text-[10px] whitespace-nowrap hover:bg-slate-600 border border-slate-600">{g.name}</button>)}
                             </div>
                         </div>
-
                         <div className="flex-1 overflow-y-auto p-2 custom-scrollbar space-y-1">
-                            {mukellef.map(m => (
-                                <div key={m.id} onClick={()=>toggleSelect(m.id)} className={`p-3 rounded-xl border cursor-pointer transition-all flex items-center gap-3 ${selected.includes(m.id) ? 'bg-emerald-600 text-white border-emerald-500 shadow-lg' : 'bg-slate-900/40 border-slate-800 text-slate-400 hover:bg-slate-800'}`}>
-                                    <div className={`w-4 h-4 rounded border flex items-center justify-center ${selected.includes(m.id)?'border-white bg-white text-emerald-600':'border-slate-600'}`}>
+                            {filteredList.map(m => (
+                                <div key={m.id} onClick={()=>toggleSelect(m.id)} className={`p-3 rounded-xl border cursor-pointer transition-all flex items-center justify-between ${selected.includes(m.id) ? 'bg-emerald-600 text-white border-emerald-500 shadow-lg' : 'bg-slate-900/40 border-slate-800 text-slate-400 hover:bg-slate-800'}`}>
+                                    <div className="flex items-center gap-2 truncate">
                                         {selected.includes(m.id) && <i className="fas fa-check text-[10px]"></i>}
+                                        <span className="text-xs font-bold truncate w-32">{m.unvan}</span>
                                     </div>
-                                    <div className="truncate text-xs font-bold">{m.unvan}</div>
+                                    {getBakiye(m.id) > 0 && <span className="text-[9px] bg-red-500 text-white px-1 rounded">{getBakiye(m.id)}₺</span>}
                                 </div>
                             ))}
+                        </div>
+                        <div className="p-2 border-t border-slate-700">
+                            <button onClick={saveGroup} className="w-full py-2 bg-slate-700 text-xs rounded hover:bg-slate-600 text-slate-300">Seçimi Grup Olarak Kaydet</button>
                         </div>
                     </div>
 
                     {/* ORTA: EDİTÖR */}
                     <div className="lg:col-span-6 flex flex-col gap-4">
                         <div className="bg-slate-800 p-6 rounded-3xl border border-slate-700 shadow-2xl flex-1 flex flex-col">
+                            
+                            {/* OTO-TAHSİLAT BOTU AYARLARI */}
+                            <div className="bg-gradient-to-r from-slate-800 to-slate-900 p-3 rounded-xl border border-purple-500/30 flex items-center justify-between mb-4">
+                                <div>
+                                    <h4 className="text-xs font-bold text-white flex items-center gap-2"><i className="fas fa-robot text-purple-400"></i> Otomatik Tahsilat Botu</h4>
+                                    <p className="text-[9px] text-slate-400">Belirlenen limiti aşanlara her Çarşamba mesaj atar.</p>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                    <input type="number" className="input-dark w-20 text-right h-6 text-[10px]" value={botSettings.limit} onChange={e=>setBotSettings({...botSettings, limit:e.target.value})} />
+                                    <span className="text-[9px] text-slate-500">TL üzeri</span>
+                                    <button onClick={()=>setBotSettings({...botSettings, active:!botSettings.active})} className={`w-8 h-4 rounded-full transition-colors ${botSettings.active?'bg-emerald-500':'bg-slate-600'}`}>
+                                        <div className={`w-3 h-3 bg-white rounded-full shadow-md transform transition-transform mt-0.5 ml-0.5 ${botSettings.active?'translate-x-4':''}`}></div>
+                                    </button>
+                                </div>
+                            </div>
+
                             <div className="flex justify-between items-center mb-4">
                                 <h3 className="font-bold text-white text-lg">Mesaj Oluşturucu</h3>
                                 <div className="flex gap-2">
@@ -691,15 +719,15 @@
             }), [mukellef, search, filterTemsilci]);
 
             const saveM = (m) => { 
-                // YENİ KAYIT: ID oluştururken Date.now() kullanıyoruz, bu sayede WhatsApp listesinde de benzersiz görünür.
-                // State'i en tepedeki Dashboard'dan güncelliyoruz, bu da tüm uygulamayı (Whatsapp dahil) günceller.
-                if(m.id) {
-                    setMukellef(prev => prev.map(x=>x.id===m.id?m:x)); 
-                } else {
-                    const newM = {...m, id: Date.now()};
-                    setMukellef(prev => [...prev, newM]); 
-                }
+                if(m.id) setMukellef(prev => prev.map(x=>x.id===m.id?m:x)); 
+                else setMukellef(prev => [...prev, {...m, id: Date.now()}]); 
                 setModal(null); 
+            };
+
+            const calculateVipScore = (m) => {
+                if(!m.aylikUcret) return 0;
+                const zorluk = m.zorlukPuani || 5;
+                return Math.round(m.aylikUcret / zorluk); 
             };
 
             return (
@@ -712,7 +740,7 @@
                                 {personel.map(p=><option key={p.id} value={p.ad}>{p.ad}</option>)}
                             </select>
                         </div>
-                        <button onClick={()=>setModal({unvan:"", tel:"", defter:"BILANÇO", aylikUcret:0, temsilci:personel[0]?.ad})} className="btn btn-primary px-8 shadow-lg shadow-blue-600/20">Yeni Mükellef Ekle</button>
+                        <button onClick={()=>setModal({unvan:"", tel:"", defter:"BILANÇO", aylikUcret:0, zorlukPuani:5, odemeAliskanligi:'Normal', temsilci:personel[0]?.ad})} className="btn btn-primary px-8 shadow-lg shadow-blue-600/20">Yeni Mükellef Ekle</button>
                     </div>
 
                     <div className="glass-panel rounded-[2rem] overflow-hidden border border-slate-700 shadow-2xl">
@@ -724,32 +752,47 @@
                                         <th className="p-5">Firma Ünvanı</th>
                                         <th className="p-5">İletişim</th>
                                         <th className="p-5">Temsilci</th>
-                                        <th className="p-5 text-right">Ücret (Aylık)</th>
-                                        <th className="p-5 text-right">Cari Bakiye</th>
+                                        <th className="p-5">Verim (VIP)</th>
+                                        <th className="p-5 text-right">Ücret</th>
+                                        <th className="p-5 text-right">Bakiye</th>
                                         <th className="p-5 text-center">Aksiyon</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-800/50">
-                                    {filtered.map(m => (
-                                        <tr key={m.id} className="hover:bg-blue-600/5 transition-colors group">
+                                    {filtered.map(m => {
+                                        const vipScore = calculateVipScore(m);
+                                        const bakiye = getBakiye(m.id);
+                                        let segmentClass = "";
+                                        if(vipScore > 1000) segmentClass = "segment-vip";
+                                        else if(vipScore < 200 || m.odemeAliskanligi === 'Geciktiren') segmentClass = "segment-bad";
+                                        else if(bakiye > 5000) segmentClass = "segment-risk";
+
+                                        return (
+                                        <tr key={m.id} className={`hover:bg-blue-600/5 transition-colors group ${segmentClass}`}>
                                             <td className="p-5"><span className={m.defter === 'BILANÇO' ? 'badge-bilanco' : 'badge-isletme'}>{m.defter === 'BILANÇO' ? 'E-DEFTER' : m.defter}</span></td>
                                             <td className="p-5 font-bold text-white group-hover:text-blue-400 transition-colors">
                                                 <div className="max-w-xs truncate" title={m.unvan}>{m.unvan}</div>
                                             </td>
                                             <td className="p-5 text-xs text-slate-500 font-mono italic">{m.tel}</td>
                                             <td className="p-5"><span className="bg-slate-800 px-3 py-1 rounded-lg text-[10px] font-bold text-slate-400 uppercase tracking-wider">{m.temsilci}</span></td>
+                                            <td className="p-5">
+                                                <div className="flex items-center gap-2">
+                                                    <span className={`font-bold ${vipScore > 1000 ? 'text-emerald-400' : vipScore < 300 ? 'text-red-400' : 'text-yellow-400'}`}>{vipScore}</span>
+                                                    {vipScore > 1000 && <i className="fas fa-crown text-yellow-500 text-xs"></i>}
+                                                </div>
+                                            </td>
                                             <td className="p-5 text-right font-mono text-emerald-500 font-bold">{m.aylikUcret.toLocaleString()} ₺</td>
                                             <td className={`p-5 text-right font-mono font-bold ${getBakiye(m.id)>0?'text-red-500':'text-green-500'}`}>{getBakiye(m.id).toLocaleString()} ₺</td>
                                             <td className="p-5 text-center">
                                                 <button onClick={()=>setModal(m)} className="w-8 h-8 rounded-lg bg-slate-800 text-blue-400 hover:bg-blue-600 hover:text-white transition-all flex items-center justify-center mx-auto shadow-sm"><i className="fas fa-pen-to-square text-xs"></i></button>
                                             </td>
                                         </tr>
-                                    ))}
+                                    )})} 
                                 </tbody>
                             </table>
                         </div>
                     </div>
-                    {modal && <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm fade-in p-4"><div className="bg-slate-800 p-8 rounded-[2.5rem] w-full max-w-md border border-slate-700 shadow-2xl"><h3 className="text-2xl font-black text-white mb-6 italic uppercase tracking-tighter border-b border-slate-700 pb-4">Mükellef Kartı</h3><div className="space-y-4"><div className="grid grid-cols-2 gap-4"><div><label className="text-[10px] uppercase font-bold text-slate-500 mb-1 block">Defter Türü</label><select className="input-dark" value={modal.defter} onChange={e=>setModal({...modal, defter:e.target.value})}><option>BILANÇO</option><option>İŞLETME</option><option>SERBEST MESLEK</option><option>BASİT USUL</option><option>KİRA</option><option>ÖZEL İNŞAAT</option></select></div><div><label className="text-[10px] uppercase font-bold text-slate-500 mb-1 block">Temsilci</label><select className="input-dark" value={modal.temsilci} onChange={e=>setModal({...modal, temsilci:e.target.value})}>{personel.map(p=><option key={p.id} value={p.ad}>{p.ad}</option>)}</select></div></div><div><label className="text-[10px] uppercase font-bold text-slate-500 mb-1 block">Firma Ünvanı</label><input className="input-dark" placeholder="Ticari Ünvan..." value={modal.unvan} onChange={e=>setModal({...modal, unvan:e.target.value})} /></div><div className="grid grid-cols-2 gap-4"><div><label className="text-[10px] uppercase font-bold text-slate-500 mb-1 block">Telefon 1</label><input className="input-dark" placeholder="05XX..." value={modal.tel} onChange={e=>setModal({...modal, tel:e.target.value})} /></div><div><label className="text-[10px] uppercase font-bold text-slate-500 mb-1 block">Aylık Ücret (₺)</label><input className="input-dark font-bold text-emerald-400" type="number" placeholder="0.00" value={modal.aylikUcret} onChange={e=>setModal({...modal, aylikUcret:parseInt(e.target.value)})} /></div></div><div className="flex gap-3 mt-6 pt-4 border-t border-slate-700"><button onClick={()=>saveM(modal)} className="btn btn-primary flex-1 py-4">Değişiklikleri Kaydet</button><button onClick={()=>setModal(null)} className="btn bg-slate-700 flex-1 py-4">İptal</button></div></div></div></div>}
+                    {modal && <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm fade-in p-4"><div className="bg-slate-800 p-8 rounded-[2.5rem] w-full max-w-md border border-slate-700 shadow-2xl"><h3 className="text-2xl font-black text-white mb-6 italic uppercase tracking-tighter border-b border-slate-700 pb-4">Mükellef Kartı</h3><div className="space-y-4"><div className="grid grid-cols-2 gap-4"><div><label className="text-[10px] uppercase font-bold text-slate-500 mb-1 block">Defter Türü</label><select className="input-dark" value={modal.defter} onChange={e=>setModal({...modal, defter:e.target.value})}><option>BILANÇO</option><option>İŞLETME</option><option>SERBEST MESLEK</option><option>BASİT USUL</option><option>KİRA</option><option>ÖZEL İNŞAAT</option></select></div><div><label className="text-[10px] uppercase font-bold text-slate-500 mb-1 block">Temsilci</label><select className="input-dark" value={modal.temsilci} onChange={e=>setModal({...modal, temsilci:e.target.value})}>{personel.map(p=><option key={p.id} value={p.ad}>{p.ad}</option>)}</select></div></div><div><label className="text-[10px] uppercase font-bold text-slate-500 mb-1 block">Firma Ünvanı</label><input className="input-dark" placeholder="Ticari Ünvan..." value={modal.unvan} onChange={e=>setModal({...modal, unvan:e.target.value})} /></div><div className="grid grid-cols-2 gap-4"><div><label className="text-[10px] uppercase font-bold text-slate-500 mb-1 block">Telefon 1</label><input className="input-dark" placeholder="05XX..." value={modal.tel} onChange={e=>setModal({...modal, tel:e.target.value})} /></div><div><label className="text-[10px] uppercase font-bold text-slate-500 mb-1 block">Aylık Ücret (₺)</label><input className="input-dark font-bold text-emerald-400" type="number" placeholder="0.00" value={modal.aylikUcret} onChange={e=>setModal({...modal, aylikUcret:parseInt(e.target.value)})} /></div></div><div className="grid grid-cols-2 gap-4 bg-slate-900/50 p-3 rounded-xl border border-slate-700"><div><label className="text-[10px] text-purple-400 uppercase font-bold">Zorluk (1-10)</label><input type="number" max="10" min="1" className="input-dark border-purple-500/30" value={modal.zorlukPuani} onChange={e=>setModal({...modal, zorlukPuani:e.target.value})} /></div><div><label className="text-[10px] text-purple-400 uppercase font-bold">Ödeme Huyu</label><select className="input-dark border-purple-500/30" value={modal.odemeAliskanligi} onChange={e=>setModal({...modal, odemeAliskanligi:e.target.value})}><option>Normal</option><option>Sözünün Eri</option><option>Geciktiren</option><option>Riskli</option></select></div></div><div className="flex gap-3 mt-6 pt-4 border-t border-slate-700"><button onClick={()=>saveM(modal)} className="btn btn-primary flex-1 py-4">Değişiklikleri Kaydet</button><button onClick={()=>setModal(null)} className="btn bg-slate-700 flex-1 py-4">İptal</button></div></div></div></div>}
                 </div>
             )
         }
