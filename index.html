@@ -1,532 +1,630 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Akça ERP v25.0 | Yönetici Konsolu</title>
-<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-<script src="https://cdn.tailwindcss.com"></script>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akça ERP v25.0 | Final Boss</title>
+    
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-<style>
-    body { font-family: 'Inter', sans-serif; background: #0f172a; color: #e2e8f0; overflow: hidden; }
-    h1, h2, h3, h4, .brand-font { font-family: 'Outfit', sans-serif; }
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: #1e293b; }
-    ::-webkit-scrollbar-thumb { background: #475569; border-radius: 10px; }
-    .glass-sidebar { background: rgba(15, 23, 42, 0.95); border-right: 1px solid rgba(255, 255, 255, 0.05); }
-    .glass-panel { background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
-    .fade-in { animation: fadeIn 0.4s ease-out; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    .input-dark { background: #1e293b; border: 1px solid #334155; color: white; padding: 10px; border-radius: 8px; width: 100%; outline: none; transition: 0.2s; font-family: 'Inter', sans-serif; }
-    .input-dark:focus { border-color: #3b82f6; ring: 2px solid #3b82f6; }
-    .btn { padding: 8px 16px; border-radius: 8px; font-weight: 600; transition: 0.2s; cursor: pointer; display: inline-flex; items-center; justify-content: center; gap: 8px; }
-    .btn-primary { background: #2563eb; color: white; } .btn-primary:hover { background: #1d4ed8; }
-    .btn-danger { background: #ef4444; color: white; } .btn-danger:hover { background: #dc2626; }
-    .btn-success { background: #10b981; color: white; } .btn-success:hover { background: #059669; }
-    .badge-bilanco { background: rgba(59, 130, 246, 0.1); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
-    .badge-isletme { background: rgba(16, 185, 129, 0.1); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
-</style>
+    <style>
+        body { font-family: 'Outfit', sans-serif; background: #0f172a; color: #e2e8f0; overflow: hidden; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #1e293b; }
+        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 10px; }
+        .glass-sidebar { background: rgba(15, 23, 42, 0.95); border-right: 1px solid rgba(255, 255, 255, 0.05); }
+        .glass-panel { background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .fade-in { animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .input-dark { background: #1e293b; border: 1px solid #334155; color: white; padding: 10px; border-radius: 8px; width: 100%; outline: none; transition: 0.2s; }
+        .input-dark:focus { border-color: #3b82f6; ring: 2px solid #3b82f6; }
+        .btn { padding: 8px 16px; border-radius: 8px; font-weight: 600; transition: 0.2s; cursor: pointer; display: inline-flex; items-center; justify-content: center; gap: 8px; }
+        .btn-primary { background: #2563eb; color: white; } .btn-primary:hover { background: #1d4ed8; }
+        
+        /* Özel Etiketler */
+        .badge-bilanco { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 800; letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(16, 185, 129, 0.1); display: inline-block; min-width: 70px; text-align: center; }
+        .badge-isletme { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4); padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; display: inline-block; min-width: 70px; text-align: center; }
+    </style>
 </head>
 <body>
-<div id="root"></div>
+    <div id="root"></div>
 
-<script type="text/babel">
-const { useState, useEffect, useMemo } = React;
+    <script type="text/babel">
+        const { useState, useEffect, useMemo } = React;
 
-// --- SABİTLER ve VERİLER ---
-const SISTEM_SIFRESI = "1453";
-const API_CONFIG = {
-    id: "7105435782",
-    token: "9909ba226135436cb48ba61229ea6c7976122daff9b249b89c",
-    baseUrl: "https://api.green-api.com"
-};
+        // --- GÜVENLİK ---
+        const SISTEM_SIFRESI = "1453"; 
 
-const INITIAL_PERSONEL = [
-    { id: 1, ad: "ÖZLEM", unvan: "S.M.M.M", maas: 35000 },
-    { id: 2, ad: "TUĞÇE TETİK", unvan: "S.M.M.M", maas: 35000 },
-    { id: 3, ad: "ÖMER", unvan: "Kıdemli Uzman", maas: 30000 },
-    { id: 4, ad: "ASLI", unvan: "Uzman", maas: 28000 },
-    { id: 5, ad: "TUĞÇE KUTLU", unvan: "Uzman Yrd.", maas: 25000 },
-    { id: 6, ad: "EREN", unvan: "Personel", maas: 25000 },
-    { id: 7, ad: "HALİL AKÇA", unvan: "Yönetici", maas: 0 }
-];
+        // --- API ---
+        const API_CONFIG = {
+            id: "7105435782",
+            token: "9909ba226135436cb48ba61229ea6c7976122daff9b249b89c",
+            baseUrl: "https://api.green-api.com"
+        };
 
-// Listeyi kısaltarak ekliyorum, sistem çalıştığında localstorage'dan tam listeyi çekecek
-const DEMO_MUKELLEF = [
-    {"id": 1, "unvan": "18 Mart Özel Güvenlik Ltd. Şti.", "tel": "05419353101", "defter": "BILANÇO", "temsilci": "ÖZLEM", "aylikUcret": 14500},
-    {"id": 29, "unvan": "Bigfoot Kafeterya Ltd Şti", "tel": "05369311982", "defter": "BILANÇO", "temsilci": "TUĞÇE TETİK", "aylikUcret": 12500},
-    {"id": 118, "unvan": "Metal Güven Demir Çelik San.", "tel": "05393238219", "defter": "BILANÇO", "temsilci": "ÖZLEM", "aylikUcret": 50000}
-];
+        // --- PERSONEL ---
+        const INITIAL_PERSONEL = [
+            { id: 1, ad: "ÖZLEM", unvan: "S.M.M.M", giris: "2018-01-01", maas: 35000, sgk: 6000, yemek: 5000, vergi: 2000, diger: 0 },
+            { id: 2, ad: "TUĞÇE TETİK", unvan: "S.M.M.M", giris: "2019-05-15", maas: 35000, sgk: 6000, yemek: 5000, vergi: 2000, diger: 0 },
+            { id: 3, ad: "ÖMER", unvan: "Kıdemli Uzman", giris: "2020-03-10", maas: 30000, sgk: 5500, yemek: 5000, vergi: 1500, diger: 0 },
+            { id: 4, ad: "ASLI", unvan: "Uzman", giris: "2021-08-01", maas: 28000, sgk: 5000, yemek: 5000, vergi: 1200, diger: 0 },
+            { id: 5, ad: "TUĞÇE KUTLU", unvan: "Uzman Yrd.", giris: "2022-09-01", maas: 25000, sgk: 4500, yemek: 5000, vergi: 1000, diger: 0 },
+            { id: 6, ad: "EREN", unvan: "Personel", giris: "2024-01-01", maas: 25000, sgk: 4000, yemek: 4000, vergi: 1000, diger: 0 },
+            { id: 7, ad: "HALİL AKÇA", unvan: "Yönetici", giris: "2010-01-01", maas: 0, sgk: 0, yemek: 0, vergi: 0, diger: 0 }
+        ];
 
-// --- ANA UYGULAMA ---
-function App() {
-    const [page, setPage] = useState('login');
-    const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
+        // --- 230 MÜKELLEF LİSTESİ (Sıkıştırılmış Format) ---
+        const FULL_DATA = [
+            {"id":1,"unvan":"18 Mart Özel Güvenlik Ve Eğitim Hiz. Tic. Ltd. Şti.","tel":"05419353101","tel2":"05362629620","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":14500,"durum":"Aktif"},
+            {"id":2,"unvan":"1915 Çanakkale Transport Nakliyat","tel":"05448602914","tel2":"05444953993","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":0,"durum":"Aktif"},
+            {"id":3,"unvan":"Abdulkadir Ceylan","tel":"05394831765","defter":"İŞLETME","temsilci":"ÖMER","aylikUcret":3300,"durum":"Aktif"},
+            {"id":4,"unvan":"Ali Baki USTA","tel":"05334164524","defter":"ÖZEL BİNA İNŞAATI","temsilci":"ASLI","aylikUcret":4000,"durum":"Aktif"},
+            {"id":5,"unvan":"Ahmet Çelik","tel":"05366407632","defter":"BASİT USUL","temsilci":"ASLI","aylikUcret":3300,"durum":"Aktif"},
+            {"id":6,"unvan":"Ahmet Eker","tel":"05455433041","defter":"GÖNDER","temsilci":"ÖMER","aylikUcret":3000,"durum":"Aktif"},
+            {"id":7,"unvan":"Ahmet Öner","tel":"05535041774","defter":"BILANÇO","temsilci":"ÖMER","aylikUcret":6000,"durum":"Aktif"},
+            {"id":8,"unvan":"Ainos Şarapçılık Turz. San. Ve Tic. A. Ş.","tel":"05327309221","defter":"BILANÇO","temsilci":"TUĞÇE KUTLU","aylikUcret":10000,"durum":"Aktif"},
+            {"id":9,"unvan":"Altıüstü Organizasyon Moda Tasarım Tic Ltd Şti","tel":"05464788173","defter":"BILANÇO","temsilci":"ASLI","aylikUcret":4500,"durum":"Aktif"},
+            {"id":10,"unvan":"Angeliki Muhali","tel":"05312178249","defter":"BILANÇO","temsilci":"ÖMER","aylikUcret":17500,"durum":"Aktif"},
+            {"id":11,"unvan":"Ar Oto-Ali Tırnak Ve Rahim Meriç","tel":"05423519457","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":6000,"durum":"Aktif"},
+            {"id":12,"unvan":"Areti Sozo Kostalas","tel":"05302502737","defter":"İŞLETME","temsilci":"EREN","aylikUcret":3000,"durum":"Aktif"},
+            {"id":13,"unvan":"Areto Turizm Otelcilik","tel":"05302502737","defter":"BILANÇO","temsilci":"EREN","aylikUcret":13000,"durum":"Aktif"},
+            {"id":14,"unvan":"Arslan Gıda Pazarlama","tel":"05334916801","defter":"BILANÇO","temsilci":"TUĞÇE KUTLU","aylikUcret":40000,"durum":"Aktif"},
+            {"id":15,"unvan":"Arzu Güleğlen","tel":"05324579556","defter":"NAN","temsilci":"EREN","aylikUcret":7000,"durum":"Aktif"},
+            {"id":16,"unvan":"As-Il Tekstil İnşaat","tel":"05322303033","defter":"BILANÇO","temsilci":"EREN","aylikUcret":16000,"durum":"Aktif"},
+            {"id":17,"unvan":"Aslı Gizem Garip","tel":"05557629762","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":2000,"durum":"Aktif"},
+            {"id":18,"unvan":"Asmas Organik Tarım","tel":"05322823110","defter":"BILANÇO","temsilci":"ASLI","aylikUcret":10000,"durum":"Aktif"},
+            {"id":19,"unvan":"Ayhan Çınar","tel":"05435400288","defter":"İŞLETME","temsilci":"ÖMER","aylikUcret":3300,"durum":"Aktif"},
+            {"id":20,"unvan":"Ayhan Mengüş","tel":"05322830950","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":20000,"durum":"Aktif"},
+            {"id":21,"unvan":"Aynur Kutlu","tel":"05058747718","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":3000,"durum":"Aktif"},
+            {"id":22,"unvan":"Aysel Güven","tel":"05432082576","defter":"İŞLETME","temsilci":"ÖZLEM","aylikUcret":3000,"durum":"Aktif"},
+            {"id":23,"unvan":"Aytaç Yılmaz","tel":"05445385691","defter":"İŞLETME","temsilci":"TUĞÇE TETİK","aylikUcret":3000,"durum":"Aktif"},
+            {"id":24,"unvan":"Aytuğ Şah Gıda Pazl.","tel":"05373725795","defter":"BILANÇO","temsilci":"EREN","aylikUcret":10000,"durum":"Aktif"},
+            {"id":25,"unvan":"Barış Koç","tel":"05330276543","defter":"KAPATCAZ","temsilci":"ASLI","aylikUcret":3300,"durum":"Aktif"},
+            {"id":26,"unvan":"Bbk Tarım Anonim Şirketi","tel":"05322771137","defter":"BILANÇO","temsilci":"TUĞÇE KUTLU","aylikUcret":17000,"durum":"Aktif"},
+            {"id":27,"unvan":"Bernis Harita Mimarlık","tel":"05324509908","defter":"BILANÇO","temsilci":"ASLI","aylikUcret":10000,"durum":"Aktif"},
+            {"id":28,"unvan":"Biga Demir Enerji","tel":"05380100777","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":20000,"durum":"Aktif"},
+            {"id":29,"unvan":"Bigfoot Kafeterya Ltd Şti","tel":"05369311982","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":12500,"durum":"Aktif"},
+            {"id":30,"unvan":"Birsen Ergün","tel":"05322919323","defter":"BILANÇO","temsilci":"EREN","aylikUcret":7000,"durum":"Aktif"},
+            {"id":31,"unvan":"Boğaz Cy Planlama","tel":"05466934871","defter":"BILANÇO","temsilci":"EREN","aylikUcret":10000,"durum":"Aktif"},
+            {"id":32,"unvan":"Borcars Gayrimenkul Otomotiv","tel":"05300609127","defter":"BILANÇO","temsilci":"EREN","aylikUcret":12500,"durum":"Aktif"},
+            {"id":33,"unvan":"Byz Dağcılık Enerji","tel":"05380100777","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":10000,"durum":"Aktif"},
+            {"id":34,"unvan":"Ç. Kale Ser-Tur Peyzaözel","tel":"05309736121","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":15000,"durum":"Aktif"},
+            {"id":35,"unvan":"Çanakkale Akıncı Özel Güvenlik","tel":"05056682793","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":10000,"durum":"Aktif"},
+            {"id":36,"unvan":"Çanakkale Dlybnb Medya","tel":"05370276205","defter":"BILANÇO","temsilci":"ASLI","aylikUcret":5000,"durum":"Aktif"},
+            {"id":37,"unvan":"Çanakkale Yıldız Dental Park","tel":"05077391498","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":14000,"durum":"Aktif"},
+            {"id":38,"unvan":"Canan Yüksek","tel":"05438708232","defter":"İŞLETME","temsilci":"EREN","aylikUcret":2500,"durum":"Aktif"},
+            {"id":39,"unvan":"Cemil Basri Hınıslıoğlu","tel":"05367006120","defter":"İŞLETME","temsilci":"ÖZLEM","aylikUcret":3000,"durum":"Aktif"},
+            {"id":40,"unvan":"Cemil Yılmaz","tel":"05526167064","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":2500,"durum":"Aktif"},
+            {"id":41,"unvan":"Cenk Kuru","tel":"05325710438","defter":"BILANÇO","temsilci":"ASLI","aylikUcret":8000,"durum":"Aktif"},
+            {"id":42,"unvan":"Çiçek Canöz","tel":"05412134564","defter":"KAPATYCAZ","temsilci":"EREN","aylikUcret":3300,"durum":"Aktif"},
+            {"id":43,"unvan":"Cihan Çetinkaya","tel":"05423148939","defter":"İŞLETME","temsilci":"ÖMER","aylikUcret":3000,"durum":"Aktif"},
+            {"id":44,"unvan":"Dabakoğlu Gıda İnşaat","tel":"05375943696","defter":"BILANÇO","temsilci":"ASLI","aylikUcret":10000,"durum":"Aktif"},
+            {"id":45,"unvan":"Damla Ümmü Yetkin","tel":"05079589926","defter":"İŞLETME","temsilci":"EREN","aylikUcret":2500,"durum":"Aktif"},
+            {"id":46,"unvan":"Dardanel Troya Özel Güvenlik","tel":"05438155198","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":0,"durum":"Aktif"},
+            {"id":47,"unvan":"Dardanel Vip Özel Güv.","tel":"05438155198","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":0,"durum":"Aktif"},
+            {"id":48,"unvan":"Dedeoğlu Motorlu Araçlar","tel":"05322922457","defter":"BILANÇO","temsilci":"ASLI","aylikUcret":12500,"durum":"Aktif"},
+            {"id":49,"unvan":"Demiralp Üretim Gayrimenkul","tel":"05337400537","defter":"BILANÇO","temsilci":"ASLI","aylikUcret":9000,"durum":"Aktif"},
+            {"id":50,"unvan":"Doğa Dabakoğlu","tel":"05425462429","defter":"İŞLETME","temsilci":"EREN","aylikUcret":3000,"durum":"Aktif"},
+            {"id":51,"unvan":"Ebru Meraklı","tel":"05436140121","defter":"BILANÇO","temsilci":"ÖMER","aylikUcret":8000,"durum":"Aktif"},
+            {"id":52,"unvan":"Elçin Aydın","tel":"05512585443","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":9000,"durum":"Aktif"},
+            {"id":53,"unvan":"Elif Karagöz","tel":"05533179815","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":3000,"durum":"Aktif"},
+            {"id":54,"unvan":"Elixir Sağlık Turizm","tel":"05445304051","defter":"BILANÇO","temsilci":"ÖMER","aylikUcret":0,"durum":"Aktif"},
+            {"id":55,"unvan":"Emir Can Temizlik Hiz.","tel":"05324190450","defter":"BILANÇO","temsilci":"ASLI","aylikUcret":12000,"durum":"Aktif"},
+            {"id":56,"unvan":"Eniz Akarsu","tel":"05309250617","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":3300,"durum":"Aktif"},
+            {"id":57,"unvan":"Ersin Yılmazer","tel":"05322184110","defter":"BILANÇO","temsilci":"ASLI","aylikUcret":8333,"durum":"Aktif"},
+            {"id":58,"unvan":"Ertan Özgür","tel":"05327309221","defter":"BILANÇO","temsilci":"TUĞÇE KUTLU","aylikUcret":8000,"durum":"Aktif"},
+            {"id":59,"unvan":"Eskaş A. Ş","tel":"05384421103","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":13000,"durum":"Aktif"},
+            {"id":60,"unvan":"Esra Alıcı","tel":"05335117230","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":0,"durum":"Aktif"},
+            {"id":61,"unvan":"Etis Ekolojik Tarım","tel":"05322823110","defter":"BILANÇO","temsilci":"TUĞÇE KUTLU","aylikUcret":13500,"durum":"Aktif"},
+            {"id":62,"unvan":"Fahretin Gülperen","tel":"05365836747","defter":"İŞLETME","temsilci":"ÖMER","aylikUcret":3000,"durum":"Aktif"},
+            {"id":63,"unvan":"Fahrettin Umay","tel":"05553225693","defter":"İŞLETME","temsilci":"ÖMER","aylikUcret":3000,"durum":"Aktif"},
+            {"id":64,"unvan":"Fatih Abat","tel":"05065376544","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":3000,"durum":"Aktif"},
+            {"id":65,"unvan":"Feder Kuyumculuk İnşaat","tel":"05324628232","defter":"BILANÇO","temsilci":"ASLI","aylikUcret":9000,"durum":"Aktif"},
+            {"id":66,"unvan":"Ferman Ötü","tel":"05079978219","defter":"BILANÇO","temsilci":"EREN","aylikUcret":0,"durum":"Aktif"},
+            {"id":67,"unvan":"Fuzy Gıda İşletmeciliği","tel":"05336073894","defter":"BILANÇO","temsilci":"EREN","aylikUcret":13500,"durum":"Aktif"},
+            {"id":68,"unvan":"Gencay Turan","tel":"05445066988","defter":"İŞLETME","temsilci":"EREN","aylikUcret":3000,"durum":"Aktif"},
+            {"id":69,"unvan":"Gizem Yıllar Adalı","tel":"05388414384","defter":"GİDECEK","temsilci":"TUĞÇE TETİK","aylikUcret":10000,"durum":"Aktif"},
+            {"id":70,"unvan":"Gökçe Demiralp","tel":"05337400537","defter":"İŞLETME","temsilci":"TUĞÇE TETİK","aylikUcret":3000,"durum":"Aktif"},
+            {"id":71,"unvan":"Gökmen Doğan","tel":"05359518599","defter":"İŞLETME","temsilci":"ÖMER","aylikUcret":3000,"durum":"Aktif"},
+            {"id":72,"unvan":"Güçlüler Teks. Orm. Ür.","tel":"05323715419","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":0,"durum":"Aktif"},
+            {"id":73,"unvan":"Gülce Kılıçlar","tel":"05342914807","defter":"KAPANACAK","temsilci":"ÖMER","aylikUcret":3000,"durum":"Aktif"},
+            {"id":74,"unvan":"Gülfer Erdem","tel":"05456769387","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":3000,"durum":"Aktif"},
+            {"id":75,"unvan":"Güngör Altundal","tel":"05367011749","defter":"BILANÇO","temsilci":"ÖMER","aylikUcret":7000,"durum":"Aktif"},
+            {"id":76,"unvan":"Gürkan Karalı","tel":"05453302629","defter":"İŞLETME","temsilci":"TUĞÇE TETİK","aylikUcret":2500,"durum":"Aktif"},
+            {"id":77,"unvan":"Gürsoy Petrol İnş.","tel":"05322433164","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":20000,"durum":"Aktif"},
+            {"id":78,"unvan":"Halil İbrahim Bozkurt","tel":"05438065243","defter":"BILANÇO","temsilci":"ASLI","aylikUcret":8000,"durum":"Aktif"},
+            {"id":79,"unvan":"Halil Kılınç","tel":"05365613944","defter":"BASİT OLACAK","temsilci":"ASLI","aylikUcret":3000,"durum":"Aktif"},
+            {"id":80,"unvan":"Haluk Balcı","tel":"05542987485","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":3000,"durum":"Aktif"},
+            {"id":81,"unvan":"Hamiyet Arabacı","tel":"05444573826","defter":"İŞLETME","temsilci":"TUĞÇE TETİK","aylikUcret":2500,"durum":"Aktif"},
+            {"id":82,"unvan":"Hasan Küçük","tel":"05416438747","defter":"BILANÇO","temsilci":"ASLI","aylikUcret":3000,"durum":"Aktif"},
+            {"id":83,"unvan":"Hasan Pınarcıoğlu","tel":"05380572236","defter":"İŞLETME","temsilci":"ÖMER","aylikUcret":3300,"durum":"Aktif"},
+            {"id":84,"unvan":"Hasan Şahin","tel":"05011343096","defter":"İŞLETME","temsilci":"ÖMER","aylikUcret":5000,"durum":"Aktif"},
+            {"id":85,"unvan":"Hilmi Kırtık","tel":"05393238219","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":0,"durum":"Aktif"},
+            {"id":86,"unvan":"Hira Med İnşaat","tel":"05327223790","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":12500,"durum":"Aktif"},
+            {"id":87,"unvan":"İbrahim Demir","tel":"05428937491","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":6500,"durum":"Aktif"},
+            {"id":88,"unvan":"İbrahim Koçoğlu İnşaat","tel":"05321654793","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":10000,"durum":"Aktif"},
+            {"id":89,"unvan":"İhsan Atay","tel":"05353388926","defter":"İŞLETME","temsilci":"TUĞÇE TETİK","aylikUcret":3000,"durum":"Aktif"},
+            {"id":90,"unvan":"İkizler Gurup Mad.","tel":"05457979745","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":0,"durum":"Aktif"},
+            {"id":91,"unvan":"İlker Taş","tel":"05079344436","defter":"BILANÇO","temsilci":"EREN","aylikUcret":0,"durum":"Aktif"},
+            {"id":92,"unvan":"İrem Atar","tel":"05532243048","defter":"İŞLETME","temsilci":"ÖMER","aylikUcret":3000,"durum":"Aktif"},
+            {"id":93,"unvan":"İsmail Kaya","tel":"05443513081","defter":"İŞLETME","temsilci":"TUĞÇE TETİK","aylikUcret":2000,"durum":"Aktif"},
+            {"id":94,"unvan":"Kalpak Tarım A.Ş.","tel":"05322771137","defter":"BILANÇO","temsilci":"TUĞÇE KUTLU","aylikUcret":21000,"durum":"Aktif"},
+            {"id":95,"unvan":"Kemal Ateş","tel":"05418742178","defter":"BILANÇO","temsilci":"EREN","aylikUcret":10000,"durum":"Aktif"},
+            {"id":96,"unvan":"Keten Grup Mağazacılık","tel":"05322303033","defter":"BILANÇO","temsilci":"TUĞÇE KUTLU","aylikUcret":0,"durum":"Aktif"},
+            {"id":97,"unvan":"Kocasoy İnşaat","tel":"05327792604","defter":"BILANÇO","temsilci":"ASLI","aylikUcret":0,"durum":"Aktif"},
+            {"id":98,"unvan":"Kocasoylar Grup","tel":"05327792604","defter":"BILANÇO","temsilci":"ASLI","aylikUcret":0,"durum":"Aktif"},
+            {"id":99,"unvan":"Koçoğlu Yapı Elemanları","tel":"05321654793","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":12000,"durum":"Aktif"},
+            {"id":100,"unvan":"Koçoğulları Eğitim Sağlık","tel":"05384421103","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":10000,"durum":"Aktif"},
+            {"id":101,"unvan":"Koçyiğit Restoran","tel":"05334246561","defter":"BILANÇO","temsilci":"ASLI","aylikUcret":10000,"durum":"Aktif"},
+            {"id":102,"unvan":"Koruköy Konaklama","tel":"05323224404","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":0,"durum":"Aktif"},
+            {"id":103,"unvan":"Kubilay Yıldız","tel":"05522909320","defter":"GÖNDER","temsilci":"ASLI","aylikUcret":3000,"durum":"Aktif"},
+            {"id":104,"unvan":"Kübra Kılınç","tel":"05320649112","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":8000,"durum":"Aktif"},
+            {"id":105,"unvan":"Kuvvet Özel Tarım","tel":"05462771840","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":0,"durum":"Aktif"},
+            {"id":106,"unvan":"Kuzeybatı Turizm","tel":"05334164524","defter":"BILANÇO","temsilci":"ÖMER","aylikUcret":10000,"durum":"Aktif"},
+            {"id":107,"unvan":"Lasersan Lazer","tel":"05464506703","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":10000,"durum":"Aktif"},
+            {"id":108,"unvan":"Livestetic Güzellik","tel":"05464506703","defter":"BILANÇO","temsilci":"EREN","aylikUcret":12500,"durum":"Aktif"},
+            {"id":109,"unvan":"M Sıddık Yeler","tel":"05336434296","defter":"GÖNDER","temsilci":"ÖMER","aylikUcret":0,"durum":"Aktif"},
+            {"id":110,"unvan":"Mayadağ İçecek","tel":"05334916801","defter":"BILANÇO","temsilci":"TUĞÇE KUTLU","aylikUcret":0,"durum":"Aktif"},
+            {"id":111,"unvan":"Mehmet Berkay Polat","tel":"05422709017","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":4000,"durum":"Aktif"},
+            {"id":112,"unvan":"Mehmet Dilber","tel":"05529270241","defter":"BILANÇO","temsilci":"EREN","aylikUcret":3300,"durum":"Aktif"},
+            {"id":113,"unvan":"Mehmet Emin Altunbaş","tel":"05322277756","defter":"BILANÇO","temsilci":"TUĞÇE KUTLU","aylikUcret":10000,"durum":"Aktif"},
+            {"id":114,"unvan":"Mehmet Engin","tel":"05382585354","defter":"BILANÇO","temsilci":"ASLI","aylikUcret":10000,"durum":"Aktif"},
+            {"id":115,"unvan":"Mehmet Şahin","tel":"05373725795","defter":"İŞLETME","temsilci":"EREN","aylikUcret":2750,"durum":"Aktif"},
+            {"id":116,"unvan":"Melih Can Uzun","tel":"05344114555","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":3000,"durum":"Aktif"},
+            {"id":117,"unvan":"Merve Akgül","tel":"05437131866","defter":"İŞLETME","temsilci":"ÖMER","aylikUcret":3000,"durum":"Aktif"},
+            {"id":118,"unvan":"Metal Güven Demir","tel":"05393238219","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":50000,"durum":"Aktif"},
+            {"id":119,"unvan":"Mete Şahin","tel":"05439293843","defter":"BILANÇO","temsilci":"ASLI","aylikUcret":2750,"durum":"Aktif"},
+            {"id":120,"unvan":"Metin Ünal","tel":"05427262284","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":15000,"durum":"Aktif"},
+            {"id":121,"unvan":"Metin Ünal Taşımacılık","tel":"05427262284","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":0,"durum":"Aktif"},
+            {"id":122,"unvan":"Mevlüt Baran","tel":"05427802074","defter":"İŞLETME","temsilci":"EREN","aylikUcret":2750,"durum":"Aktif"},
+            {"id":123,"unvan":"Mine Tuban","tel":"05539775599","defter":"İŞLETME","temsilci":"ÖZLEM","aylikUcret":2500,"durum":"Aktif"},
+            {"id":124,"unvan":"Mısra Pancaroğlu","tel":"05073854112","defter":"İŞLETME","temsilci":"TUĞÇE TETİK","aylikUcret":3000,"durum":"Aktif"},
+            {"id":125,"unvan":"Muhammed Emre Coşkun","tel":"05413420800","defter":"GİTTİ","temsilci":"EREN","aylikUcret":0,"durum":"Aktif"},
+            {"id":126,"unvan":"Muhammed Enes Yiğit","tel":"05442207404","defter":"GÖNDER","temsilci":"ÖMER","aylikUcret":3300,"durum":"Aktif"},
+            {"id":127,"unvan":"Muhammet Yasin Atik","tel":"05308791754","defter":"İŞLETME","temsilci":"ÖMER","aylikUcret":3000,"durum":"Aktif"},
+            {"id":128,"unvan":"Muharrem Altıntaş","tel":"05326330934","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":3000,"durum":"Aktif"},
+            {"id":129,"unvan":"Murat Akburak","tel":"05417630752","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":3000,"durum":"Aktif"},
+            {"id":130,"unvan":"Murat Eryılmaz","tel":"05469266674","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":3000,"durum":"Aktif"},
+            {"id":131,"unvan":"Mustafa Koca","tel":"05459002090","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":3000,"durum":"Aktif"},
+            {"id":132,"unvan":"Nil Estetik","tel":"05076263290","defter":"BILANÇO","temsilci":"TUĞÇE KUTLU","aylikUcret":7000,"durum":"Aktif"},
+            {"id":133,"unvan":"Ninka Bira Ve Malt","tel":"05363511697","defter":"BILANÇO","temsilci":"TUĞÇE KUTLU","aylikUcret":12000,"durum":"Aktif"},
+            {"id":134,"unvan":"Nisanur Kayar","tel":"05527285430","defter":"İŞLETME","temsilci":"TUĞÇE TETİK","aylikUcret":3300,"durum":"Aktif"},
+            {"id":135,"unvan":"Nympha Organik","tel":"05322650341","defter":"BILANÇO","temsilci":"TUĞÇE KUTLU","aylikUcret":10000,"durum":"Aktif"},
+            {"id":136,"unvan":"Obuz Gıda","tel":"05336073894","defter":"BILANÇO","temsilci":"ÖMER","aylikUcret":15000,"durum":"Aktif"},
+            {"id":137,"unvan":"Özak Zeytincilik","tel":"05325271220","defter":"BILANÇO","temsilci":"TUĞÇE KUTLU","aylikUcret":10000,"durum":"Aktif"},
+            {"id":138,"unvan":"Özel Anafartalar Sür. Kursu","tel":"05055427793","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":8000,"durum":"Aktif"},
+            {"id":139,"unvan":"Özel Çanakkale Deha","tel":"05380100777","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":10000,"durum":"Aktif"},
+            {"id":140,"unvan":"Özlem Serdaroğlu","tel":"05422909951","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":3300,"durum":"Aktif"},
+            {"id":141,"unvan":"Parion Turizm","tel":"05448602914","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":12500,"durum":"Aktif"},
+            {"id":142,"unvan":"Pastayap Gıda","tel":"05426360075","defter":"BILANÇO","temsilci":"ÖMER","aylikUcret":8500,"durum":"Aktif"},
+            {"id":143,"unvan":"Peldan İnşaat","tel":"05456037502","defter":"BILANÇO","temsilci":"ASLI","aylikUcret":6000,"durum":"Aktif"},
+            {"id":144,"unvan":"Pelin Gözütok Utgu","tel":"05442912840","defter":"İŞLETME","temsilci":"TUĞÇE TETİK","aylikUcret":3000,"durum":"Aktif"},
+            {"id":145,"unvan":"Plas İnşaat","tel":"05324986620","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":6000,"durum":"Aktif"},
+            {"id":146,"unvan":"Polar Spa İnşaat","tel":"05327494464","defter":"BILANÇO","temsilci":"TUĞÇE KUTLU","aylikUcret":8000,"durum":"Aktif"},
+            {"id":147,"unvan":"Pozitif 20 Özel Güvenlik","tel":"05438155198","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":8000,"durum":"Aktif"},
+            {"id":148,"unvan":"Proaktif Yedek Parça","tel":"05466752936","defter":"BILANÇO","temsilci":"ÖMER","aylikUcret":7000,"durum":"Aktif"},
+            {"id":149,"unvan":"Raf17 Reklam","tel":"05380100777","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":5000,"durum":"Aktif"},
+            {"id":150,"unvan":"Rahime Gök","tel":"05363300059","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":3000,"durum":"Aktif"},
+            {"id":151,"unvan":"Rıfkı Yasaç","tel":"05442881322","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":3000,"durum":"Aktif"},
+            {"id":152,"unvan":"Şahika Organik Ürünler","tel":"05326330934","defter":"BILANÇO","temsilci":"TUĞÇE KUTLU","aylikUcret":7000,"durum":"Aktif"},
+            {"id":153,"unvan":"Şans Dondurmaları","tel":"05335496969","defter":"BILANÇO","temsilci":"ÖMER","aylikUcret":12000,"durum":"Aktif"},
+            {"id":154,"unvan":"Şarköy Arslan Dayanıklı Tüketim","tel":"05334916801","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":8000,"durum":"Aktif"},
+            {"id":155,"unvan":"Şarköy Mila Çiftliği","tel":"05316411907","defter":"BILANÇO","temsilci":"TUĞÇE KUTLU","aylikUcret":10000,"durum":"Aktif"},
+            {"id":156,"unvan":"Seler Alkollü İçecekler","tel":"05308509359","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":12000,"durum":"Aktif"},
+            {"id":157,"unvan":"Serkan Gönültaş","tel":"05327098853","defter":"BILANÇO","temsilci":"ÖMER","aylikUcret":6000,"durum":"Aktif"},
+            {"id":158,"unvan":"Serkan Gönültaş Otomotiv","tel":"05327098853","defter":"BILANÇO","temsilci":"ÖMER","aylikUcret":8000,"durum":"Aktif"},
+            {"id":159,"unvan":"Serkan Gültekin","tel":"05453973280","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":3300,"durum":"Aktif"},
+            {"id":160,"unvan":"Sezida Gıda","tel":"05437106315","defter":"BILANÇO","temsilci":"TUĞÇE KUTLU","aylikUcret":7000,"durum":"Aktif"},
+            {"id":161,"unvan":"Sibel Demir","tel":"05013616337","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":3300,"durum":"Aktif"},
+            {"id":162,"unvan":"Simay Betül Yıldız","tel":"05537050834","defter":"İŞLETME","temsilci":"TUĞÇE TETİK","aylikUcret":3000,"durum":"Aktif"},
+            {"id":163,"unvan":"Sinem Arabacıbaşı 2025","tel":"05336600899","defter":"İŞLETME","temsilci":"TUĞÇE TETİK","aylikUcret":3300,"durum":"Aktif"},
+            {"id":164,"unvan":"Su-Ser Bulut Un San.","tel":"05438730058","defter":"BILANÇO","temsilci":"TUĞÇE KUTLU","aylikUcret":10000,"durum":"Aktif"},
+            {"id":165,"unvan":"Suat Berber","tel":"05426360075","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":3300,"durum":"Aktif"},
+            {"id":166,"unvan":"Tan Özel Sağlık","tel":"05323224404","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":10000,"durum":"Aktif"},
+            {"id":167,"unvan":"Tanem İnşaat","tel":"05321654793","defter":"BILANÇO","temsilci":"ASLI","aylikUcret":6000,"durum":"Aktif"},
+            {"id":168,"unvan":"Tasarım Mutfak","tel":"05336565797","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":3300,"durum":"Aktif"},
+            {"id":169,"unvan":"Taşçıoğulları Otomotiv","tel":"054474342917","defter":"BILANÇO","temsilci":"ÖMER","aylikUcret":8000,"durum":"Aktif"},
+            {"id":170,"unvan":"Tenedos Kozmetik","tel":"05428937491","defter":"İŞLETME","temsilci":"TUĞÇE TETİK","aylikUcret":3300,"durum":"Aktif"},
+            {"id":171,"unvan":"Tenedos Trz. Tşm.","tel":"05444953993","defter":"BILANÇO","temsilci":"ÖMER","aylikUcret":7000,"durum":"Aktif"},
+            {"id":172,"unvan":"Tevfik Güreşçi","tel":"05339260917","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":3300,"durum":"Aktif"},
+            {"id":173,"unvan":"The Piden Restoran","tel":"05422352722","defter":"BILANÇO","temsilci":"TUĞÇE KUTLU","aylikUcret":8000,"durum":"Aktif"},
+            {"id":174,"unvan":"Tm Elektronik","tel":"05321654793","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":10000,"durum":"Aktif"},
+            {"id":175,"unvan":"Troya Pasta Ekipmanları","tel":"05522181915","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":7000,"durum":"Aktif"},
+            {"id":176,"unvan":"Tuncay Sarı Mühendislik","tel":"05423463939","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":10000,"durum":"Aktif"},
+            {"id":177,"unvan":"Ufema Yapı İnşaat","tel":"05316411907","defter":"BILANÇO","temsilci":"ASLI","aylikUcret":6000,"durum":"Aktif"},
+            {"id":178,"unvan":"Vipro Oto Kiralama","tel":"05438155198","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":6000,"durum":"Aktif"},
+            {"id":179,"unvan":"Wens Dış Ticaret","tel":"05327494464","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":7000,"durum":"Aktif"},
+            {"id":180,"unvan":"Yasin Saraç","tel":"05339116106","defter":"İŞLETME","temsilci":"TUĞÇE TETİK","aylikUcret":3000,"durum":"Aktif"},
+            {"id":181,"unvan":"Yener Yalım","tel":"05325120132","defter":"BILANÇO","temsilci":"TUĞÇE TETİK","aylikUcret":8500,"durum":"Aktif"},
+            {"id":182,"unvan":"Yenir Çanakkale Paz","tel":"05321654793","defter":"BILANÇO","temsilci":"TUĞÇE KUTLU","aylikUcret":8000,"durum":"Aktif"},
+            {"id":183,"unvan":"Yerel Emlak Sos.","tel":"05066000909","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":3300,"durum":"Aktif"},
+            {"id":184,"unvan":"Yıldıray Aydın Gayrimenkul","tel":"05438707034","defter":"BILANÇO","temsilci":"ÖMER","aylikUcret":6000,"durum":"Aktif"},
+            {"id":185,"unvan":"Yıldıray Ölçek","tel":"05524211191","defter":"SERBEST MESLEK","temsilci":"ASLI","aylikUcret":4000,"durum":"Aktif"},
+            {"id":186,"unvan":"Yorgi Vulgarel Varisleri","tel":"05302092875","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":8000,"durum":"Aktif"},
+            {"id":187,"unvan":"Yücel Yurdaer","tel":"05339249774","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":3300,"durum":"Aktif"},
+            {"id":188,"unvan":"Zafer Güner","tel":"05426728811","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":3300,"durum":"Aktif"},
+            {"id":189,"unvan":"Zarif Biçer","tel":"05070831903","defter":"İŞLETME","temsilci":"TUĞÇE TETİK","aylikUcret":3300,"durum":"Aktif"},
+            {"id":190,"unvan":"Zerrin Oruzbeyi","tel":"05322924076","defter":"İŞLETME","temsilci":"TUĞÇE TETİK","aylikUcret":3000,"durum":"Aktif"},
+            {"id":191,"unvan":"Ali Baki Usta","tel":"05334164524","defter":"ÖZEL BİNA İNŞAATI","temsilci":"ASLI","aylikUcret":4000,"durum":"Aktif"},
+            {"id":192,"unvan":"Ali Korukçu","tel":"05414330897","defter":"PASİF","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":193,"unvan":"Ali Tırnak","tel":"05423519457","defter":"GİDECEK","temsilci":"EREN","aylikUcret":0,"durum":"Aktif"},
+            {"id":194,"unvan":"Ay Gyo İnşaat Enerji","tel":"05323428130","defter":"GİDECEK","temsilci":"EREN","aylikUcret":0,"durum":"Aktif"},
+            {"id":195,"unvan":"Bayram Kaptı","tel":"05378110795","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":196,"unvan":"Berke Seven","tel":"05456774893","defter":"GİTTİ","temsilci":"EREN","aylikUcret":0,"durum":"Aktif"},
+            {"id":197,"unvan":"Çanakkale Onsekiz Mart Üniversitesi","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":198,"unvan":"Çanakkale Seramik","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":199,"unvan":"Çanakkale Ticaret Ve Sanayi Odası","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":200,"unvan":"Çanakkale Ziraat Odası","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":201,"unvan":"Demircioğlu","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":202,"unvan":"Denizbank","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":203,"unvan":"Doğtaş Kelebek Mobilya","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":204,"unvan":"Ercanlar","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":205,"unvan":"Gestaş","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":206,"unvan":"Halkbank","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":207,"unvan":"İçdaş","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":208,"unvan":"Kale Grubu","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":209,"unvan":"Kaleseramik","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":210,"unvan":"Kaptanlar","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":211,"unvan":"Kepez Belediyesi","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":212,"unvan":"Miller","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":213,"unvan":"Opet","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":214,"unvan":"Süleyman Demirel","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":215,"unvan":"Tatlan","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":216,"unvan":"Troya Müzesi","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":217,"unvan":"Tuğçe Güçlü","tel":"05525971517","tel2":"05312575046","defter":"BILANÇO","temsilci":"ASLI","aylikUcret":0,"durum":"Aktif"},
+            {"id":218,"unvan":"Tuncay Sarı","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":219,"unvan":"Türkiye İş Bankası","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":220,"unvan":"UEDAŞ","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":221,"unvan":"Uludağ Elektrik","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":222,"unvan":"Ünzüle Gamsız","tel":"05072041978","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":3000,"durum":"Aktif"},
+            {"id":223,"unvan":"Vakıfbank","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":224,"unvan":"Yapı Kredi","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"},
+            {"id":225,"unvan":"Yusuf Güneş","tel":"05443019663","defter":"İŞLETME","temsilci":"ASLI","aylikUcret":2500,"durum":"Aktif"},
+            {"id":226,"unvan":"Zafer Durmaz","tel":"05457380102","defter":"İŞLETME","temsilci":"TUĞÇE TETİK","aylikUcret":2000,"durum":"Aktif"},
+            {"id":227,"unvan":"Ziraat Bankası","tel":"","defter":"NAN","temsilci":"NAN","aylikUcret":0,"durum":"Aktif"}
+        ];
 
-    const handleLogin = (e) => {
-        e.preventDefault();
-        if(password === SISTEM_SIFRESI) { setPage('dashboard'); }
-        else { setError("Hatalı Şifre!"); }
-    };
+        function App() {
+            const [page, setPage] = useState('login');
+            const [password, setPassword] = useState("");
+            const [error, setError] = useState("");
 
-    return page === 'login' ? (
-        <div className="flex h-screen w-full bg-[#0f172a] items-center justify-center fade-in relative overflow-hidden">
-            <div className="absolute inset-0 bg-blue-600/5 blur-3xl rounded-full pointer-events-none"></div>
-            <div className="glass-panel p-10 rounded-3xl w-96 text-center shadow-2xl relative z-10">
-                <div className="w-20 h-20 bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-blue-600/30">
-                    <i className="fas fa-chart-line text-3xl text-white"></i>
-                </div>
-                <h2 className="text-3xl font-bold text-white mb-1 brand-font">Akça ERP</h2>
-                <p className="text-slate-400 text-sm mb-6">Yönetici Paneli v25.0</p>
-                <form onSubmit={handleLogin} className="space-y-4">
-                    <input type="password" className="input-dark text-center tracking-widest text-lg py-3" placeholder="Şifre" value={password} onChange={e=>setPassword(e.target.value)} autoFocus />
-                    {error && <p className="text-red-400 text-xs font-bold">{error}</p>}
-                    <button className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl transition shadow-lg">Giriş Yap</button>
-                </form>
-            </div>
-        </div>
-    ) : <DashboardLayout />;
-}
+            const handleLogin = (e) => {
+                e.preventDefault();
+                if(password === SISTEM_SIFRESI) { setPage('dashboard'); } 
+                else { setError("Hatalı Şifre!"); }
+            };
 
-// --- DASHBOARD LAYOUT ---
-function DashboardLayout() {
-    const [page, setPage] = useState('dashboard');
-    // Veri Yönetimi
-    const [personel, setPersonel] = useState(() => JSON.parse(localStorage.getItem('akca_v25_personel')) || INITIAL_PERSONEL);
-    const [mukellef, setMukellef] = useState(() => JSON.parse(localStorage.getItem('akca_v25_mukellef')) || DEMO_MUKELLEF);
-    const [hareketler, setHareketler] = useState(() => JSON.parse(localStorage.getItem('akca_v25_hareketler')) || []);
-    const [logs, setLogs] = useState(() => JSON.parse(localStorage.getItem('akca_v25_logs')) || []);
-
-    // Otomatik Kayıt
-    useEffect(() => {
-        localStorage.setItem('akca_v25_personel', JSON.stringify(personel));
-        localStorage.setItem('akca_v25_mukellef', JSON.stringify(mukellef));
-        localStorage.setItem('akca_v25_hareketler', JSON.stringify(hareketler));
-        localStorage.setItem('akca_v25_logs', JSON.stringify(logs));
-    }, [personel, mukellef, hareketler, logs]);
-
-    const getBakiye = (mId) => {
-        const borc = hareketler.filter(h => h.mukellefId === mId && h.tur === 'borc').reduce((a,b)=>a+b.tutar,0);
-        const alacak = hareketler.filter(h => h.mukellefId === mId && h.tur === 'alacak').reduce((a,b)=>a+b.tutar,0);
-        return borc - alacak;
-    };
-
-    // WhatsApp API
-    const sendApiMessage = async (tel, msg) => {
-        if(!tel) return { success: false, error: 'No Number' };
-        let cleanNumber = tel.replace(/\D/g, '');
-        if (cleanNumber.length === 10) cleanNumber = '90' + cleanNumber;
-        const chatId = `${cleanNumber}@c.us`;
-        try {
-            const response = await fetch(`${API_CONFIG.baseUrl}/waInstance${API_CONFIG.id}/SendMessage/${API_CONFIG.token}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ chatId, message: msg })
-            });
-            const result = await response.json();
-            if (result.idMessage) {
-                setLogs(prev => [{ id: Date.now(), to: cleanNumber, msg, time: new Date().toLocaleTimeString(), status: 'OK' }, ...prev]);
-                return { success: true };
-            }
-            return { success: false };
-        } catch (err) { return { success: false, error: err }; }
-    };
-
-    return (
-        <div className="flex h-screen w-full bg-[#0f172a] text-slate-300">
-            {/* SIDEBAR */}
-            <aside className="w-64 glass-sidebar flex flex-col z-20 shrink-0">
-                <div className="p-6 border-b border-slate-800/50">
-                    <h1 className="text-xl font-black text-white tracking-tight brand-font">AKÇA<span className="text-blue-500">ERP</span></h1>
-                    <p className="text-[10px] font-bold text-slate-500 uppercase mt-1">Mali Müşavirlik Sistemi</p>
-                </div>
-                <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-                    <MenuBtn icon="fa-chart-pie" text="Genel Bakış" active={page==='dashboard'} onClick={()=>setPage('dashboard')} />
-                    <MenuBtn icon="fa-users" text="Mükellef Listesi" active={page==='mukellef'} onClick={()=>setPage('mukellef')} badge={mukellef.length} />
-                    <MenuBtn icon="fa-money-bill-transfer" text="Finans & Kasa" active={page==='finans'} onClick={()=>setPage('finans')} />
-                    <MenuBtn icon="fa-user-tie" text="Personel" active={page==='personel'} onClick={()=>setPage('personel')} />
-                    <MenuBtn icon="fab fa-whatsapp" text="Akça Robot" active={page==='robot'} onClick={()=>setPage('robot')} />
-                    <MenuBtn icon="fa-database" text="Veri & Yedek" active={page==='yedek'} onClick={()=>setPage('yedek')} />
-                </nav>
-                <div className="p-4 bg-slate-900/50 text-center text-xs text-slate-600">
-                    &copy; 2026 Halil Akça
-                </div>
-            </aside>
-
-            {/* MAIN CONTENT */}
-            <main className="flex-1 flex flex-col bg-slate-900 relative overflow-hidden">
-                <header className="h-16 border-b border-slate-800 flex items-center justify-between px-6 bg-slate-900/90 z-10 sticky top-0 backdrop-blur-md">
-                    <h2 className="font-bold text-white text-lg brand-font tracking-wide uppercase">{page}</h2>
-                    <div className="flex items-center gap-3">
-                        <div className="text-right hidden sm:block">
-                            <p className="text-xs font-bold text-white leading-none">HALİL AKÇA</p>
-                            <p className="text-[10px] text-slate-500 uppercase mt-1">Yönetici</p>
+            return page === 'login' ? (
+                <div className="flex h-screen w-full bg-[#0f172a] items-center justify-center fade-in">
+                    <div className="glass-panel p-10 rounded-3xl border border-slate-700 w-96 text-center shadow-2xl">
+                        <div className="w-20 h-20 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-blue-600/30">
+                            <i className="fas fa-lock text-3xl text-white"></i>
                         </div>
-                        <div className="w-9 h-9 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold shadow-lg shadow-blue-600/20">HA</div>
+                        <h2 className="text-2xl font-bold text-white mb-2">Akça ERP v25.0</h2>
+                        <form onSubmit={handleLogin} className="space-y-4">
+                            <input 
+                                type="password" 
+                                className="w-full bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-xl focus:border-blue-500 focus:outline-none text-center tracking-widest text-lg" 
+                                placeholder="••••" 
+                                value={password}
+                                onChange={e=>setPassword(e.target.value)}
+                                autoFocus
+                            />
+                            {error && <p className="text-red-500 text-xs font-bold">{error}</p>}
+                            <button className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl transition shadow-lg">Giriş Yap</button>
+                        </form>
                     </div>
-                </header>
-
-                <div className="flex-1 overflow-y-auto p-6 relative">
-                    {page === 'dashboard' && <DashboardPage personel={personel} mukellef={mukellef} getBakiye={getBakiye} />}
-                    {page === 'mukellef' && <MukellefPage mukellef={mukellef} setMukellef={setMukellef} personel={personel} getBakiye={getBakiye} sendApiMessage={sendApiMessage} />}
-                    {page === 'finans' && <FinansPage mukellef={mukellef} hareketler={hareketler} setHareketler={setHareketler} />}
-                    {page === 'personel' && <PersonelPage personel={personel} setPersonel={setPersonel} mukellef={mukellef} />}
-                    {page === 'robot' && <RobotPage mukellef={mukellef} sendApiMessage={sendApiMessage} logs={logs} />}
-                    {page === 'yedek' && <YedekPage data={{personel, mukellef, hareketler, logs}} setData={(d)=>{setPersonel(d.personel);setMukellef(d.mukellef);setHareketler(d.hareketler);setLogs(d.logs)}} />}
                 </div>
-            </main>
-        </div>
-    );
-}
+            ) : <DashboardLayout />;
+        }
 
-// --- SAYFALAR ---
+        function DashboardLayout() {
+            const [page, setPage] = useState('dashboard');
+            const [personel, setPersonel] = useState(() => JSON.parse(localStorage.getItem('akca_v25_personel')) || INITIAL_PERSONEL);
+            const [mukellef, setMukellef] = useState(() => JSON.parse(localStorage.getItem('akca_v25_mukellef')) || FULL_DATA);
+            const [hareketler, setHareketler] = useState(() => JSON.parse(localStorage.getItem('akca_v25_hareketler')) || []);
+            const [logs, setLogs] = useState(() => JSON.parse(localStorage.getItem('akca_v25_logs')) || []);
 
-function DashboardPage({ personel, mukellef, getBakiye }) {
-    const toplamAlacak = useMemo(() => mukellef.reduce((a,b)=>a+getBakiye(b.id),0), [mukellef, getBakiye]);
-    const toplamCiro = useMemo(() => mukellef.reduce((a,b)=>a+ (b.aylikUcret || 0), 0), [mukellef]);
+            useEffect(() => {
+                localStorage.setItem('akca_v25_personel', JSON.stringify(personel));
+                localStorage.setItem('akca_v25_mukellef', JSON.stringify(mukellef));
+                localStorage.setItem('akca_v25_hareketler', JSON.stringify(hareketler));
+                localStorage.setItem('akca_v25_logs', JSON.stringify(logs));
+            }, [personel, mukellef, hareketler, logs]);
 
-    return (
-        <div className="space-y-6 fade-in">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <StatCard title="TOPLAM MÜKELLEF" val={mukellef.length} icon="fa-building" color="text-blue-500" />
-                <StatCard title="AYLIK TAHAKKUK" val={`${toplamCiro.toLocaleString('tr-TR')} ₺`} icon="fa-file-invoice-dollar" color="text-emerald-500" />
-                <StatCard title="PİYASA ALACAĞI" val={`${toplamAlacak.toLocaleString('tr-TR')} ₺`} icon="fa-hand-holding-dollar" color="text-red-500" />
-                <StatCard title="PERSONEL SAYISI" val={personel.length} icon="fa-users" color="text-purple-500" />
-            </div>
-            
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div className="lg:col-span-2 glass-panel p-6 rounded-2xl border-slate-700">
-                    <h3 className="text-lg font-bold text-white mb-4 brand-font">Personel İş Yükü</h3>
-                    <div className="space-y-4">
-                        {personel.filter(p=>p.maas>0).map(p => {
-                            const dosyaSayisi = mukellef.filter(m => m.temsilci === p.ad).length;
-                            const yuzde = Math.min(100, Math.round((dosyaSayisi / 40) * 100)); // 40 dosya full kapasite varsayımı
+            const getBakiye = (mId) => {
+                const borc = hareketler.filter(h => h.mukellefId === mId && h.tur === 'borc').reduce((a,b)=>a+b.tutar,0);
+                const alacak = hareketler.filter(h => h.mukellefId === mId && h.tur === 'alacak').reduce((a,b)=>a+b.tutar,0);
+                return borc - alacak;
+            };
+
+            const sendApiMessage = async (tel, msg) => {
+                if(!tel) return { success: false };
+                let cleanNumber = tel.replace(/\D/g, '');
+                if (cleanNumber.length === 10) cleanNumber = '90' + cleanNumber;
+                const chatId = `${cleanNumber}@c.us`;
+                try {
+                    const response = await fetch(`${API_CONFIG.baseUrl}/waInstance${API_CONFIG.id}/SendMessage/${API_CONFIG.token}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ chatId, message: msg })
+                    });
+                    const result = await response.json();
+                    if (result.idMessage) {
+                        setLogs(prev => [{ id: Date.now(), to: cleanNumber, msg, time: new Date().toLocaleTimeString(), status: 'API OK' }, ...prev]);
+                        return { success: true };
+                    }
+                    return { success: false };
+                } catch { return { success: false }; }
+            };
+
+            return (
+                <div className="flex h-screen w-full bg-[#0f172a] text-slate-300">
+                    <aside className="w-72 glass-sidebar flex flex-col z-20">
+                        <div className="p-8"><h1 className="text-2xl font-black text-white tracking-tight">AKÇA<span className="text-blue-500">ERP</span></h1><p className="text-[10px] font-bold text-slate-500 uppercase mt-1">v25.0 Final</p></div>
+                        <nav className="flex-1 px-4 space-y-1 overflow-y-auto custom-scrollbar">
+                            <MenuBtn icon="fa-chart-pie" text="Genel Özet" active={page==='dashboard'} onClick={()=>setPage('dashboard')} />
+                            <MenuBtn icon="fa-users" text="Mükellef Portföyü" active={page==='mukellef'} onClick={()=>setPage('mukellef')} badge={mukellef.length} />
+                            <MenuBtn icon="fa-user-tie" text="Personel & Kârlılık" active={page==='personel'} onClick={()=>setPage('personel')} />
+                            <MenuBtn icon="fa-money-bill-transfer" text="Cari & Tahakkuk" active={page==='finans'} onClick={()=>setPage('finans')} />
+                            <MenuBtn icon="fab fa-whatsapp" text="Toplu Robot" active={page==='robot'} onClick={()=>setPage('robot')} />
+                            <MenuBtn icon="fa-shield-halved" text="Veri Güvenliği" active={page==='yedek'} onClick={()=>setPage('yedek')} />
+                        </nav>
+                        <div className="p-6 border-t border-slate-800"><div className="bg-slate-900/50 p-3 rounded-xl border border-slate-800 text-center"><p className="text-[10px] font-bold text-slate-500 uppercase">Aktif Veritabanı</p><p className="text-sm font-black text-blue-500">ÇANAKKALE / MERKEZ</p></div></div>
+                    </aside>
+                    <main className="flex-1 flex flex-col bg-slate-900 relative overflow-hidden">
+                        <header className="h-16 border-b border-slate-800 flex items-center justify-between px-8 bg-slate-900/90 z-10 sticky top-0"><h2 className="font-bold text-white text-lg uppercase italic">{page}</h2><div className="flex items-center gap-4"><div className="text-right"><p className="text-xs font-bold text-white leading-none">HALİL AKÇA</p><p className="text-[10px] text-slate-500 uppercase mt-1">Yönetici</p></div><div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold shadow-lg shadow-blue-600/20">HA</div></div></header>
+                        <div className="flex-1 overflow-y-auto p-8 relative custom-scrollbar">
+                            {page === 'dashboard' && <DashboardPage personel={personel} mukellef={mukellef} getBakiye={getBakiye} />}
+                            {page === 'mukellef' && <MukellefPage mukellef={mukellef} setMukellef={setMukellef} personel={personel} getBakiye={getBakiye} />}
+                            {page === 'personel' && <PersonelPage personel={personel} setPersonel={setPersonel} mukellef={mukellef} setMukellef={setMukellef} />}
+                            {page === 'finans' && <FinansPage mukellef={mukellef} hareketler={hareketler} setHareketler={setHareketler} getBakiye={getBakiye} />}
+                            {page === 'robot' && <RobotPage mukellef={mukellef} sendApiMessage={sendApiMessage} logs={logs} setLogs={setLogs} />}
+                            {page === 'yedek' && <YedekPage data={{personel, mukellef, hareketler, logs}} setData={(d)=>{setPersonel(d.personel);setMukellef(d.mukellef);setHareketler(d.hareketler);setLogs(d.logs)}} />}
+                        </div>
+                    </main>
+                </div>
+            );
+        }
+
+        function DashboardPage({ personel, mukellef, getBakiye }) {
+            const toplamAlacak = useMemo(() => mukellef.reduce((a,b)=>a+getBakiye(b.id),0), [mukellef, getBakiye]);
+            const toplamCiro = useMemo(() => mukellef.reduce((a,b)=>a+ (b.aylikUcret || 0), 0), [mukellef]);
+
+            return (
+                <div className="space-y-6 fade-in">
+                     <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                        <StatCard title="Portföy" val={mukellef.length} icon="fa-building" color="text-blue-500" />
+                        <StatCard title="Beklenen Tahakkuk" val={`${toplamCiro.toLocaleString()} ₺`} icon="fa-file-invoice-dollar" color="text-emerald-500" />
+                        <StatCard title="Piyasa Alacağı" val={`${toplamAlacak.toLocaleString()} ₺`} icon="fa-hand-holding-dollar" color="text-red-500" />
+                        <StatCard title="Personel Gücü" val={personel.length} icon="fa-user-tie" color="text-purple-500" />
+                    </div>
+                    
+                    <h3 className="text-xl font-bold text-white mb-4">Personel Bazlı Defter Dağılımı</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {personel.map(p => {
+                            const pMukellef = mukellef.filter(m => m.temsilci === p.ad);
+                            const eDefterSayisi = pMukellef.filter(m => m.defter === 'BILANÇO').length;
                             return (
-                                <div key={p.id}>
-                                    <div className="flex justify-between text-xs font-medium mb-1">
-                                        <span className="text-white">{p.ad}</span>
-                                        <span className="text-slate-400">{dosyaSayisi} Dosya</span>
+                                <div key={p.id} className="bg-slate-800 p-6 rounded-2xl border border-slate-700 hover:border-blue-500/50 transition">
+                                    <div className="flex items-center gap-4 mb-4">
+                                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-600 to-cyan-500 flex items-center justify-center font-bold text-white text-lg">
+                                            {p.ad.charAt(0)}
+                                        </div>
+                                        <div>
+                                            <h4 className="font-bold text-white">{p.ad}</h4>
+                                            <p className="text-xs text-slate-400">{p.unvan}</p>
+                                        </div>
                                     </div>
-                                    <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-                                        <div className={`h-full rounded-full transition-all duration-1000 ${yuzde>80?'bg-red-500':'bg-blue-500'}`} style={{width: `${yuzde}%`}}></div>
+                                    <div className="flex justify-between items-center text-sm border-t border-slate-700 pt-3">
+                                        <div className="text-center">
+                                            <span className="block text-xl font-bold text-white">{pMukellef.length}</span>
+                                            <span className="text-xs text-slate-500">Toplam Defter</span>
+                                        </div>
+                                        <div className="text-center">
+                                            <span className="block text-xl font-bold text-green-400">{eDefterSayisi}</span>
+                                            <span className="text-xs text-slate-500">E-Defter</span>
+                                        </div>
                                     </div>
                                 </div>
                             )
                         })}
                     </div>
                 </div>
-                <div className="glass-panel p-6 rounded-2xl border-slate-700 flex flex-col items-center justify-center text-center">
-                    <div className="w-16 h-16 bg-emerald-500/10 rounded-full flex items-center justify-center text-emerald-400 text-2xl mb-4 border border-emerald-500/20">
-                        <i className="fas fa-trophy"></i>
-                    </div>
-                    <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest">Ayın Performansı</h4>
-                    <p className="text-2xl font-black text-white mt-1 brand-font">ÖZLEM</p>
-                    <p className="text-xs text-slate-400 mt-2">En yüksek ciro yönetimi ve tahsilat oranı.</p>
-                </div>
-            </div>
-        </div>
-    )
-}
-
-function MukellefPage({ mukellef, setMukellef, personel, getBakiye, sendApiMessage }) {
-    const [search, setSearch] = useState("");
-    const [filterTemsilci, setFilterTemsilci] = useState("all");
-    const [modal, setModal] = useState(null);
-
-    const filtered = mukellef.filter(m => {
-        const s = (m.unvan || "").toLowerCase().includes(search.toLowerCase());
-        const t = filterTemsilci === "all" || m.temsilci === filterTemsilci;
-        return s && t;
-    });
-
-    const saveM = () => {
-        if(modal.id) setMukellef(prev => prev.map(x=>x.id===modal.id?modal:x));
-        else setMukellef(prev => [...prev, {...modal, id: Date.now()}]);
-        setModal(null);
-    };
-
-    const hizliWhatsapp = (m) => {
-        if(!m.tel) return alert("Telefon numarası kayıtlı değil!");
-        const msg = `Sayın yetkili (${m.unvan}),\n\nGüncel bakiyeniz: ${getBakiye(m.id)} TL'dir. Ödemenizi rica ederiz.\n\nHalil Akça - SMMM`;
-        if(confirm(`Bu mesaj gönderilsin mi?\n\n"${msg}"`)) {
-            sendApiMessage(m.tel, msg).then(res => {
-                alert(res.success ? "Mesaj gönderildi." : "Hata oluştu.");
-            });
+            )
         }
-    };
 
-    return (
-        <div className="space-y-6 fade-in">
-            <div className="flex flex-wrap gap-4 justify-between">
-                <div className="flex gap-2 w-full md:w-auto">
-                    <input className="input-dark md:w-64" placeholder="Ünvan Ara..." value={search} onChange={e=>setSearch(e.target.value)} />
-                    <select className="input-dark w-40" value={filterTemsilci} onChange={e=>setFilterTemsilci(e.target.value)}>
-                        <option value="all">Tümü</option>
-                        {personel.map(p=><option key={p.id} value={p.ad}>{p.ad}</option>)}
-                    </select>
-                </div>
-                <button onClick={()=>setModal({unvan:"", tel:"", defter:"BILANÇO", aylikUcret:0, temsilci:personel[0]?.ad})} className="btn btn-primary shadow-lg shadow-blue-600/20"><i className="fas fa-plus"></i> Yeni Ekle</button>
-            </div>
+        function MukellefPage({ mukellef, setMukellef, personel, getBakiye }) {
+            const [search, setSearch] = useState("");
+            const [filterTemsilci, setFilterTemsilci] = useState("all");
+            const [modal, setModal] = useState(null);
 
-            <div className="glass-panel rounded-2xl overflow-hidden border-slate-700">
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left text-sm text-slate-400">
-                        <thead className="bg-slate-900/80 text-xs font-bold uppercase text-slate-500">
-                            <tr>
-                                <th className="p-4">Durum</th>
-                                <th className="p-4">Ünvan</th>
-                                <th className="p-4">Telefon</th>
-                                <th className="p-4">Temsilci</th>
-                                <th className="p-4 text-right">Ücret</th>
-                                <th className="p-4 text-right">Bakiye</th>
-                                <th className="p-4 text-center">İşlem</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-800">
-                            {filtered.map(m => (
-                                <tr key={m.id} className="hover:bg-slate-800/50 transition">
-                                    <td className="p-4"><span className={m.defter==='BILANÇO'?'badge-bilanco':'badge-isletme'}>{m.defter}</span></td>
-                                    <td className="p-4 font-medium text-slate-200">{m.unvan}</td>
-                                    <td className="p-4 font-mono text-xs">{m.tel}</td>
-                                    <td className="p-4"><span className="text-xs bg-slate-800 px-2 py-1 rounded border border-slate-700">{m.temsilci}</span></td>
-                                    <td className="p-4 text-right font-mono text-emerald-400">{m.aylikUcret} ₺</td>
-                                    <td className={`p-4 text-right font-mono font-bold ${getBakiye(m.id)>0?'text-red-400':'text-green-400'}`}>{getBakiye(m.id)} ₺</td>
-                                    <td className="p-4 flex justify-center gap-2">
-                                        <button onClick={()=>hizliWhatsapp(m)} className="w-8 h-8 rounded bg-green-900/30 text-green-400 hover:bg-green-600 hover:text-white transition flex items-center justify-center"><i className="fab fa-whatsapp"></i></button>
-                                        <button onClick={()=>setModal(m)} className="w-8 h-8 rounded bg-blue-900/30 text-blue-400 hover:bg-blue-600 hover:text-white transition flex items-center justify-center"><i className="fas fa-pen"></i></button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            const filtered = useMemo(() => mukellef.filter(m => {
+                const s = m.unvan.toLowerCase().includes(search.toLowerCase());
+                const t = filterTemsilci === "all" || m.temsilci === filterTemsilci;
+                return s && t;
+            }), [mukellef, search, filterTemsilci]);
 
-            {modal && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 fade-in">
-                    <div className="bg-slate-900 border border-slate-700 p-6 rounded-2xl w-full max-w-lg shadow-2xl">
-                        <h3 className="text-xl font-bold text-white mb-4 brand-font">Mükellef Kartı</h3>
-                        <div className="space-y-3">
-                            <div><label className="text-xs text-slate-500 uppercase font-bold">Ünvan</label><input className="input-dark" value={modal.unvan} onChange={e=>setModal({...modal, unvan:e.target.value})} /></div>
-                            <div className="grid grid-cols-2 gap-3">
-                                <div><label className="text-xs text-slate-500 uppercase font-bold">Telefon</label><input className="input-dark" value={modal.tel} onChange={e=>setModal({...modal, tel:e.target.value})} /></div>
-                                <div><label className="text-xs text-slate-500 uppercase font-bold">Ücret</label><input type="number" className="input-dark" value={modal.aylikUcret} onChange={e=>setModal({...modal, aylikUcret:parseInt(e.target.value)||0})} /></div>
-                            </div>
-                            <div className="grid grid-cols-2 gap-3">
-                                <div><label className="text-xs text-slate-500 uppercase font-bold">Defter</label><select className="input-dark" value={modal.defter} onChange={e=>setModal({...modal, defter:e.target.value})}><option>BILANÇO</option><option>İŞLETME</option></select></div>
-                                <div><label className="text-xs text-slate-500 uppercase font-bold">Temsilci</label><select className="input-dark" value={modal.temsilci} onChange={e=>setModal({...modal, temsilci:e.target.value})}>{personel.map(p=><option key={p.id} value={p.ad}>{p.ad}</option>)}</select></div>
-                            </div>
-                            <div className="flex gap-2 mt-4 pt-4 border-t border-slate-800">
-                                <button onClick={saveM} className="btn btn-primary flex-1">Kaydet</button>
-                                <button onClick={()=>setModal(null)} className="btn bg-slate-800 hover:bg-slate-700 text-slate-300 flex-1">İptal</button>
-                            </div>
+            const saveM = (m) => { 
+                if(m.id) setMukellef(prev => prev.map(x=>x.id===m.id?m:x)); 
+                else setMukellef(prev => [...prev, {...m, id: Date.now()}]); 
+                setModal(null); 
+            };
+
+            return (
+                <div className="space-y-6 fade-in">
+                    <div className="flex flex-wrap gap-4 items-center justify-between">
+                        <div className="flex gap-4">
+                            <input className="input-dark w-80 shadow-inner" placeholder="Mükellef veya Telefon Ara..." value={search} onChange={e=>setSearch(e.target.value)} />
+                            <select className="input-dark w-48" value={filterTemsilci} onChange={e=>setFilterTemsilci(e.target.value)}>
+                                <option value="all">Tüm Personeller</option>
+                                {personel.map(p=><option key={p.id} value={p.ad}>{p.ad}</option>)}
+                            </select>
                         </div>
+                        <button onClick={()=>setModal({unvan:"", tel:"", defter:"BILANÇO", aylikUcret:0, temsilci:personel[0]?.ad})} className="btn btn-primary px-8 shadow-lg shadow-blue-600/20">Yeni Mükellef Ekle</button>
                     </div>
-                </div>
-            )}
-        </div>
-    )
-}
 
-function FinansPage({ mukellef, hareketler, setHareketler }) {
-    const [yeniIslem, setYeniIslem] = useState({ mukellefId: "", tur: "borc", tutar: "", aciklama: "" });
-
-    const ekle = () => {
-        if(!yeniIslem.mukellefId || !yeniIslem.tutar) return;
-        setHareketler(prev => [{ id: Date.now(), tarih: new Date().toLocaleDateString(), ...yeniIslem, tutar: parseFloat(yeniIslem.tutar) }, ...prev]);
-        setYeniIslem({ mukellefId: "", tur: "borc", tutar: "", aciklama: "" });
-    };
-
-    return (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 fade-in">
-            <div className="glass-panel p-6 rounded-2xl border-slate-700">
-                <h3 className="text-lg font-bold text-white mb-4 brand-font">Hızlı İşlem Ekle</h3>
-                <div className="space-y-3">
-                    <select className="input-dark" value={yeniIslem.mukellefId} onChange={e=>setYeniIslem({...yeniIslem, mukellefId: parseInt(e.target.value)})}>
-                        <option value="">Mükellef Seçin...</option>
-                        {mukellef.map(m => <option key={m.id} value={m.id}>{m.unvan}</option>)}
-                    </select>
-                    <div className="grid grid-cols-2 gap-2">
-                        <select className="input-dark" value={yeniIslem.tur} onChange={e=>setYeniIslem({...yeniIslem, tur: e.target.value})}>
-                            <option value="borc">Borç (Hizmet)</option>
-                            <option value="alacak">Tahsilat</option>
-                        </select>
-                        <input type="number" className="input-dark" placeholder="Tutar" value={yeniIslem.tutar} onChange={e=>setYeniIslem({...yeniIslem, tutar: e.target.value})} />
-                    </div>
-                    <input className="input-dark" placeholder="Açıklama (Örn: Ocak Muhasebe)" value={yeniIslem.aciklama} onChange={e=>setYeniIslem({...yeniIslem, aciklama: e.target.value})} />
-                    <button onClick={ekle} className="btn btn-primary w-full py-3">İşlemi Kaydet</button>
-                </div>
-            </div>
-            <div className="lg:col-span-2 glass-panel p-6 rounded-2xl border-slate-700 overflow-hidden">
-                <h3 className="text-lg font-bold text-white mb-4 brand-font">Son Hareketler</h3>
-                <div className="overflow-y-auto max-h-[400px]">
-                    <table className="w-full text-sm text-left text-slate-400">
-                        <thead className="sticky top-0 bg-slate-900/90 text-xs font-bold uppercase text-slate-500">
-                            <tr><th>Tarih</th><th>Mükellef</th><th>Açıklama</th><th className="text-right">Tutar</th></tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-800">
-                            {hareketler.map(h => {
-                                const m = mukellef.find(x=>x.id === h.mukellefId);
-                                return (
-                                    <tr key={h.id}>
-                                        <td className="p-3 font-mono text-xs">{h.tarih}</td>
-                                        <td className="p-3 font-medium text-slate-200">{m ? m.unvan : 'Silinmiş Mükellef'}</td>
-                                        <td className="p-3">{h.aciklama}</td>
-                                        <td className={`p-3 text-right font-mono font-bold ${h.tur==='alacak'?'text-green-400':'text-red-400'}`}>
-                                            {h.tur==='alacak' ? '+' : '-'}{h.tutar} ₺
-                                        </td>
+                    <div className="glass-panel rounded-[2rem] overflow-hidden border border-slate-700 shadow-2xl">
+                        <div className="overflow-x-auto custom-scrollbar">
+                            <table className="w-full text-left text-sm">
+                                <thead className="bg-slate-900/80 text-slate-500 font-bold uppercase sticky top-0 backdrop-blur-md">
+                                    <tr>
+                                        <th className="p-5">Portföy / Tip</th>
+                                        <th className="p-5">Firma Ünvanı</th>
+                                        <th className="p-5">İletişim</th>
+                                        <th className="p-5">Temsilci</th>
+                                        <th className="p-5 text-right">Ücret (Aylık)</th>
+                                        <th className="p-5 text-right">Cari Bakiye</th>
+                                        <th className="p-5 text-center">Aksiyon</th>
                                     </tr>
-                                )
-                            })}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    )
-}
-
-function RobotPage({ mukellef, sendApiMessage, logs }) {
-    const [msg, setMsg] = useState("");
-    const [sending, setSending] = useState(false);
-
-    const sendBulk = async () => {
-        if(!msg) return;
-        setSending(true);
-        // Örnek olarak ilk 5 kişiye gönderir, gerçek kullanımda bu döngüyü tüm liste için açabilirsiniz.
-        for(let m of mukellef.slice(0, 5)) {
-            if(m.tel) await sendApiMessage(m.tel, msg);
-        }
-        setSending(false);
-        alert("İşlem tamamlandı!");
-    };
-
-    return (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 fade-in">
-            <div className="glass-panel p-6 rounded-2xl border-slate-700">
-                <h3 className="text-lg font-bold text-white mb-4 brand-font"><i className="fab fa-whatsapp text-green-500 mr-2"></i> Toplu Mesaj Robotu</h3>
-                <textarea className="input-dark h-40 mb-4" placeholder="Mesajınızı buraya yazın..." value={msg} onChange={e=>setMsg(e.target.value)}></textarea>
-                <div className="flex gap-2">
-                    <button onClick={sendBulk} disabled={sending} className="btn btn-success flex-1 py-3">
-                        {sending ? 'Gönderiliyor...' : 'Listeye Gönder'}
-                    </button>
-                    <button onClick={()=>setMsg("Sayın Mükellefimiz,\n\nSGK ve Vergi ödemelerinizi son güne bırakmamanızı önemle rica ederiz.\n\nHalil Akça")} className="btn bg-slate-800 text-slate-300">
-                        Şablon 1
-                    </button>
-                </div>
-                <p className="text-xs text-slate-500 mt-4">* Güvenlik nedeniyle şu an sadece listedeki ilk 5 kişiye gönderim yapar. Kodu düzenleyerek sınırı kaldırabilirsiniz.</p>
-            </div>
-            <div className="glass-panel p-6 rounded-2xl border-slate-700">
-                <h3 className="text-lg font-bold text-white mb-4 brand-font">Gönderim Logları</h3>
-                <div className="space-y-2 overflow-y-auto max-h-[300px]">
-                    {logs.map(l => (
-                        <div key={l.id} className="text-xs p-2 bg-slate-800 rounded border border-slate-700 flex justify-between">
-                            <span className="text-slate-400">{l.time} -> {l.to}</span>
-                            <span className="text-green-400 font-bold">{l.status}</span>
+                                </thead>
+                                <tbody className="divide-y divide-slate-800/50">
+                                    {filtered.map(m => (
+                                        <tr key={m.id} className="hover:bg-blue-600/5 transition-colors group">
+                                            <td className="p-5"><span className={m.defter === 'BILANÇO' ? 'badge-bilanco' : 'badge-isletme'}>{m.defter === 'BILANÇO' ? 'E-DEFTER' : m.defter}</span></td>
+                                            <td className="p-5 font-bold text-white group-hover:text-blue-400 transition-colors">
+                                                <div className="max-w-xs truncate" title={m.unvan}>{m.unvan}</div>
+                                            </td>
+                                            <td className="p-5 text-xs text-slate-500 font-mono italic">{m.tel}</td>
+                                            <td className="p-5"><span className="bg-slate-800 px-3 py-1 rounded-lg text-[10px] font-bold text-slate-400 uppercase tracking-wider">{m.temsilci}</span></td>
+                                            <td className="p-5 text-right font-mono text-emerald-500 font-bold">{m.aylikUcret.toLocaleString()} ₺</td>
+                                            <td className={`p-5 text-right font-mono font-bold ${getBakiye(m.id)>0?'text-red-500':'text-green-500'}`}>{getBakiye(m.id).toLocaleString()} ₺</td>
+                                            <td className="p-5 text-center">
+                                                <button onClick={()=>setModal(m)} className="w-8 h-8 rounded-lg bg-slate-800 text-blue-400 hover:bg-blue-600 hover:text-white transition-all flex items-center justify-center mx-auto shadow-sm"><i className="fas fa-pen-to-square text-xs"></i></button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                         </div>
-                    ))}
-                </div>
-            </div>
-        </div>
-    )
-}
-
-function PersonelPage({ personel, setPersonel }) {
-    return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 fade-in">
-            {personel.map(p => (
-                <div key={p.id} className="glass-panel p-6 rounded-2xl border-slate-700 flex flex-col items-center text-center relative group hover:border-blue-500/50 transition">
-                    <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center text-2xl text-slate-400 mb-4 border border-slate-700 group-hover:bg-blue-600 group-hover:text-white transition">
-                        {p.ad.substring(0,1)}
                     </div>
-                    <h3 className="text-lg font-bold text-white brand-font">{p.ad}</h3>
-                    <p className="text-sm text-blue-400 font-medium mb-4">{p.unvan}</p>
-                    <div className="w-full bg-slate-800 rounded-xl p-3">
-                        <p className="text-[10px] text-slate-500 uppercase font-bold">Maaş Hakediş</p>
-                        <p className="text-xl font-mono font-bold text-white">{p.maas.toLocaleString()} ₺</p>
+                    {modal && <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm fade-in p-4"><div className="bg-slate-800 p-8 rounded-[2.5rem] w-full max-w-md border border-slate-700 shadow-2xl"><h3 className="text-2xl font-black text-white mb-6 italic uppercase tracking-tighter border-b border-slate-700 pb-4">Mükellef Kartı</h3><div className="space-y-4"><div className="grid grid-cols-2 gap-4"><div><label className="text-[10px] uppercase font-bold text-slate-500 mb-1 block">Defter Türü</label><select className="input-dark" value={modal.defter} onChange={e=>setModal({...modal, defter:e.target.value})}><option>BILANÇO</option><option>İŞLETME</option><option>SERBEST MESLEK</option><option>BASİT USUL</option><option>KİRA</option><option>ÖZEL İNŞAAT</option></select></div><div><label className="text-[10px] uppercase font-bold text-slate-500 mb-1 block">Temsilci</label><select className="input-dark" value={modal.temsilci} onChange={e=>setModal({...modal, temsilci:e.target.value})}>{personel.map(p=><option key={p.id} value={p.ad}>{p.ad}</option>)}</select></div></div><div><label className="text-[10px] uppercase font-bold text-slate-500 mb-1 block">Firma Ünvanı</label><input className="input-dark" placeholder="Ticari Ünvan..." value={modal.unvan} onChange={e=>setModal({...modal, unvan:e.target.value})} /></div><div className="grid grid-cols-2 gap-4"><div><label className="text-[10px] uppercase font-bold text-slate-500 mb-1 block">Telefon 1</label><input className="input-dark" placeholder="05XX..." value={modal.tel} onChange={e=>setModal({...modal, tel:e.target.value})} /></div><div><label className="text-[10px] uppercase font-bold text-slate-500 mb-1 block">Aylık Ücret (₺)</label><input className="input-dark font-bold text-emerald-400" type="number" placeholder="0.00" value={modal.aylikUcret} onChange={e=>setModal({...modal, aylikUcret:parseInt(e.target.value)})} /></div></div><div className="flex gap-3 mt-6 pt-4 border-t border-slate-700"><button onClick={()=>saveM(modal)} className="btn btn-primary flex-1 py-4">Değişiklikleri Kaydet</button><button onClick={()=>setModal(null)} className="btn bg-slate-700 flex-1 py-4">İptal</button></div></div></div></div>}
+                </div>
+            )
+        }
+
+        // --- PERSONEL PAGE (GÜNCELLENMİŞ) ---
+        function PersonelPage({ personel, setPersonel, mukellef, setMukellef }) {
+            const [modal, setModal] = useState(null);
+            const [viewPortfolio, setViewPortfolio] = useState(null);
+            const savePersonel = (p) => { if(p.id) setPersonel(personel.map(x=>x.id===p.id?p:x)); else setPersonel([...personel, {...p, id: Date.now()}]); setModal(null); };
+            const calculateCost = (p) => (p.maas || 0) + (p.sgk || 0) + (p.yemek || 0) + (p.vergi || 0) + (p.diger || 0);
+            
+            // Portföy Güncelleme
+            const [editM, setEditM] = useState(null); // Düzenlenen mükellef
+
+            const updateMukellefUcret = () => {
+                if(!editM) return;
+                setMukellef(mukellef.map(m => m.id === editM.id ? {...m, aylikUcret: parseInt(editM.newUcret)} : m));
+                setEditM(null);
+            };
+
+            return (
+                <div className="space-y-6 fade-in">
+                    <div className="flex justify-between items-center"><h3 className="text-xl font-bold text-white">Personel Kârlılık</h3><button onClick={()=>setModal({ad:"", unvan:"", giris:"", maas:0, sgk:0, yemek:0, vergi:0, diger:0})} className="btn btn-primary">+ Ekle</button></div>
+                    <div className="grid grid-cols-1 gap-6">
+                        {personel.map(p => {
+                            const musteriListesi = mukellef.filter(m => m.temsilci === p.ad);
+                            const toplamCiro = musteriListesi.reduce((acc, m) => acc + (m.aylikUcret || 0), 0);
+                            const toplamMaliyet = calculateCost(p);
+                            const netKar = toplamCiro - toplamMaliyet;
+                            const verimOrani = toplamMaliyet > 0 ? Math.round((toplamCiro / toplamMaliyet) * 100) : 0;
+                            return (
+                                <div key={p.id} className="glass-panel p-6 rounded-2xl flex flex-col md:flex-row gap-6 items-center border-l-4 hover:bg-white/5 transition" style={{borderLeftColor: netKar > 0 ? '#10b981' : '#ef4444'}}>
+                                    <div className="w-full md:w-1/4">
+                                        <h4 className="font-bold text-white text-lg">{p.ad}</h4>
+                                        <p className="text-blue-400 text-sm">{p.unvan}</p>
+                                        <button onClick={()=>setViewPortfolio(p.ad)} className="text-xs text-slate-400 underline mt-2 hover:text-white">Portföyü Gör ({musteriListesi.length})</button>
+                                    </div>
+                                    <div className="flex-1 grid grid-cols-4 gap-2 text-center w-full">
+                                        <div className="bg-slate-900/50 p-2 rounded-lg"><p className="text-[10px] text-slate-500 uppercase">Maliyet</p><p className="font-bold text-red-400">{toplamMaliyet.toLocaleString()} ₺</p></div>
+                                        <div className="bg-slate-900/50 p-2 rounded-lg"><p className="text-[10px] text-slate-500 uppercase">Ciro</p><p className="font-bold text-blue-400">{toplamCiro.toLocaleString()} ₺</p></div>
+                                        <div className="bg-slate-900/50 p-2 rounded-lg"><p className="text-[10px] text-slate-500 uppercase">Net Kâr</p><p className={`font-bold ${netKar>0?'text-green-400':'text-red-500'}`}>{netKar.toLocaleString()} ₺</p></div>
+                                        <div className="bg-slate-900/50 p-2 rounded-lg"><p className="text-[10px] text-slate-500 uppercase">Verim</p><p className={`font-bold ${verimOrani>150?'text-green-400':'text-yellow-500'}`}>%{verimOrani}</p></div>
+                                    </div>
+                                    <div className="flex gap-2"><button onClick={()=>setModal(p)} className="text-blue-400 hover:text-white p-2"><i className="fas fa-edit"></i></button><button onClick={()=>{if(confirm("Silinecek?")) setPersonel(personel.filter(x=>x.id!==p.id))}} className="text-red-400 hover:text-white p-2"><i className="fas fa-trash"></i></button></div>
+                                </div>
+                            );
+                        })}
                     </div>
+                    {modal && <PersonelModal p={modal} onClose={()=>setModal(null)} onSave={savePersonel} />}
+                    
+                    {viewPortfolio && (
+                        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 fade-in">
+                            <div className="bg-slate-800 p-6 rounded-2xl w-[600px] border border-slate-600 max-h-[80vh] overflow-y-auto">
+                                <div className="flex justify-between mb-4">
+                                    <h3 className="font-bold text-white text-lg">{viewPortfolio} - Mükellef Listesi</h3>
+                                    <button onClick={()=>setViewPortfolio(null)} className="text-slate-400 hover:text-white"><i className="fas fa-times"></i></button>
+                                </div>
+                                <table className="w-full text-sm text-left">
+                                    <thead className="bg-slate-900 text-slate-500"><tr><th className="p-2">Firma</th><th className="p-2 text-right">Aylık Ücret</th><th className="p-2 text-right">Yıllık (12 Ay)</th><th className="p-2 text-center">Düzenle</th></tr></thead>
+                                    <tbody className="divide-y divide-slate-700">
+                                        {mukellef.filter(m => m.temsilci === viewPortfolio).map(m => (
+                                            <tr key={m.id}>
+                                                <td className="p-2 text-white">{m.unvan}</td>
+                                                <td className="p-2 text-right text-blue-400 font-bold">
+                                                    {editM && editM.id === m.id ? (
+                                                        <input autoFocus className="bg-slate-700 text-white w-20 text-right p-1 rounded" type="number" value={editM.newUcret} onChange={e=>setEditM({...editM, newUcret:e.target.value})} />
+                                                    ) : (
+                                                        m.aylikUcret.toLocaleString() + ' ₺'
+                                                    )}
+                                                </td>
+                                                <td className="p-2 text-right text-slate-400">
+                                                    {editM && editM.id === m.id ? (parseInt(editM.newUcret)*12).toLocaleString() : (m.aylikUcret * 12).toLocaleString()} ₺
+                                                </td>
+                                                <td className="p-2 text-center">
+                                                    {editM && editM.id === m.id ? (
+                                                        <button onClick={updateMukellefUcret} className="text-green-400 hover:text-green-300"><i className="fas fa-check"></i></button>
+                                                    ) : (
+                                                        <button onClick={()=>setEditM({id:m.id, newUcret:m.aylikUcret})} className="text-slate-400 hover:text-white"><i className="fas fa-edit"></i></button>
+                                                    )}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    )}
                 </div>
-            ))}
-        </div>
-    )
-}
+            )
+        }
 
-function YedekPage({ data, setData }) {
-    const downloadJson = () => {
-        const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(JSON.stringify(data))}`;
-        const link = document.createElement("a");
-        link.href = jsonString;
-        link.download = "akca_erp_yedek.json";
-        link.click();
-    };
-
-    const uploadJson = (e) => {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            try {
-                const importedData = JSON.parse(event.target.result);
-                setData(importedData);
-                alert("Yedek başarıyla yüklendi!");
-            } catch(err) { alert("Hatalı dosya formatı!"); }
-        };
-        reader.readAsText(e.target.files[0]);
-    };
-
-    return (
-        <div className="glass-panel p-8 rounded-2xl border-slate-700 max-w-2xl mx-auto text-center space-y-8 fade-in">
-            <div>
-                <i className="fas fa-shield-halved text-5xl text-blue-500 mb-4"></i>
-                <h2 className="text-2xl font-bold text-white brand-font">Veri Güvenliği Merkezi</h2>
-                <p className="text-slate-400 mt-2">Bu sistem verileri tarayıcınızda tutar. Veri kaybı yaşamamak için haftalık yedek alınız.</p>
-            </div>
-            <div className="grid grid-cols-2 gap-6">
-                <div className="p-6 bg-slate-800/50 rounded-xl border border-slate-700 hover:border-green-500 transition cursor-pointer" onClick={downloadJson}>
-                    <i className="fas fa-download text-3xl text-green-500 mb-3"></i>
-                    <h3 className="font-bold text-white">Yedek İndir</h3>
-                    <p className="text-xs text-slate-500 mt-1">Tüm verileri .json olarak bilgisayara kaydet.</p>
+        // --- ROBOT (YEŞİL TEMA) ---
+        function RobotPage({ mukellef, logs, sendApiMessage, setLogs }) {
+            const [selected, setSelected] = useState([]); const [message, setMessage] = useState(""); const [sending, setSending] = useState(false); const [progress, setProgress] = useState(0);
+            const toggleSelect = (id) => setSelected(selected.includes(id) ? selected.filter(x=>x!==id) : [...selected, id]);
+            const toggleAll = () => (selected.length === mukellef.length) ? setSelected([]) : setSelected(mukellef.map(m => m.id));
+            const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+            const startSending = async () => { if(!message || selected.length === 0) return alert("Mesaj ve alıcı seçin."); setSending(true); for (let i = 0; i < selected.length; i++) { const m = mukellef.find(x => x.id === selected[i]); if(m && m.tel) { await sendApiMessage(m.tel, message); setProgress(Math.round(((i + 1) / selected.length) * 100)); await sleep(2000); } } setSending(false); alert("Tamamlandı!"); setProgress(0); };
+            return (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 fade-in h-full pb-10">
+                    <div className="bg-emerald-900/20 p-6 rounded-xl border border-emerald-800 flex flex-col">
+                        <div className="flex justify-between mb-4"><h3 className="font-bold text-emerald-400">Alıcı Listesi ({selected.length})</h3><button onClick={toggleAll} className="text-xs text-emerald-300 hover:text-white">Tümünü Seç/Kaldır</button></div>
+                        <div className="flex-1 overflow-y-auto bg-slate-900/50 rounded-lg p-2 border border-emerald-900 mb-4 max-h-60 custom-scrollbar">{mukellef.map(m => (<div key={m.id} className="flex items-center gap-3 p-2 hover:bg-emerald-900/40 rounded cursor-pointer" onClick={()=>toggleSelect(m.id)}><div className={`w-4 h-4 border rounded flex items-center justify-center ${selected.includes(m.id)?'bg-emerald-600 border-emerald-600':'border-emerald-700'}`}>{selected.includes(m.id) && <i className="fas fa-check text-white text-[10px]"></i>}</div><span className="text-sm text-emerald-100 truncate w-40">{m.unvan}</span></div>))}</div>
+                        <textarea className="input-dark mb-4 border-emerald-800 focus:border-emerald-500" rows="4" placeholder="Mesajınız..." value={message} onChange={e=>setMessage(e.target.value)}></textarea>
+                        {sending ? <div className="w-full bg-slate-800 rounded-full h-4 mb-2"><div className="bg-emerald-500 h-4 rounded-full transition-all duration-300" style={{width: `${progress}%`}}></div></div> : <button onClick={startSending} className="btn bg-emerald-600 hover:bg-emerald-500 text-white w-full shadow-lg shadow-emerald-900/50">Mesajları Başlat (2sn Gecikmeli)</button>}
+                    </div>
+                    <div className="bg-slate-800 p-6 rounded-xl border border-slate-700 flex flex-col h-[500px]"><h3 className="font-bold text-white mb-4">Log Kayıtları</h3><div className="flex-1 overflow-y-auto space-y-2 pr-2 custom-scrollbar">{logs.map(log => (<div key={log.id} className="p-2 bg-slate-900 rounded border border-slate-700 text-xs"><span className="text-slate-500 mr-2">[{log.time}]</span><span className={`font-bold mr-2 ${log.status==='API OK'?'text-green-400':'text-yellow-400'}`}>{log.status}</span><span className="text-white">To: {log.to}</span></div>))}</div></div>
                 </div>
-                <div className="p-6 bg-slate-800/50 rounded-xl border border-slate-700 hover:border-blue-500 transition relative">
-                    <input type="file" onChange={uploadJson} className="absolute inset-0 opacity-0 cursor-pointer" />
-                    <i className="fas fa-upload text-3xl text-blue-500 mb-3"></i>
-                    <h3 className="font-bold text-white">Yedek Yükle</h3>
-                    <p className="text-xs text-slate-500 mt-1">Bilgisayardaki yedeği sisteme geri yükle.</p>
-                </div>
-            </div>
-        </div>
-    )
-}
+            )
+        }
 
-function MenuBtn({ icon, text, active, onClick, badge }) {
-    return (
-        <div onClick={onClick} className={`flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all duration-200 mb-1 group ${active ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}>
-            <i className={`${icon} w-5 text-center text-lg`}></i>
-            <span className="text-sm font-semibold flex-1">{text}</span>
-            {badge > 0 && <span className="text-[10px] bg-slate-900 px-2 py-0.5 rounded-full text-slate-300 font-bold border border-slate-700">{badge}</span>}
-        </div>
-    )
-}
+        // --- BASİT SAYFALAR (Aynen korundu) ---
+        function FinansPage({ mukellef, hareketler, setHareketler, getBakiye }) { const [selectedMId, setSelectedMId] = useState(mukellef[0]?.id || 0); const [view, setView] = useState('list'); const [tahakkukModu, setTahakkukModu] = useState('aylik'); const [seciliAylar, setSeciliAylar] = useState([]); const aylar = ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"]; const [tahsilat, setTahsilat] = useState({ tarih: new Date().toISOString().slice(0,10), tur: "Nakit", tutar: "", aciklama: "" }); const m = mukellef.find(x => x.id == selectedMId); const bakiye = getBakiye(parseInt(selectedMId)); const mHareketler = hareketler.filter(h => h.mukellefId == selectedMId); const handleTahakkuk = () => { const islemAylari = tahakkukModu === 'yillik' ? aylar : seciliAylar; if(islemAylari.length === 0) return alert("Ay seçiniz."); const newRecs = islemAylari.map(ay => ({ id: Date.now()+Math.random(), mukellefId: parseInt(selectedMId), tarih: new Date().toISOString().slice(0,10), tur: 'borc', aciklama: `${ay} 2024 Muhasebe Ücreti`, tutar: m.aylikUcret })); setHareketler([...newRecs, ...hareketler]); alert("İşlendi."); setView('list'); setSeciliAylar([]); }; const handleTahsilat = () => { if(!tahsilat.tutar) return alert("Tutar girin."); const newRec = { id: Date.now(), mukellefId: parseInt(selectedMId), tarih: tahsilat.tarih, tur: 'alacak', aciklama: `${tahsilat.tur} Tahsilat - ${tahsilat.aciklama}`, tutar: parseFloat(tahsilat.tutar) }; setHareketler([newRec, ...hareketler]); alert("Kaydedildi."); setView('list'); }; const sendWhatsapp = () => { const msg = `Sayın ${m.unvan}, cari bakiyeniz ${bakiye.toLocaleString()} TL (Borç) olarak görünmektedir. Ödeme rica ederiz.`; window.open(`https://wa.me/${m.tel}?text=${encodeURIComponent(msg)}`, '_blank'); }; return (<div className="space-y-6 fade-in"><div className="bg-slate-800 p-4 rounded-xl border border-slate-700 flex flex-col md:flex-row gap-4"><select className="input-dark w-full" value={selectedMId} onChange={e=>setSelectedMId(e.target.value)}>{mukellef.map(x => <option key={x.id} value={x.id}>{x.unvan}</option>)}</select><div className="flex gap-2"><button onClick={()=>setView('tahakkuk')} className="btn btn-primary">Tahakkuk</button><button onClick={()=>setView('tahsilat')} className="btn btn-success">Tahsilat</button><button onClick={()=>setView('list')} className="btn bg-slate-700">Hareketler</button></div></div><div className="glass-panel p-6 rounded-xl flex justify-between items-center bg-slate-800"><div><p className="text-xs text-slate-400">Bakiye</p><h3 className="text-2xl font-bold text-white">{bakiye.toLocaleString()} ₺</h3></div><button onClick={sendWhatsapp} className="bg-green-600 text-white p-3 rounded-full hover:bg-green-500 shadow-lg"><i className="fab fa-whatsapp text-xl"></i></button></div>{view === 'tahakkuk' && <div className="bg-slate-800 p-6 rounded-xl border border-slate-700 fade-in"><h3 className="font-bold text-white mb-4">Tahakkuk İşlemi</h3><div className="flex gap-4 mb-4"><button onClick={()=>setTahakkukModu('aylik')} className={`btn ${tahakkukModu==='aylik'?'bg-blue-600 text-white':'bg-slate-700'}`}>Aylık</button><button onClick={()=>setTahakkukModu('yillik')} className={`btn ${tahakkukModu==='yillik'?'bg-blue-600 text-white':'bg-slate-700'}`}>Tüm Yıl</button></div>{tahakkukModu === 'aylik' && <div className="grid grid-cols-4 gap-2 mb-4">{aylar.map(ay => (<button key={ay} onClick={()=>setSeciliAylar(seciliAylar.includes(ay)?seciliAylar.filter(x=>x!==ay):[...seciliAylar, ay])} className={`p-2 rounded text-xs font-bold border ${seciliAylar.includes(ay)?'bg-blue-600 border-blue-500 text-white':'border-slate-600 text-slate-400'}`}>{ay}</button>))}</div>}<button onClick={handleTahakkuk} className="btn btn-primary w-full">Onayla</button></div>}{view === 'tahsilat' && <div className="bg-slate-800 p-6 rounded-xl border border-slate-700 fade-in max-w-lg mx-auto"><h3 className="font-bold text-white mb-4">Tahsilat Girişi</h3><div className="space-y-3"><div><label className="text-xs text-slate-500">Tarih</label><input type="date" className="input-dark" value={tahsilat.tarih} onChange={e=>setTahsilat({...tahsilat, tarih:e.target.value})} /></div><div><label className="text-xs text-slate-500">Tür</label><select className="input-dark" value={tahsilat.tur} onChange={e=>setTahsilat({...tahsilat, tur:e.target.value})}><option>Nakit</option><option>Banka Havale/EFT</option><option>Çek</option><option>Kredi Kartı</option></select></div><div><label className="text-xs text-slate-500">Tutar</label><input type="number" className="input-dark text-xl font-bold" placeholder="0.00" value={tahsilat.tutar} onChange={e=>setTahsilat({...tahsilat, tutar:e.target.value})} /></div><div><label className="text-xs text-slate-500">Açıklama</label><input type="text" className="input-dark" placeholder="Opsiyonel" value={tahsilat.aciklama} onChange={e=>setTahsilat({...tahsilat, aciklama:e.target.value})} /></div><button onClick={handleTahsilat} className="btn btn-success w-full mt-2">Kaydet</button></div></div>}{view === 'list' && <div className="glass-panel rounded-xl overflow-hidden"><table className="w-full text-left text-sm"><thead className="bg-slate-900 text-slate-500 font-bold"><tr><th className="p-3">Tarih</th><th className="p-3">Açıklama</th><th className="p-3 text-right text-red-400">Borç</th><th className="p-3 text-right text-green-400">Alacak</th></tr></thead><tbody className="divide-y divide-slate-700">{mHareketler.map(h => (<tr key={h.id} className="hover:bg-slate-800/50"><td className="p-3 text-slate-400">{h.tarih}</td><td className="p-3 text-white font-medium">{h.aciklama}</td><td className="p-3 text-right text-red-400 font-mono">{h.tur==='borc'?h.tutar.toLocaleString():'-'}</td><td className="p-3 text-right text-green-400 font-mono">{h.tur==='alacak'?h.tutar.toLocaleString():'-'}</td></tr>))}</tbody></table></div>}</div>) }
+        function YedekPage({ data, setData }) { const download = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(data)], {type: "application/json"})); a.download = `akca_yedek.json`; a.click(); }; const upload = (e) => { const r = new FileReader(); r.onload = (ev) => { setData(JSON.parse(ev.target.result)); alert("Yüklendi!"); }; r.readAsText(e.target.files[0]); }; return (<div className="grid grid-cols-2 gap-6 fade-in"><div className="glass-panel p-8 text-center rounded-xl hover:bg-white/5 cursor-pointer" onClick={download}><i className="fas fa-download text-4xl text-blue-500 mb-4"></i><h3>Yedeği İndir</h3></div><div className="glass-panel p-8 text-center rounded-xl hover:bg-white/5 cursor-pointer relative"><input type="file" className="absolute inset-0 opacity-0 cursor-pointer" onChange={upload} /><i className="fas fa-upload text-4xl text-green-500 mb-4"></i><h3>Yedek Yükle</h3></div></div>) }
+        function PersonelModal({ p, onClose, onSave }) { const [form, setForm] = useState(p); return (<div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 fade-in"><div className="bg-slate-800 p-8 rounded-2xl w-96 border border-slate-600 max-h-[90vh] overflow-y-auto custom-scrollbar"><h3 className="text-xl font-bold text-white mb-4">Personel Kartı</h3><div className="space-y-3"><input className="input-dark" placeholder="Ad Soyad" value={form.ad} onChange={e=>setForm({...form, ad:e.target.value})} /><input className="input-dark" placeholder="Ünvan" value={form.unvan} onChange={e=>setForm({...form, unvan:e.target.value})} /><input className="input-dark" type="date" value={form.giris} onChange={e=>setForm({...form, giris:e.target.value})} /><div className="border-t border-slate-700 pt-2"><label className="text-xs text-slate-500">Net Maaş</label><input className="input-dark" type="number" value={form.maas} onChange={e=>setForm({...form, maas:Number(e.target.value)})} /></div><div><label className="text-xs text-slate-500">SGK Maliyeti</label><input className="input-dark" type="number" value={form.sgk} onChange={e=>setForm({...form, sgk:Number(e.target.value)})} /></div><div><label className="text-xs text-slate-500">Yemek/Yol</label><input className="input-dark" type="number" value={form.yemek} onChange={e=>setForm({...form, yemek:Number(e.target.value)})} /></div><div><label className="text-xs text-slate-500">Vergi/Stopaj</label><input className="input-dark" type="number" value={form.vergi} onChange={e=>setForm({...form, vergi:Number(e.target.value)})} /></div><div><label className="text-xs text-slate-500">Diğer</label><input className="input-dark" type="number" value={form.diger} onChange={e=>setForm({...form, diger:Number(e.target.value)})} /></div><div className="flex gap-2 mt-4"><button onClick={()=>onSave(form)} className="btn btn-primary flex-1">Kaydet</button><button onClick={onClose} className="btn bg-slate-700 flex-1">İptal</button></div></div></div></div>) }
+        function StatCard({ title, val, icon, color }) { return (<div className="glass-panel p-6 rounded-xl flex justify-between items-start"><div><p className="text-xs text-slate-500 uppercase font-bold">{title}</p><h3 className="text-3xl font-bold text-white mt-1">{val}</h3></div><div className={`text-3xl ${color}`}><i className={`fas ${icon}`}></i></div></div>) }
+        function MenuBtn({ icon, text, active, onClick, badge }) { return (<div onClick={onClick} className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition mb-1 ${active ? 'bg-blue-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}><i className={`${icon} w-6 text-center text-lg`}></i><span className="text-sm font-medium flex-1">{text}</span>{badge && <span className="text-[10px] bg-slate-900 px-2 py-0.5 rounded text-slate-300 font-bold">{badge}</span>}</div>) }
 
-function StatCard({ title, val, icon, color }) {
-    return (
-        <div className="glass-panel p-6 rounded-2xl border-slate-700 flex justify-between items-start">
-            <div>
-                <p className="text-[10px] text-slate-500 uppercase font-bold tracking-wider">{title}</p>
-                <h3 className="text-2xl font-bold text-white mt-1 brand-font">{val}</h3>
-            </div>
-            <div className={`text-xl ${color} bg-slate-800 w-10 h-10 rounded-lg flex items-center justify-center border border-slate-700`}>
-                <i className={`fas ${icon}`}></i>
-            </div>
-        </div>
-    )
-}
-
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<App />);
-</script>
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
 </body>
 </html>
