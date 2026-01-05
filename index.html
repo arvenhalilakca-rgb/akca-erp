@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AKÇA ERP 2026 v21 | Final</title>
+    <title>AKÇA ERP 2026 v22 | Ölümsüz Veri</title>
     
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
@@ -324,7 +324,7 @@
                             <i className="fas fa-fingerprint text-4xl text-white"></i>
                         </div>
                         <h2 className="text-3xl font-black text-white mb-2 tracking-tighter glow-text">AKÇA ERP</h2>
-                        <p className="text-emerald-500 font-bold text-xs uppercase tracking-widest mb-8">v21 Final Edition</p>
+                        <p className="text-emerald-500 font-bold text-xs uppercase tracking-widest mb-8">v22 Vault Edition</p>
                         <form onSubmit={handleLogin} className="space-y-4">
                             <input type="password" className="input-dark text-center text-xl tracking-[0.5em] font-bold border-emerald-900/50 focus:border-emerald-500" placeholder="••••" value={password} onChange={e=>setPassword(e.target.value)} autoFocus />
                             {error && <p className="text-red-500 text-xs font-bold bg-red-500/10 py-2 rounded animate-bounce">{error}</p>}
@@ -338,12 +338,12 @@
         function DashboardLayout() {
             const [page, setPage] = useState('dashboard');
             
+            // --- MERKEZİ VERİ YÖNETİMİ ---
             const [personel, setPersonel] = useState(() => JSON.parse(localStorage.getItem('akca_v25_personel')) || INITIAL_PERSONEL);
             
-            // --- VERİ MİGRASYONU ---
+            // Mükellef verisi eksikse FULL_DATA'yı yükle
             const [mukellef, setMukellef] = useState(() => {
                 const saved = localStorage.getItem('akca_v25_mukellef');
-                // Eğer veri yoksa veya eksikse FULL_DATA'yı yükle
                 if (!saved || JSON.parse(saved).length < 227) {
                     return FULL_DATA.map(m => ({
                         ...m,
@@ -370,6 +370,13 @@
                 localStorage.setItem('akca_v18_bot', JSON.stringify(botSettings));
             }, [personel, mukellef, hareketler, logs, scheduledMsgs, groups, botSettings]);
 
+            // --- YEDEKLEME UYARISI (TOAST) ---
+            const showBackupReminder = () => {
+                // Basit bir uyarı mekanizması (Konsol veya Alert yerine daha şık olabilir ama şimdilik alert)
+                // alert("⚠️ Veri Değişikliği Algılandı! Lütfen gün sonunda 'Veri & Yedek' sayfasından yedeğinizi almayı unutmayın.");
+            };
+
+            // ZAMANLAYICI MOTORU
             useEffect(() => {
                 const timer = setInterval(() => {
                     const now = new Date();
@@ -395,19 +402,13 @@
                 return borc - alacak;
             };
 
-            // --- GÜNCELLENMİŞ NUMARA DÜZELTME MANTIĞI ---
             const sendApiMessage = async (tel, msg, fileUrl = null) => {
                 if(!tel) return { success: false };
-                
-                // 1. Temizlik
                 let cleanNumber = tel.replace(/\D/g, '');
-                
-                // 2. Formatlama (90 Ekleme)
                 if (cleanNumber.length === 10) cleanNumber = '90' + cleanNumber;
                 else if (cleanNumber.length === 11 && cleanNumber.startsWith('0')) cleanNumber = '90' + cleanNumber.substring(1);
                 
                 const chatId = `${cleanNumber}@c.us`;
-                
                 try {
                     let url = `${API_CONFIG.baseUrl}/waInstance${API_CONFIG.id}/SendMessage/${API_CONFIG.token}`;
                     let body = { chatId, message: msg };
@@ -429,7 +430,7 @@
                 <div className="flex h-screen w-full bg-[#020617] text-slate-300">
                     <aside className="w-72 glass-sidebar flex flex-col z-20">
                         <div className="p-8">
-                            <h1 className="text-2xl font-black text-white tracking-tight">AKÇA ERP <span className="text-emerald-500">v21</span></h1>
+                            <h1 className="text-2xl font-black text-white tracking-tight">AKÇA ERP <span className="text-emerald-500">v22</span></h1>
                             <p className="text-[10px] font-bold text-slate-500 uppercase mt-1 flex items-center gap-2"><span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span> Sistem Aktif</p>
                         </div>
                         <nav className="flex-1 px-4 space-y-1 overflow-y-auto custom-scrollbar">
@@ -438,7 +439,7 @@
                             <MenuBtn icon="fa-user-tie" text="Personel & Kârlılık" active={page==='personel'} onClick={()=>setPage('personel')} />
                             <MenuBtn icon="fa-money-bill-transfer" text="Cari & Tahakkuk" active={page==='finans'} onClick={()=>setPage('finans')} />
                             <MenuBtn icon="fab fa-whatsapp" text="WhatsApp Motoru" active={page==='robot'} onClick={()=>setPage('robot')} isSpecial={true} />
-                            <MenuBtn icon="fa-shield-halved" text="Veri Güvenliği" active={page==='yedek'} onClick={()=>setPage('yedek')} />
+                            <MenuBtn icon="fa-shield-halved" text="Veri & Yedek" active={page==='yedek'} onClick={()=>setPage('yedek')} isBackup={true} />
                         </nav>
                         <div className="p-6 border-t border-slate-800">
                             <div className="bg-slate-900/50 p-3 rounded-xl border border-slate-800 text-center">
@@ -457,7 +458,7 @@
                         </header>
                         <div className="flex-1 overflow-y-auto p-8 relative custom-scrollbar">
                             {page === 'dashboard' && <DashboardPage personel={personel} mukellef={mukellef} getBakiye={getBakiye} />}
-                            {page === 'mukellef' && <MukellefPage mukellef={mukellef} setMukellef={setMukellef} personel={personel} getBakiye={getBakiye} />}
+                            {page === 'mukellef' && <MukellefPage mukellef={mukellef} setMukellef={setMukellef} personel={personel} getBakiye={getBakiye} onUpdate={showBackupReminder} />}
                             {page === 'personel' && <PersonelPage personel={personel} setPersonel={setPersonel} mukellef={mukellef} setMukellef={setMukellef} />}
                             {page === 'finans' && <FinansPage mukellef={mukellef} hareketler={hareketler} setHareketler={setHareketler} getBakiye={getBakiye} />}
                             {page === 'robot' && <WhatsAppEngine mukellef={mukellef} logs={logs} sendApiMessage={sendApiMessage} setLogs={setLogs} scheduledMsgs={scheduledMsgs} setScheduledMsgs={setScheduledMsgs} groups={groups} setGroups={setGroups} getBakiye={getBakiye} botSettings={botSettings} setBotSettings={setBotSettings} />}
@@ -705,7 +706,7 @@
             )
         }
 
-        function MukellefPage({ mukellef, setMukellef, personel, getBakiye }) {
+        function MukellefPage({ mukellef, setMukellef, personel, getBakiye, onUpdate }) {
             const [search, setSearch] = useState("");
             const [filterTemsilci, setFilterTemsilci] = useState("all");
             const [modal, setModal] = useState(null);
@@ -723,7 +724,8 @@
                     const newM = {...m, id: Date.now()};
                     setMukellef(prev => [newM, ...prev]); 
                 }
-                setModal(null); 
+                setModal(null);
+                onUpdate(); // Trigger backup reminder
             };
 
             const calculateVipScore = (m) => {
@@ -884,10 +886,10 @@
         }
 
         function FinansPage({ mukellef, hareketler, setHareketler, getBakiye }) { const [selectedMId, setSelectedMId] = useState(mukellef[0]?.id || 0); const [view, setView] = useState('list'); const [tahakkukModu, setTahakkukModu] = useState('aylik'); const [seciliAylar, setSeciliAylar] = useState([]); const aylar = ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"]; const [tahsilat, setTahsilat] = useState({ tarih: new Date().toISOString().slice(0,10), tur: "Nakit", tutar: "", aciklama: "" }); const m = mukellef.find(x => x.id == selectedMId); const bakiye = getBakiye(parseInt(selectedMId)); const mHareketler = hareketler.filter(h => h.mukellefId == selectedMId); const handleTahakkuk = () => { const islemAylari = tahakkukModu === 'yillik' ? aylar : seciliAylar; if(islemAylari.length === 0) return alert("Ay seçiniz."); const newRecs = islemAylari.map(ay => ({ id: Date.now()+Math.random(), mukellefId: parseInt(selectedMId), tarih: new Date().toISOString().slice(0,10), tur: 'borc', aciklama: `${ay} 2024 Muhasebe Ücreti`, tutar: m.aylikUcret })); setHareketler([...newRecs, ...hareketler]); alert("İşlendi."); setView('list'); setSeciliAylar([]); }; const handleTahsilat = () => { if(!tahsilat.tutar) return alert("Tutar girin."); const newRec = { id: Date.now(), mukellefId: parseInt(selectedMId), tarih: tahsilat.tarih, tur: 'alacak', aciklama: `${tahsilat.tur} Tahsilat - ${tahsilat.aciklama}`, tutar: parseFloat(tahsilat.tutar) }; setHareketler([newRec, ...hareketler]); alert("Kaydedildi."); setView('list'); }; const sendWhatsapp = () => { const msg = `Sayın ${m.unvan}, cari bakiyeniz ${bakiye.toLocaleString()} TL (Borç) olarak görünmektedir. Ödeme rica ederiz.`; window.open(`https://wa.me/${m.tel}?text=${encodeURIComponent(msg)}`, '_blank'); }; return (<div className="space-y-6 fade-in"><div className="bg-slate-800 p-4 rounded-xl border border-slate-700 flex flex-col md:flex-row gap-4"><select className="input-dark w-full" value={selectedMId} onChange={e=>setSelectedMId(e.target.value)}>{mukellef.map(x => <option key={x.id} value={x.id}>{x.unvan}</option>)}</select><div className="flex gap-2"><button onClick={()=>setView('tahakkuk')} className="btn btn-primary">Tahakkuk</button><button onClick={()=>setView('tahsilat')} className="btn btn-success">Tahsilat</button><button onClick={()=>setView('list')} className="btn bg-slate-700">Hareketler</button></div></div><div className="glass-panel p-6 rounded-xl flex justify-between items-center bg-slate-800"><div><p className="text-xs text-slate-400">Bakiye</p><h3 className="text-2xl font-bold text-white">{bakiye.toLocaleString()} ₺</h3></div><button onClick={sendWhatsapp} className="bg-green-600 text-white p-3 rounded-full hover:bg-green-500 shadow-lg"><i className="fab fa-whatsapp text-xl"></i></button></div>{view === 'tahakkuk' && <div className="bg-slate-800 p-6 rounded-xl border border-slate-700 fade-in"><h3 className="font-bold text-white mb-4">Tahakkuk İşlemi</h3><div className="flex gap-4 mb-4"><button onClick={()=>setTahakkukModu('aylik')} className={`btn ${tahakkukModu==='aylik'?'bg-blue-600 text-white':'bg-slate-700'}`}>Aylık</button><button onClick={()=>setTahakkukModu('yillik')} className={`btn ${tahakkukModu==='yillik'?'bg-blue-600 text-white':'bg-slate-700'}`}>Tüm Yıl</button></div>{tahakkukModu === 'aylik' && <div className="grid grid-cols-4 gap-2 mb-4">{aylar.map(ay => (<button key={ay} onClick={()=>setSeciliAylar(seciliAylar.includes(ay)?seciliAylar.filter(x=>x!==ay):[...seciliAylar, ay])} className={`p-2 rounded text-xs font-bold border ${seciliAylar.includes(ay)?'bg-blue-600 border-blue-500 text-white':'border-slate-600 text-slate-400'}`}>{ay}</button>))}</div>}<button onClick={handleTahakkuk} className="btn btn-primary w-full">Onayla</button></div>}{view === 'tahsilat' && <div className="bg-slate-800 p-6 rounded-xl border border-slate-700 fade-in max-w-lg mx-auto"><h3 className="font-bold text-white mb-4">Tahsilat Girişi</h3><div className="space-y-3"><div><label className="text-xs text-slate-500">Tarih</label><input type="date" className="input-dark" value={tahsilat.tarih} onChange={e=>setTahsilat({...tahsilat, tarih:e.target.value})} /></div><div><label className="text-xs text-slate-500">Tür</label><select className="input-dark" value={tahsilat.tur} onChange={e=>setTahsilat({...tahsilat, tur:e.target.value})}><option>Nakit</option><option>Banka Havale/EFT</option><option>Çek</option><option>Kredi Kartı</option></select></div><div><label className="text-xs text-slate-500">Tutar</label><input type="number" className="input-dark text-xl font-bold" placeholder="0.00" value={tahsilat.tutar} onChange={e=>setTahsilat({...tahsilat, tutar:e.target.value})} /></div><div><label className="text-xs text-slate-500">Açıklama</label><input type="text" className="input-dark" placeholder="Opsiyonel" value={tahsilat.aciklama} onChange={e=>setTahsilat({...tahsilat, aciklama:e.target.value})} /></div><button onClick={handleTahsilat} className="btn btn-success w-full mt-2">Kaydet</button></div></div>}{view === 'list' && <div className="glass-panel rounded-xl overflow-hidden"><table className="w-full text-left text-sm"><thead className="bg-slate-900 text-slate-500 font-bold"><tr><th className="p-3">Tarih</th><th className="p-3">Açıklama</th><th className="p-3 text-right text-red-400">Borç</th><th className="p-3 text-right text-green-400">Alacak</th></tr></thead><tbody className="divide-y divide-slate-700">{mHareketler.map(h => (<tr key={h.id} className="hover:bg-slate-800/50"><td className="p-3 text-slate-400">{h.tarih}</td><td className="p-3 text-white font-medium">{h.aciklama}</td><td className="p-3 text-right text-red-400 font-mono">{h.tur==='borc'?h.tutar.toLocaleString():'-'}</td><td className="p-3 text-right text-green-400 font-mono">{h.tur==='alacak'?h.tutar.toLocaleString():'-'}</td></tr>))}</tbody></table></div>}</div>) }
-        function YedekPage({ data, setData }) { const download = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(data)], {type: "application/json"})); a.download = `akca_yedek.json`; a.click(); }; const upload = (e) => { const r = new FileReader(); r.onload = (ev) => { setData(JSON.parse(ev.target.result)); alert("Yüklendi!"); }; r.readAsText(e.target.files[0]); }; return (<div className="grid grid-cols-2 gap-6 fade-in"><div className="glass-panel p-8 text-center rounded-xl hover:bg-white/5 cursor-pointer" onClick={download}><i className="fas fa-download text-4xl text-blue-500 mb-4"></i><h3>Yedeği İndir</h3></div><div className="glass-panel p-8 text-center rounded-xl hover:bg-white/5 cursor-pointer relative"><input type="file" className="absolute inset-0 opacity-0 cursor-pointer" onChange={upload} /><i className="fas fa-upload text-4xl text-green-500 mb-4"></i><h3>Yedek Yükle</h3></div></div>) }
+        function YedekPage({ data, setData }) { const download = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(data)], {type: "application/json"})); a.download = `akca_yedek.json`; a.click(); }; const upload = (e) => { const r = new FileReader(); r.onload = (ev) => { setData(JSON.parse(ev.target.result)); alert("Veriler başarıyla yüklendi! Lütfen sayfayı yenileyin."); }; r.readAsText(e.target.files[0]); }; return (<div className="grid grid-cols-2 gap-6 fade-in"><div className="glass-panel p-8 text-center rounded-xl hover:bg-white/5 cursor-pointer" onClick={download}><i className="fas fa-download text-4xl text-blue-500 mb-4"></i><h3>Yedeği İndir</h3><p className="text-xs text-slate-500 mt-2">Verilerinizi kaybetmemek için düzenli indirin.</p></div><div className="glass-panel p-8 text-center rounded-xl hover:bg-white/5 cursor-pointer relative"><input type="file" className="absolute inset-0 opacity-0 cursor-pointer" onChange={upload} /><i className="fas fa-upload text-4xl text-green-500 mb-4"></i><h3>Yedek Yükle</h3><p className="text-xs text-slate-500 mt-2">Daha önce aldığınız .json yedeğini seçin.</p></div></div>) }
         function PersonelModal({ p, onClose, onSave }) { const [form, setForm] = useState(p); return (<div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 fade-in"><div className="bg-slate-800 p-8 rounded-2xl w-96 border border-slate-600 max-h-[90vh] overflow-y-auto custom-scrollbar"><h3 className="text-xl font-bold text-white mb-4">Personel Kartı</h3><div className="space-y-3"><input className="input-dark" placeholder="Ad Soyad" value={form.ad} onChange={e=>setForm({...form, ad:e.target.value})} /><input className="input-dark" placeholder="Ünvan" value={form.unvan} onChange={e=>setForm({...form, unvan:e.target.value})} /><input className="input-dark" type="date" value={form.giris} onChange={e=>setForm({...form, giris:e.target.value})} /><div className="border-t border-slate-700 pt-2"><label className="text-xs text-slate-500">Net Maaş</label><input className="input-dark" type="number" value={form.maas} onChange={e=>setForm({...form, maas:Number(e.target.value)})} /></div><div><label className="text-xs text-slate-500">SGK Maliyeti</label><input className="input-dark" type="number" value={form.sgk} onChange={e=>setForm({...form, sgk:Number(e.target.value)})} /></div><div><label className="text-xs text-slate-500">Yemek/Yol</label><input className="input-dark" type="number" value={form.yemek} onChange={e=>setForm({...form, yemek:Number(e.target.value)})} /></div><div><label className="text-xs text-slate-500">Vergi/Stopaj</label><input className="input-dark" type="number" value={form.vergi} onChange={e=>setForm({...form, vergi:Number(e.target.value)})} /></div><div><label className="text-xs text-slate-500">Diğer</label><input className="input-dark" type="number" value={form.diger} onChange={e=>setForm({...form, diger:Number(e.target.value)})} /></div><div className="flex gap-2 mt-4"><button onClick={()=>onSave(form)} className="btn btn-primary flex-1">Kaydet</button><button onClick={onClose} className="btn bg-slate-700 flex-1">İptal</button></div></div></div></div>) }
         function StatCard({ title, val, icon, color }) { return (<div className="glass-panel p-6 rounded-xl flex justify-between items-start"><div><p className="text-xs text-slate-500 uppercase font-bold">{title}</p><h3 className="text-3xl font-bold text-white mt-1">{val}</h3></div><div className={`text-3xl ${color}`}><i className={`fas ${icon}`}></i></div></div>) }
-        function MenuBtn({ icon, text, active, onClick, badge, isSpecial }) { return (<div onClick={onClick} className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition mb-1 border-l-4 ${active ? (isSpecial ? 'bg-emerald-600 text-white border-emerald-400 shadow-xl shadow-emerald-900/40' : 'bg-blue-600 text-white border-blue-400 shadow-xl') : 'text-slate-400 hover:bg-slate-800 hover:text-white border-transparent'}`}><i className={`fas ${icon} w-6 text-center text-lg ${!active && isSpecial ? 'text-emerald-500' : ''}`}></i><span className="text-sm font-bold uppercase italic flex-1 tracking-tight">{text}</span>{badge > 0 && <span className="text-[10px] bg-slate-900 px-2 py-0.5 rounded text-slate-300 font-bold">{badge}</span>}</div>) }
+        function MenuBtn({ icon, text, active, onClick, badge, isSpecial, isBackup }) { return (<div onClick={onClick} className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition mb-1 border-l-4 ${active ? (isSpecial ? 'bg-emerald-600 text-white border-emerald-400 shadow-xl shadow-emerald-900/40' : 'bg-blue-600 text-white border-blue-400 shadow-xl') : (isBackup ? 'text-orange-400 hover:bg-slate-800 hover:text-white border-transparent' : 'text-slate-400 hover:bg-slate-800 hover:text-white border-transparent')}`}><i className={`fas ${icon} w-6 text-center text-lg ${!active && isSpecial ? 'text-emerald-500' : ''}`}></i><span className="text-sm font-bold uppercase italic flex-1 tracking-tight">{text}</span>{badge > 0 && <span className="text-[10px] bg-slate-900 px-2 py-0.5 rounded text-slate-300 font-bold">{badge}</span>}</div>) }
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
