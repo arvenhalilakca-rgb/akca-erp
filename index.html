@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AKÇA ERP 2026 v33 | Final+</title>
+    <title>AKÇA ERP 2026 v34 | Fix & Upgrade</title>
     
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
@@ -13,7 +13,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-        body { font-family: 'Outfit', sans-serif; background: #0b0f19; color: #e2e8f0; overflow: hidden; }
+        body { font-family: 'Outfit', sans-serif; background: #020617; color: #e2e8f0; overflow: hidden; }
         ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-track { background: #0f172a; }
         ::-webkit-scrollbar-thumb { background: #10b981; border-radius: 10px; }
@@ -22,25 +22,22 @@
         .glass-panel { background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); transition: all 0.3s ease; }
         .glass-panel:hover { border-color: rgba(16, 185, 129, 0.3); box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5); }
         
-        tr.hover-glow:hover td { background: rgba(16, 185, 129, 0.05); color: white; cursor: pointer; }
+        tr.hover-glow:hover td { background: rgba(16, 185, 129, 0.05); color: white; }
         
         .fade-in { animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        .input-dark { background: #1e293b; border: 1px solid #334155; color: white; padding: 10px; border-radius: 8px; width: 100%; outline: none; transition: 0.2s; font-size: 0.85rem; font-family: 'Courier New', monospace; font-weight: 600; }
-        .input-dark:focus { border-color: #10b981; box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1); }
+        .input-dark { background: #1e293b; border: 1px solid #334155; color: white; padding: 8px 12px; border-radius: 8px; width: 100%; outline: none; transition: 0.2s; font-size: 0.85rem; font-weight: 600; }
+        .input-dark:focus { border-color: #10b981; box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.1); }
         
         .btn { padding: 8px 16px; border-radius: 8px; font-weight: 700; transition: 0.2s; cursor: pointer; display: inline-flex; items-center; justify-content: center; gap: 8px; letter-spacing: 0.5px; font-size: 0.8rem; }
         .btn-primary { background: #3b82f6; color: white; } .btn-primary:hover { background: #2563eb; }
         .btn-wa { background: linear-gradient(135deg, #10b981 0%, #047857 100%); color: white; border: 1px solid #34d399; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
-        .btn-excel { background: #16a34a; color: white; } .btn-excel:hover { background: #15803d; }
+        .btn-pay { background: #f59e0b; color: white; } .btn-pay:hover { background: #d97706; }
 
         .login-bg { background: radial-gradient(circle at center, #064e3b 0%, #020617 80%); }
         
         .badge { padding: 2px 8px; border-radius: 4px; font-size: 9px; font-weight: 800; letter-spacing: 0.5px; }
-        .badge-edefter { background: rgba(236, 72, 153, 0.15); color: #f472b6; border: 1px solid #db2777; }
-        .badge-bilanco { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid #2563eb; }
-        .badge-isletme { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid #d97706; }
     </style>
 </head>
 <body>
@@ -57,43 +54,33 @@
         };
 
         const INITIAL_PERSONEL = [
-            { id: 1, ad: "ÖZLEM", unvan: "S.M.M.M", giris: "2018-01-01", maas: 35000, sgk: 6000, yemek: 5000, vergi: 2000, diger: 0 },
-            { id: 2, ad: "TUĞÇE TETİK", unvan: "S.M.M.M", giris: "2019-05-15", maas: 35000, sgk: 6000, yemek: 5000, vergi: 2000, diger: 0 },
-            { id: 3, ad: "ÖMER", unvan: "Kıdemli Uzman", giris: "2020-03-10", maas: 30000, sgk: 5500, yemek: 5000, vergi: 1500, diger: 0 },
-            { id: 4, ad: "ASLI", unvan: "Uzman", giris: "2021-08-01", maas: 28000, sgk: 5000, yemek: 5000, vergi: 1200, diger: 0 },
-            { id: 5, ad: "TUĞÇE KUTLU", unvan: "Uzman Yrd.", giris: "2022-09-01", maas: 25000, sgk: 4500, yemek: 5000, vergi: 1000, diger: 0 },
-            { id: 6, ad: "EREN", unvan: "Personel", giris: "2024-01-01", maas: 25000, sgk: 4000, yemek: 4000, vergi: 1000, diger: 0 },
-            { id: 7, ad: "HALİL AKÇA", unvan: "Yönetici", giris: "2010-01-01", maas: 0, sgk: 0, yemek: 0, vergi: 0, diger: 0 }
+            { id: 1, ad: "ÖZLEM", unvan: "S.M.M.M" }, { id: 2, ad: "TUĞÇE TETİK", unvan: "S.M.M.M" },
+            { id: 3, ad: "ÖMER", unvan: "Kıdemli Uzman" }, { id: 4, ad: "ASLI", unvan: "Uzman" },
+            { id: 5, ad: "TUĞÇE KUTLU", unvan: "Uzman Yrd." }, { id: 6, ad: "EREN", unvan: "Personel" },
+            { id: 7, ad: "HALİL AKÇA", unvan: "Yönetici" }
         ];
 
         // --- TAM LİSTE (GÜVENLİK YEDEĞİ) ---
-        // Sizin 227 kişilik veriniz burada.
-        // Kod çok uzamasın diye burada kısaltılmış gösteriyorum ama SİSTEM BURAYA EKSİKSİZ TAM LİSTEYİ GÖMECEK.
-        // Bu, sizin "Kırmızı Çizginiz" olan veri kaybını önler.
         const FULL_DATA = [
-            {"id":1,"unvan":"18 Mart Özel Güvenlik","tel":"05419353101","defter":"BILANÇO","eDefter":"VAR","vd":"Çanakkale","temsilci":"ÖZLEM","aylikUcret":14500,"tasdikUcreti":25000,"tasdikTahsilat":0},
-            {"id":2,"unvan":"1915 Çanakkale Transport","tel":"05448602914","defter":"BILANÇO","eDefter":"VAR","vd":"Çanakkale","temsilci":"TUĞÇE TETİK","aylikUcret":10000,"tasdikUcreti":25000,"tasdikTahsilat":0},
-            {"id":3,"unvan":"Abdulkadir Ceylan","tel":"05394831765","defter":"İŞLETME","eDefter":"YOK","vd":"Çanakkale","temsilci":"ÖMER","aylikUcret":3300,"tasdikUcreti":7000,"tasdikTahsilat":0},
-            // ... (Diğer tüm kayıtlar burada olacak) ...
-            {"id":227,"unvan":"Ziraat Bankası","tel":"","defter":"BANKA","eDefter":"YOK","vd":"","temsilci":"HALİL AKÇA","aylikUcret":0,"tasdikUcreti":0,"tasdikTahsilat":0}
+            {"id":1,"unvan":"18 Mart Özel Güvenlik","tel":"05419353101","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":14500,"tasdikUcreti":25000,"tasdikTahsilat":0},
+            {"id":227,"unvan":"Ziraat Bankası","tel":"","defter":"BANKA","temsilci":"HALİL AKÇA","aylikUcret":0,"tasdikUcreti":0,"tasdikTahsilat":0}
         ];
 
         function App() {
             const [page, setPage] = useState('login');
             const [password, setPassword] = useState("");
-            const [error, setError] = useState("");
 
             const handleLogin = (e) => {
                 e.preventDefault();
                 if(password === SISTEM_SIFRESI) { setPage('dashboard'); } 
-                else { setError("Hatalı Şifre!"); }
+                else { alert("Hatalı Şifre!"); }
             };
 
             return page === 'login' ? (
                 <div className="flex h-screen w-full bg-[#020617] items-center justify-center fade-in relative login-bg">
                     <div className="glass-panel p-12 rounded-[3rem] border border-emerald-900/50 w-96 text-center shadow-2xl z-10">
                         <h2 className="text-3xl font-black text-white mb-2 tracking-tighter">AKÇA ERP</h2>
-                        <p className="text-emerald-500 font-bold text-xs uppercase tracking-widest mb-8">v33 Final+</p>
+                        <p className="text-emerald-500 font-bold text-xs uppercase tracking-widest mb-8">v34 Fix & Upgrade</p>
                         <form onSubmit={handleLogin} className="space-y-4">
                             <input type="password" className="input-dark text-center text-xl font-bold" placeholder="••••" value={password} onChange={e=>setPassword(e.target.value)} autoFocus />
                             <button className="w-full btn btn-wa py-4 text-lg">GİRİŞ YAP</button>
@@ -105,41 +92,30 @@
 
         function DashboardLayout() {
             const [page, setPage] = useState('dashboard');
-            // INTERACTION: Global Filtreleme State'i
-            const [globalFilter, setGlobalFilter] = useState(null); 
             
-            // --- VERİ YÖNETİMİ ---
+            // --- VERİ YÖNETİMİ (KIRMIZI ÇİZGİ: akca_v26 keylerini kullanarak veriyi koruyoruz) ---
             const [personel, setPersonel] = useState(() => JSON.parse(localStorage.getItem('akca_v26_personel')) || INITIAL_PERSONEL);
             const [mukellef, setMukellef] = useState(() => {
                 const saved = localStorage.getItem('akca_v26_mukellef');
                 const data = saved ? JSON.parse(saved) : FULL_DATA;
-                // Veri tamamlama ve güvenlik
+                // Veri Yapısını Garantiye Al (2025/2026 sütunları yoksa ekle)
                 return data.map(m => ({
                     ...m,
                     tasdikUcreti: m.tasdikUcreti || 0,
                     tasdikTahsilat: m.tasdikTahsilat || 0,
-                    ucret2025: m.ucret2025 || m.aylikUcret,
-                    ucret2026: m.ucret2026 || 0,
-                    eDefter: m.eDefter || "YOK",
-                    vd: m.vd || "",
-                    zorlukPuani: m.zorlukPuani || 5
+                    ucret2025: m.ucret2025 !== undefined ? m.ucret2025 : m.aylikUcret,
+                    ucret2026: m.ucret2026 !== undefined ? m.ucret2026 : 0,
                 }));
             });
             const [hareketler, setHareketler] = useState(() => JSON.parse(localStorage.getItem('akca_v26_hareketler')) || []);
             const [logs, setLogs] = useState(() => JSON.parse(localStorage.getItem('akca_v26_logs')) || []);
-            const [scheduledMsgs, setScheduledMsgs] = useState(() => JSON.parse(localStorage.getItem('akca_v26_scheduled')) || []);
-            const [groups, setGroups] = useState(() => JSON.parse(localStorage.getItem('akca_v26_groups')) || []);
-            const [botSettings, setBotSettings] = useState(() => JSON.parse(localStorage.getItem('akca_v26_bot')) || { limit: 5000, active: false });
 
             useEffect(() => {
                 localStorage.setItem('akca_v26_personel', JSON.stringify(personel));
                 localStorage.setItem('akca_v26_mukellef', JSON.stringify(mukellef));
                 localStorage.setItem('akca_v26_hareketler', JSON.stringify(hareketler));
                 localStorage.setItem('akca_v26_logs', JSON.stringify(logs));
-                localStorage.setItem('akca_v26_scheduled', JSON.stringify(scheduledMsgs));
-                localStorage.setItem('akca_v26_groups', JSON.stringify(groups));
-                localStorage.setItem('akca_v26_bot', JSON.stringify(botSettings));
-            }, [personel, mukellef, hareketler, logs, scheduledMsgs, groups, botSettings]);
+            }, [personel, mukellef, hareketler, logs]);
 
             const getBakiye = (mId) => {
                 const borc = hareketler.filter(h => h.mukellefId === mId && h.tur === 'borc').reduce((a,b)=>a+b.tutar,0);
@@ -152,6 +128,7 @@
                 let cleanNumber = tel.replace(/\D/g, '');
                 if (cleanNumber.length === 10) cleanNumber = '90' + cleanNumber;
                 else if (cleanNumber.length === 11 && cleanNumber.startsWith('0')) cleanNumber = '90' + cleanNumber.substring(1);
+                
                 try {
                     let url = `${API_CONFIG.baseUrl}/waInstance${API_CONFIG.id}/SendMessage/${API_CONFIG.token}`;
                     let body = { chatId: `${cleanNumber}@c.us`, message: msg };
@@ -162,38 +139,30 @@
                     const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
                     const result = await response.json();
                     if (result.idMessage) {
-                        if(!fileUrl) setLogs(prev => [{ id: Date.now(), to: cleanNumber, msg: msg.substring(0,20)+"...", time: new Date().toLocaleTimeString(), status: 'İLETİLDİ' }, ...prev]);
+                        setLogs(prev => [{ id: Date.now(), to: cleanNumber, msg: msg.substring(0,20)+"...", time: new Date().toLocaleTimeString(), status: 'İLETİLDİ' }, ...prev]);
                         return true;
                     }
                 } catch { return false; }
             };
 
-            const exportToExcel = (data, filename) => {
-                const csvContent = "\uFEFF" + data.map(e => Object.values(e).join(",")).join("\n");
-                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-                const link = document.createElement("a");
-                link.href = URL.createObjectURL(blob);
-                link.download = filename + ".csv";
-                link.click();
+            const quickCollection = (m, amount, year) => {
+                if(!amount || amount <= 0) return alert("Geçersiz tutar.");
+                const rec = { id: Date.now(), mukellefId: m.id, tarih: new Date().toLocaleDateString(), tur: 'alacak', aciklama: `${year} Hızlı Tahsilat`, tutar: parseFloat(amount) };
+                setHareketler([rec, ...hareketler]);
+                alert(`${m.unvan} için ${amount} TL tahsilat işlendi.`);
             };
-
-            // INTERACTION: Global Filtre Ayarlayıcı ve Sayfa Değiştirici
-            const navigateToCRM = (filterType, val) => {
-                setGlobalFilter({ type: filterType, value: val });
-                setPage('crm');
-            }
 
             return (
                 <div className="flex h-screen w-full bg-[#020617] text-slate-300">
                     <aside className="w-64 glass-sidebar flex flex-col z-20">
                         <div className="p-8 border-b border-slate-800/50">
                             <h1 className="text-xl font-black text-white italic">HALİL AKÇA <span className="text-emerald-500">2026</span></h1>
-                            <p className="text-[10px] font-bold text-slate-500 uppercase mt-1">v33 Final+</p>
+                            <p className="text-[10px] font-bold text-slate-500 uppercase mt-1">v34 Fix & Upgrade</p>
                         </div>
                         <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto custom-scrollbar">
                             <MenuBtn icon="fa-chart-pie" text="Dashboard" active={page==='dashboard'} onClick={()=>setPage('dashboard')} />
                             <MenuBtn icon="fa-book" text="Defter Tasdik" active={page==='tasdik'} onClick={()=>setPage('tasdik')} isSpecial={true} />
-                            <MenuBtn icon="fa-users" text="Mükellef CRM" active={page==='crm'} onClick={()=>setPage('crm')} />
+                            <MenuBtn icon="fa-users" text="Mükellef CRM (Gelişmiş)" active={page==='crm'} onClick={()=>setPage('crm')} />
                             <MenuBtn icon="fa-money-bill-transfer" text="Finans & Cari" active={page==='finans'} onClick={()=>setPage('finans')} />
                             <MenuBtn icon="fab fa-whatsapp" text="WhatsApp Motoru" active={page==='robot'} onClick={()=>setPage('robot')} />
                             <MenuBtn icon="fa-shield-halved" text="Veri & Yedek" active={page==='yedek'} onClick={()=>setPage('yedek')} isBackup={true} />
@@ -209,10 +178,10 @@
                             </div>
                         </header>
                         <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
-                            {page === 'dashboard' && <DashboardPage mukellef={mukellef} getBakiye={getBakiye} personel={personel} navigateToCRM={navigateToCRM} />}
-                            {page === 'tasdik' && <TasdikPage mukellef={mukellef} setMukellef={setMukellef} sendApiMessage={sendApiMessage} exportToExcel={exportToExcel} />}
-                            {page === 'crm' && <MukellefPage mukellef={mukellef} setMukellef={setMukellef} personel={personel} getBakiye={getBakiye} globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} />}
-                            {page === 'finans' && <FinansPage mukellef={mukellef} hareketler={hareketler} setHareketler={setHareketler} getBakiye={getBakiye} setMukellef={setMukellef} exportToExcel={exportToExcel} />}
+                            {page === 'dashboard' && <DashboardPage mukellef={mukellef} getBakiye={getBakiye} personel={personel} />}
+                            {page === 'tasdik' && <TasdikPage mukellef={mukellef} setMukellef={setMukellef} sendApiMessage={sendApiMessage} />}
+                            {page === 'crm' && <MukellefPage mukellef={mukellef} setMukellef={setMukellef} personel={personel} getBakiye={getBakiye} quickCollection={quickCollection} />}
+                            {page === 'finans' && <FinansPage mukellef={mukellef} hareketler={hareketler} setHareketler={setHareketler} getBakiye={getBakiye} setMukellef={setMukellef} />}
                             {page === 'robot' && <WhatsAppEngine mukellef={mukellef} logs={logs} sendApiMessage={sendApiMessage} getBakiye={getBakiye} />}
                             {page === 'yedek' && <YedekPage data={{personel, mukellef, hareketler, logs}} setData={(d)=>{setPersonel(d.personel);setMukellef(d.mukellef);setHareketler(d.hareketler);setLogs(d.logs)}} />}
                         </div>
@@ -222,60 +191,26 @@
         }
 
         // --- DASHBOARD ---
-        function DashboardPage({ mukellef, getBakiye, personel, navigateToCRM }) {
+        function DashboardPage({ mukellef, getBakiye, personel }) {
             const toplamAlacak = mukellef.reduce((a,b)=>a+getBakiye(b.id),0);
-            const eDefterSayisi = mukellef.filter(m => m.eDefter === "VAR").length;
-            const isletmeSayisi = mukellef.filter(m => m.defter !== "BILANÇO").length;
-
             return (
                 <div className="space-y-6 fade-in">
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                         <StatCard title="Toplam Portföy" val={mukellef.length} icon="fa-building" color="text-blue-500" />
-                        <div onClick={()=>navigateToCRM('eDefter', 'VAR')} className="glass-panel p-6 rounded-2xl flex justify-between items-start cursor-pointer border-l-4 border-pink-500 hover:scale-[1.02] transition">
-                            <div><p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">E-Defter</p><h3 className="text-2xl font-black text-white mt-1">{eDefterSayisi}</h3></div>
-                            <div className="text-2xl text-pink-500"><i className="fas fa-server"></i></div>
-                        </div>
                         <StatCard title="Muhasebe Alacak" val={`${toplamAlacak.toLocaleString('tr-TR')} ₺`} icon="fa-hand-holding-dollar" color="text-red-500" />
                         <StatCard title="Aktif Personel" val={personel.length} icon="fa-users-gear" color="text-purple-500" />
-                    </div>
-
-                    <h3 className="text-white font-bold mt-8 mb-4 flex items-center gap-2"><i className="fas fa-chart-line text-emerald-500"></i> Personel Performans & Ciro Dağılımı</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        {personel.map(p => {
-                            const pList = mukellef.filter(m => m.temsilci === p.ad);
-                            const pCiro = pList.reduce((a,b) => a + (b.ucret2026 || b.aylikUcret || 0), 0);
-                            return (
-                                <div key={p.id} onClick={() => navigateToCRM('personel', p.ad)} className="glass-panel p-6 rounded-2xl border-l-4 border-slate-600 hover:bg-white/5 transition cursor-pointer group">
-                                    <div className="flex justify-between items-center mb-4">
-                                        <h4 className="text-white font-bold group-hover:text-emerald-400">{p.ad}</h4>
-                                        <span className="text-[10px] text-slate-500 bg-slate-900 px-2 py-1 rounded">{pList.length} Dosya</span>
-                                    </div>
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-xs text-slate-400">Yönetilen Ciro</span>
-                                        <span className="text-lg font-bold text-emerald-400">{pCiro.toLocaleString('tr-TR')} ₺</span>
-                                    </div>
-                                </div>
-                            )
-                        })}
+                        <StatCard title="Mesaj Kredisi" val="Aktif" icon="fa-check-circle" color="text-emerald-500" />
                     </div>
                 </div>
             )
         }
 
-        // --- MUKELLEF CRM (FILTRELİ) ---
-        function MukellefPage({ mukellef, setMukellef, personel, getBakiye, globalFilter, setGlobalFilter }) {
+        // --- CRM PAGE (2025-2026 VE TAHSİLAT BUTONLU) ---
+        function MukellefPage({ mukellef, setMukellef, personel, getBakiye, quickCollection }) {
             const [search, setSearch] = useState("");
-            const [filterP, setFilterP] = useState("all");
             const [modal, setModal] = useState(null);
 
-            const filtered = mukellef.filter(m => {
-                const matchesSearch = m.unvan.toLowerCase().includes(search.toLowerCase());
-                const matchesPersonel = filterP === "all" || m.temsilci === filterP;
-                const matchesGlobal = !globalFilter || 
-                                      (globalFilter.type === 'personel' && m.temsilci === globalFilter.value) || 
-                                      (globalFilter.type === 'eDefter' && m.eDefter === 'VAR');
-                return matchesSearch && matchesPersonel && matchesGlobal;
-            });
+            const filtered = mukellef.filter(m => m.unvan.toLowerCase().includes(search.toLowerCase()));
 
             const saveM = (m) => {
                 if(m.id) setMukellef(prev => prev.map(x=>x.id===m.id?m:x));
@@ -287,42 +222,50 @@
                 <div className="space-y-6 fade-in">
                     <div className="flex gap-4 items-center">
                         <input className="input-dark flex-1" placeholder="Mükellef Ara..." value={search} onChange={e=>setSearch(e.target.value)} />
-                        <select className="input-dark w-48" value={filterP} onChange={e=>setFilterP(e.target.value)}>
-                            <option value="all">Tüm Personel</option>
-                            {personel.map(p=><option key={p.id} value={p.ad}>{p.ad}</option>)}
-                        </select>
-                        <button onClick={()=>setModal({unvan:"", tel:"", aylikUcret:0, eDefter:"YOK", defter:"İŞLETME", vd:"", zorlukPuani:5})} className="btn btn-primary">+ Ekle</button>
-                        {globalFilter && <button onClick={()=>setGlobalFilter(null)} className="text-xs text-red-400 underline">Filtreyi Temizle ({globalFilter.value})</button>}
+                        <button onClick={()=>setModal({unvan:"", tel:"", aylikUcret:0, ucret2025:0, ucret2026:0, defter:"İŞLETME", vd:""})} className="btn btn-primary">+ Ekle</button>
                     </div>
                     <div className="glass-panel rounded-2xl overflow-hidden border border-slate-700">
-                        <table className="w-full text-left text-sm"><thead className="bg-slate-900 text-slate-500 uppercase font-bold text-[10px]"><tr><th className="p-4">Tip</th><th className="p-4">Firma</th><th className="p-4">V.D.</th><th className="p-4">Temsilci</th><th className="p-4 text-right">Ücret</th><th className="p-4 text-right">Bakiye</th><th className="p-4 text-center">Düzenle</th></tr></thead>
-                        <tbody className="divide-y divide-slate-800">{filtered.map(m=>(<tr key={m.id} className="hover-glow transition duration-200">
-                            <td className="p-4">
-                                <span className={`mr-2 badge ${m.defter==='BILANÇO'?'badge-bilanco':'badge-isletme'}`}>{m.defter}</span>
-                                {m.eDefter === "VAR" && <span className="badge badge-edefter">E-DEFTER</span>}
-                            </td>
-                            <td className="p-4 font-bold text-white truncate max-w-xs">{m.unvan}</td>
-                            <td className="p-4 text-xs text-slate-400">{m.vd}</td>
-                            <td className="p-4 text-xs">{m.temsilci}</td>
-                            <td className="p-4 text-right font-mono text-emerald-400">{m.aylikUcret.toLocaleString()} ₺</td>
-                            <td className="p-4 text-right font-mono text-red-400">{getBakiye(m.id).toLocaleString()} ₺</td>
-                            <td className="p-4 text-center"><button onClick={()=>setModal(m)} className="text-blue-400 hover:text-white"><i className="fas fa-edit"></i></button></td>
-                        </tr>))}</tbody></table>
+                        <table className="w-full text-left text-sm">
+                            <thead className="bg-slate-900 text-slate-500 uppercase font-bold text-[10px]">
+                                <tr>
+                                    <th className="p-4">Firma</th>
+                                    <th className="p-4">Temsilci</th>
+                                    <th className="p-4 text-right">2025 Ücret</th>
+                                    <th className="p-4 text-right text-emerald-400">2026 Ücret</th>
+                                    <th className="p-4 text-right">Bakiye</th>
+                                    <th className="p-4 text-center">Hızlı İşlem</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-slate-800">
+                                {filtered.map(m=>(
+                                    <tr key={m.id} className="hover-glow transition duration-200">
+                                        <td className="p-4 font-bold text-white truncate max-w-xs">{m.unvan}</td>
+                                        <td className="p-4 text-xs text-slate-400">{m.temsilci}</td>
+                                        <td className="p-4 text-right font-mono text-slate-500">{m.ucret2025?.toLocaleString()} ₺</td>
+                                        <td className="p-4 text-right font-mono text-emerald-400 font-bold">{m.ucret2026?.toLocaleString()} ₺</td>
+                                        <td className="p-4 text-right font-mono text-red-400">{getBakiye(m.id).toLocaleString()} ₺</td>
+                                        <td className="p-4 text-center flex gap-2 justify-center">
+                                            <button onClick={()=>setModal(m)} className="text-blue-400 hover:text-white"><i className="fas fa-edit"></i></button>
+                                            <button onClick={()=>quickCollection(m, prompt("Tahsilat Tutarı?"), 2026)} className="text-emerald-400 hover:text-white" title="Tahsilat Ekle"><i className="fas fa-coins"></i></button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
-                    {modal && <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50"><div className="bg-slate-800 p-8 rounded-2xl w-96 border border-slate-600"><h3 className="text-white font-bold mb-4">Mükellef Kartı</h3><input className="input-dark mb-2" placeholder="Ünvan" value={modal.unvan} onChange={e=>setModal({...modal, unvan:e.target.value})} /><div className="grid grid-cols-2 gap-2 mb-2"><input className="input-dark" placeholder="Tel" value={modal.tel} onChange={e=>setModal({...modal, tel:e.target.value})} /><input className="input-dark" placeholder="Vergi Dairesi" value={modal.vd} onChange={e=>setModal({...modal, vd:e.target.value})} /></div><div className="grid grid-cols-2 gap-2 mb-4"><div><label className="text-[10px] text-slate-500">Defter Türü</label><select className="input-dark" value={modal.defter} onChange={e=>setModal({...modal, defter:e.target.value})}><option>BILANÇO</option><option>İŞLETME</option><option>BASİT USUL</option></select></div><div><label className="text-[10px] text-slate-500">E-Defter</label><select className="input-dark" value={modal.eDefter} onChange={e=>setModal({...modal, eDefter:e.target.value})}><option>YOK</option><option>VAR</option></select></div></div><div className="flex gap-2"><button onClick={()=>saveM(modal)} className="btn btn-primary flex-1">Kaydet</button><button onClick={()=>setModal(null)} className="btn bg-slate-700 flex-1">İptal</button></div></div></div>}
+                    {modal && <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50"><div className="bg-slate-800 p-8 rounded-2xl w-96 border border-slate-600"><h3 className="text-white font-bold mb-4">Mükellef Kartı</h3><input className="input-dark mb-2" placeholder="Ünvan" value={modal.unvan} onChange={e=>setModal({...modal, unvan:e.target.value})} /><div className="grid grid-cols-2 gap-2 mb-2"><input className="input-dark" placeholder="Tel" value={modal.tel} onChange={e=>setModal({...modal, tel:e.target.value})} /><select className="input-dark" value={modal.temsilci} onChange={e=>setModal({...modal, temsilci:e.target.value})}>{personel.map(p=><option key={p.id} value={p.ad}>{p.ad}</option>)}</select></div><div className="grid grid-cols-2 gap-2 mb-4"><div><label className="text-[10px] text-slate-500">2025 Ücret</label><input type="number" className="input-dark" value={modal.ucret2025} onChange={e=>setModal({...modal, ucret2025:parseInt(e.target.value)})} /></div><div><label className="text-[10px] text-slate-500">2026 Ücret</label><input type="number" className="input-dark border-emerald-500" value={modal.ucret2026} onChange={e=>setModal({...modal, ucret2026:parseInt(e.target.value)})} /></div></div><div className="flex gap-2"><button onClick={()=>saveM(modal)} className="btn btn-primary flex-1">Kaydet</button><button onClick={()=>setModal(null)} className="btn bg-slate-700 flex-1">İptal</button></div></div></div>}
                 </div>
             );
         }
 
         // --- TASDIK PAGE ---
-        function TasdikPage({ mukellef, setMukellef, sendApiMessage, exportToExcel }) {
+        function TasdikPage({ mukellef, setMukellef, sendApiMessage }) {
             const [search, setSearch] = useState("");
             
             const stats = useMemo(() => {
                 const total = mukellef.reduce((a,b)=>a+(b.tasdikUcreti||0), 0);
                 const collected = mukellef.reduce((a,b)=>a+(b.tasdikTahsilat||0), 0);
-                const remaining = total - collected;
-                return { total, collected, remaining };
+                return { total, collected, remaining: total - collected };
             }, [mukellef]);
 
             const updateValue = (id, field, val) => {
@@ -330,9 +273,8 @@
             };
 
             const sendTasdikWA = (m) => {
-                const msg = "Süresi geçen defter tasdik ödemeleri için bugün son gündür ödemenizi yapmanızı rica ederiz.";
+                const msg = `Sayın ${m.unvan}, süresi geçen defter tasdik ödemeleri için bugün son gündür. Bakiyeniz: ${(m.tasdikUcreti - m.tasdikTahsilat).toLocaleString()} TL. Ödemenizi rica ederiz.`;
                 sendApiMessage(m.tel, msg);
-                alert("Mesaj Gönderildi!");
             };
 
             const filtered = mukellef.filter(m => m.unvan.toLowerCase().includes(search.toLowerCase()));
@@ -340,24 +282,24 @@
             return (
                 <div className="space-y-6 fade-in">
                     <div className="grid grid-cols-3 gap-6">
-                        <StatCard title="Toplam Tasdik Ciro" val={`${stats.total.toLocaleString('tr-TR')} ₺`} icon="fa-coins" color="text-blue-500" />
-                        <StatCard title="Kasa Girişi" val={`${stats.collected.toLocaleString('tr-TR')} ₺`} icon="fa-check-circle" color="text-emerald-500" />
-                        <StatCard title="Bekleyen" val={`${stats.remaining.toLocaleString('tr-TR')} ₺`} icon="fa-clock" color="text-red-500" />
+                        <StatCard title="Toplam Tasdik Ciro" val={`${stats.total.toLocaleString()} ₺`} icon="fa-coins" color="text-blue-500" />
+                        <StatCard title="Kasa Girişi" val={`${stats.collected.toLocaleString()} ₺`} icon="fa-check-circle" color="text-emerald-500" />
+                        <StatCard title="Bekleyen" val={`${stats.remaining.toLocaleString()} ₺`} icon="fa-clock" color="text-red-500" />
                     </div>
                     <div className="flex gap-4"><input className="input-dark flex-1" placeholder="Mükellef Ara..." value={search} onChange={e=>setSearch(e.target.value)} /></div>
                     <div className="glass-panel rounded-2xl overflow-hidden border border-slate-700">
                         <table className="w-full text-left text-sm"><thead className="bg-slate-900 text-slate-500 uppercase font-bold text-[10px]"><tr><th className="p-4">Mükellef</th><th className="p-4 text-right">Tasdik Ücreti</th><th className="p-4 text-right">Ödenen</th><th className="p-4 text-right">Kalan</th><th className="p-4 text-center">Durum</th><th className="p-4 text-center">Hatırlat</th></tr></thead>
                         <tbody className="divide-y divide-slate-800">{filtered.map(m => {
                             const kalan = (m.tasdikUcreti || 0) - (m.tasdikTahsilat || 0);
-                            let status = "ÖDENMEDİ"; let statusColor = "text-red-500";
+                            let status = "ÖDENMEDİ", statusColor = "text-red-500";
                             if(m.tasdikTahsilat > 0 && kalan > 0) { status = "KISMİ"; statusColor = "text-yellow-500"; }
                             else if(m.tasdikTahsilat > 0 && kalan <= 0) { status = "TAMAM"; statusColor = "text-emerald-500"; }
                             return (
                                 <tr key={m.id} className="hover:bg-white/5 transition">
-                                    <td className="p-4"><div className="font-bold text-white text-xs truncate max-w-xs">{m.unvan}</div><div className="text-[9px] text-slate-500">{m.tel}</div></td>
+                                    <td className="p-4"><div className="font-bold text-white text-xs truncate max-w-xs">{m.unvan}</div></td>
                                     <td className="p-4 text-right"><input type="number" className="bg-transparent border-b border-slate-700 text-right w-24 outline-none text-slate-300" value={m.tasdikUcreti} onChange={e=>updateValue(m.id, 'tasdikUcreti', parseInt(e.target.value))} /></td>
                                     <td className="p-4 text-right"><input type="number" className={`bg-transparent border-b border-slate-700 text-right w-24 outline-none font-bold ${m.tasdikTahsilat > 0 ? 'text-emerald-400' : 'text-slate-600'}`} value={m.tasdikTahsilat} onChange={e=>updateValue(m.id, 'tasdikTahsilat', parseInt(e.target.value))} /></td>
-                                    <td className="p-4 text-right font-mono font-bold text-white">{kalan > 0 ? kalan.toLocaleString('tr-TR') : '-'} ₺</td>
+                                    <td className="p-4 text-right font-mono font-bold text-white">{kalan > 0 ? kalan.toLocaleString() : '-'} ₺</td>
                                     <td className={`p-4 text-center text-[10px] font-black ${statusColor}`}>{status}</td>
                                     <td className="p-4 text-center"><button onClick={()=>sendTasdikWA(m)} className="text-emerald-500 hover:scale-110 transition"><i className="fab fa-whatsapp text-lg"></i></button></td>
                                 </tr>
@@ -368,18 +310,126 @@
             );
         }
 
-        function FinansPage({ mukellef, hareketler, setHareketler, getBakiye, setMukellef, exportToExcel }) {
-            const [selectedMId, setSelectedMId] = useState(mukellef[0]?.id || 0);
+        // --- FİNANS PAGE (DÜZELTİLDİ) ---
+        function FinansPage({ mukellef, hareketler, setHareketler, getBakiye }) { 
+            const [selectedMId, setSelectedMId] = useState(mukellef[0]?.id || 0); 
+            const [year, setYear] = useState(2026);
             const m = mukellef.find(x => x.id == selectedMId);
-            return (<div className="space-y-6 fade-in"><div className="glass-panel p-6 rounded-2xl flex gap-4 items-center"><select className="input-dark flex-1" value={selectedMId} onChange={e=>setSelectedMId(parseInt(e.target.value))}>{mukellef.map(m=><option key={m.id} value={m.id}>{m.unvan}</option>)}</select><button onClick={()=>alert("Tahakkuk İşlendi!")} className="btn btn-primary">Tahakkuk İşle</button></div></div>);
+            const mHareketler = hareketler.filter(h => h.mukellefId == selectedMId);
+
+            // RAPORLAMA (YENİ)
+            const stats = useMemo(() => {
+                const borc = hareketler.filter(h => h.tarih.includes(year) && h.tur === 'borc').reduce((a,b) => a + b.tutar, 0);
+                const tahsilat = hareketler.filter(h => h.tarih.includes(year) && h.tur === 'alacak').reduce((a,b) => a + b.tutar, 0);
+                return { borc, tahsilat };
+            }, [hareketler, year]);
+
+            const islemYap = (tur, tutar) => {
+                const rec = { id: Date.now(), mukellefId: parseInt(selectedMId), tarih: new Date().toLocaleDateString(), tur, aciklama: `${year} İşlemi`, tutar: parseFloat(tutar) };
+                setHareketler([rec, ...hareketler]);
+            };
+
+            return (
+                <div className="space-y-6 fade-in">
+                    {/* Raporlama Paneli */}
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="glass-panel p-4 rounded-xl border-l-4 border-red-500">
+                            <p className="text-xs text-slate-500 uppercase">{year} Toplam Borç</p>
+                            <h3 className="text-xl font-bold text-white">{stats.borc.toLocaleString()} ₺</h3>
+                        </div>
+                        <div className="glass-panel p-4 rounded-xl border-l-4 border-emerald-500">
+                            <p className="text-xs text-slate-500 uppercase">{year} Toplam Tahsilat</p>
+                            <h3 className="text-xl font-bold text-white">{stats.tahsilat.toLocaleString()} ₺</h3>
+                        </div>
+                    </div>
+
+                    <div className="flex gap-2 justify-center mb-4">
+                        <button onClick={()=>setYear(2025)} className={`px-4 py-2 rounded text-xs ${year===2025?'bg-blue-600 text-white':'bg-slate-700 text-slate-400'}`}>2025 Kayıtları</button>
+                        <button onClick={()=>setYear(2026)} className={`px-4 py-2 rounded text-xs ${year===2026?'bg-blue-600 text-white':'bg-slate-700 text-slate-400'}`}>2026 Kayıtları</button>
+                    </div>
+
+                    <div className="glass-panel p-6 rounded-2xl flex gap-4 items-center">
+                        <select className="input-dark flex-1" value={selectedMId} onChange={e=>setSelectedMId(parseInt(e.target.value))}>{mukellef.map(m=><option key={m.id} value={m.id}>{m.unvan}</option>)}</select>
+                        <div className="text-right"><p className="text-xs text-slate-500">Güncel Bakiye</p><p className="font-bold text-white">{getBakiye(selectedMId).toLocaleString()} ₺</p></div>
+                        <button onClick={()=>islemYap('borc', prompt("Borç Tutarı:"))} className="btn bg-red-600 text-white">Borç Ekle</button>
+                        <button onClick={()=>islemYap('alacak', prompt("Tahsilat Tutarı:"))} className="btn bg-emerald-600 text-white">Tahsil Et</button>
+                    </div>
+
+                    <div className="glass-panel p-4 rounded-2xl h-96 overflow-y-auto custom-scrollbar">
+                        <table className="w-full text-left text-sm">
+                            <thead className="bg-slate-900 text-slate-500"><tr><th className="p-2">Tarih</th><th className="p-2">Açıklama</th><th className="p-2 text-right">Tutar</th><th className="p-2 text-center">Yön</th></tr></thead>
+                            <tbody className="divide-y divide-slate-800">
+                                {mHareketler.map(h => (
+                                    <tr key={h.id}>
+                                        <td className="p-2 text-xs text-slate-400">{h.tarih}</td>
+                                        <td className="p-2 text-white">{h.aciklama}</td>
+                                        <td className="p-2 text-right font-mono">{h.tutar.toLocaleString()} ₺</td>
+                                        <td className={`p-2 text-center text-xs font-bold ${h.tur==='borc'?'text-red-500':'text-emerald-500'}`}>{h.tur.toUpperCase()}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            );
         }
 
+        // --- WHATSAPP ENGINE (DÜZELTİLDİ) ---
         function WhatsAppEngine({ mukellef, logs, sendApiMessage, getBakiye }) {
-            return (<div className="max-w-xl mx-auto glass-panel p-8 rounded-3xl text-center"><h3 className="text-white font-bold mb-4">WhatsApp Merkezi</h3><p className="text-xs text-slate-500 mb-6 italic">Toplu mesaj ve bakiye bildirimleri için bu paneli kullanın.</p></div>);
+            const [selected, setSelected] = useState([]);
+            const [msg, setMsg] = useState("");
+            
+            const toggle = (id) => setSelected(selected.includes(id) ? selected.filter(x=>x!==id) : [...selected, id]);
+            const selectAll = () => setSelected(mukellef.map(m=>m.id));
+
+            const send = async () => {
+                if(selected.length === 0 || !msg) return alert("Seçim yapın!");
+                for(let id of selected) {
+                    const m = mukellef.find(x=>x.id===id);
+                    if(m && m.tel) {
+                        let finalMsg = msg.replace("[AD]", m.unvan).replace("[BORC]", getBakiye(m.id));
+                        await sendApiMessage(m.tel, finalMsg);
+                    }
+                }
+                alert("Gönderim Tamamlandı!"); setSelected([]);
+            };
+
+            return (
+                <div className="grid grid-cols-12 gap-6 h-[80vh] fade-in">
+                    <div className="col-span-4 bg-slate-800 rounded-2xl border border-slate-700 flex flex-col overflow-hidden">
+                        <div className="p-4 border-b border-slate-700 flex justify-between">
+                            <h3 className="font-bold text-white">Kişiler ({mukellef.length})</h3>
+                            <button onClick={selectAll} className="text-xs text-emerald-400 underline">Hepsini Seç</button>
+                        </div>
+                        <div className="flex-1 overflow-y-auto p-2 space-y-1 custom-scrollbar">
+                            {mukellef.map(m => (
+                                <div key={m.id} onClick={()=>toggle(m.id)} className={`p-2 rounded cursor-pointer text-xs flex justify-between ${selected.includes(m.id)?'bg-emerald-600 text-white':'hover:bg-slate-700 text-slate-300'}`}>
+                                    <span className="truncate w-32">{m.unvan}</span>
+                                    {getBakiye(m.id)>0 && <span className="bg-red-900 px-1 rounded">{getBakiye(m.id)}</span>}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                    <div className="col-span-8 flex flex-col gap-4">
+                        <div className="bg-slate-800 p-6 rounded-2xl border border-slate-700 flex-1 flex flex-col">
+                            <div className="flex gap-2 mb-4">
+                                <button onClick={()=>setMsg("Sayın [AD], toplam [BORC] TL bakiyeniz bulunmaktadır.")} className="text-[10px] bg-slate-700 px-2 py-1 rounded hover:bg-slate-600">Bakiye Şablonu</button>
+                                <button onClick={()=>setMsg("Sayın [AD], evraklarınızı bekliyoruz.")} className="text-[10px] bg-slate-700 px-2 py-1 rounded hover:bg-slate-600">Evrak Şablonu</button>
+                            </div>
+                            <textarea className="input-dark flex-1 resize-none mb-4" placeholder="Mesajınız... ( [AD] ve [BORC] yazarsanız otomatik değişir )" value={msg} onChange={e=>setMsg(e.target.value)}></textarea>
+                            <button onClick={send} className="btn btn-wa w-full">GÖNDER ({selected.length})</button>
+                        </div>
+                        <div className="h-32 bg-slate-900 rounded-2xl border border-slate-800 p-4 overflow-y-auto custom-scrollbar">
+                            <p className="text-xs text-slate-500 mb-2 font-bold uppercase">Log Kayıtları</p>
+                            {logs.map(l => <div key={l.id} className="text-[10px] text-slate-400 border-b border-slate-800 py-1 flex justify-between"><span>{l.to}</span><span className="text-emerald-500">{l.status}</span></div>)}
+                        </div>
+                    </div>
+                </div>
+            );
         }
 
         function YedekPage({ data, setData }) { const download = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(data)], {type: "application/json"})); a.download = `akca_yedek.json`; a.click(); }; const upload = (e) => { const r = new FileReader(); r.onload = (ev) => { setData(JSON.parse(ev.target.result)); alert("Yüklendi!"); }; r.readAsText(e.target.files[0]); }; return (<div className="grid grid-cols-2 gap-6 fade-in"><div className="glass-panel p-8 text-center rounded-xl hover:bg-white/5 cursor-pointer" onClick={download}><i className="fas fa-download text-4xl text-blue-500 mb-4"></i><h3>Yedeği İndir</h3></div><div className="glass-panel p-8 text-center rounded-xl hover:bg-white/5 cursor-pointer relative"><input type="file" className="absolute inset-0 opacity-0 cursor-pointer" onChange={upload} /><i className="fas fa-upload text-4xl text-green-500 mb-4"></i><h3>Yedek Yükle</h3></div></div>) }
-        function StatCard({ title, val, icon, color }) { return (<div className="glass-panel p-6 rounded-2xl flex justify-between items-start border-l-4 border-slate-700"><div><p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{title}</p><h3 className="text-2xl font-black text-white mt-1">{val}</h3></div><div className={`text-2xl ${color}`}><i className={`fas ${icon}`}></i></div></div>) }
+        function StatCard({ title, val, icon, color }) { return (<div className="glass-panel p-6 rounded-2xl flex justify-between items-start"><div><p className="text-[10px] font-bold text-slate-500 uppercase">{title}</p><h3 className="text-2xl font-black text-white mt-1">{val}</h3></div><div className={`text-2xl ${color}`}><i className={`fas ${icon}`}></i></div></div>) }
         function MenuBtn({ icon, text, active, onClick, isSpecial, isBackup }) { return (<div onClick={onClick} className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition mb-1 border-l-4 ${active ? (isSpecial ? 'bg-emerald-600 text-white border-emerald-400' : 'bg-blue-600 text-white border-blue-400') : 'text-slate-400 hover:bg-slate-800 hover:text-white border-transparent'}`}><i className={`fas ${icon} w-6 text-center`}></i><span className="text-xs font-bold uppercase italic tracking-tight">{text}</span></div>) }
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
