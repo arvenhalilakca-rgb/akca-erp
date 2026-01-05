@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AKÇA ERP 2026 v28 | FULL SİSTEM</title>
+    <title>AKÇA ERP 2026 v29 | PLATINUM</title>
     
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
@@ -22,12 +22,18 @@
         .glass-panel:hover { border-color: rgba(16, 185, 129, 0.3); }
         .fade-in { animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
-        .input-dark { background: #0f172a; border: 1px solid #334155; color: white; padding: 12px; border-radius: 12px; width: 100%; outline: none; transition: 0.2s; font-size: 0.9rem; }
+        
+        .input-dark { background: #0f172a; border: 1px solid #334155; color: white; padding: 10px; border-radius: 8px; width: 100%; outline: none; transition: 0.2s; font-size: 0.9rem; }
         .input-dark:focus { border-color: #10b981; box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1); }
+        
         .btn { padding: 10px 20px; border-radius: 12px; font-weight: 700; transition: 0.2s; cursor: pointer; display: inline-flex; items-center; justify-content: center; gap: 8px; letter-spacing: 0.5px; }
         .btn-primary { background: #3b82f6; color: white; } .btn-primary:hover { background: #2563eb; }
         .btn-wa { background: linear-gradient(135deg, #10b981 0%, #047857 100%); color: white; border: 1px solid #34d399; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+        .btn-excel { background: #16a34a; color: white; } .btn-excel:hover { background: #15803d; }
+
         .login-bg { background: radial-gradient(circle at center, #064e3b 0%, #020617 70%); }
+        .glow-text { text-shadow: 0 0 30px rgba(16, 185, 129, 0.5); }
+        
         .status-paid { color: #34d399; font-weight: 800; }
         .status-unpaid { color: #ef4444; font-weight: 800; }
         .status-partial { color: #fbbf24; font-weight: 800; }
@@ -56,11 +62,10 @@
             { id: 7, ad: "HALİL AKÇA", unvan: "Yönetici", giris: "2010-01-01", maas: 0, sgk: 0, yemek: 0, vergi: 0, diger: 0 }
         ];
 
-        // --- TAM LİSTE (YEDEK OLARAK) ---
+        // --- GÜVENLİK İÇİN TAM LİSTE ---
         const FULL_DATA = [
             {"id":1,"unvan":"18 Mart Özel Güvenlik","tel":"05419353101","defter":"BILANÇO","temsilci":"ÖZLEM","aylikUcret":14500,"tasdikUcreti":25000,"tasdikTahsilat":0},
             {"id":227,"unvan":"Ziraat Bankası","tel":"","defter":"BANKA","temsilci":"HALİL AKÇA","aylikUcret":0,"tasdikUcreti":0,"tasdikTahsilat":0}
-            // ... (Güvenlik için burayı kısa tutuyorum, asıl veri localstorage'dan gelecek)
         ];
 
         function App() {
@@ -76,10 +81,9 @@
 
             return page === 'login' ? (
                 <div className="flex h-screen w-full bg-[#020617] items-center justify-center fade-in relative login-bg">
-                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
-                    <div className="glass-panel p-12 rounded-[3rem] border border-emerald-900/50 w-96 text-center shadow-2xl z-10 relative">
-                        <h2 className="text-3xl font-black text-white mb-2 tracking-tighter">AKÇA ERP</h2>
-                        <p className="text-emerald-500 font-bold text-xs uppercase tracking-widest mb-8">v28 Full System</p>
+                    <div className="glass-panel p-12 rounded-[3rem] border border-emerald-900/50 w-96 text-center shadow-2xl z-10">
+                        <h2 className="text-3xl font-black text-white mb-2 tracking-tighter glow-text">AKÇA ERP</h2>
+                        <p className="text-emerald-500 font-bold text-xs uppercase tracking-widest mb-8">v29 Platinum</p>
                         <form onSubmit={handleLogin} className="space-y-4">
                             <input type="password" className="input-dark text-center text-xl font-bold" placeholder="••••" value={password} onChange={e=>setPassword(e.target.value)} autoFocus />
                             <button className="w-full btn btn-wa py-4 text-lg">GİRİŞ YAP</button>
@@ -92,32 +96,33 @@
         function DashboardLayout() {
             const [page, setPage] = useState('dashboard');
             
-            // --- VERİ KURTARMA MODU (v26 KEYLERİNİ KULLANIYORUZ - VERİLERİNİZ BURADA) ---
+            // --- VERİ YÖNETİMİ ---
             const [personel, setPersonel] = useState(() => JSON.parse(localStorage.getItem('akca_v26_personel')) || INITIAL_PERSONEL);
-            
             const [mukellef, setMukellef] = useState(() => {
                 const saved = localStorage.getItem('akca_v26_mukellef');
-                // Eğer daha önce veri girdiyseniz onu kullanır, yoksa FULL_DATA'yı kullanır.
                 const data = saved ? JSON.parse(saved) : FULL_DATA;
+                // Veri yapısı kontrolü ve tamamlama
                 return data.map(m => ({
                     ...m,
-                    tasdikUcreti: m.tasdikUcreti !== undefined ? m.tasdikUcreti : 0,
-                    tasdikTahsilat: m.tasdikTahsilat !== undefined ? m.tasdikTahsilat : 0,
+                    tasdikUcreti: m.tasdikUcreti || 0,
+                    tasdikTahsilat: m.tasdikTahsilat || 0,
+                    ucret2025: m.ucret2025 || m.aylikUcret,
+                    ucret2026: m.ucret2026 || 0
                 }));
             });
-
             const [hareketler, setHareketler] = useState(() => JSON.parse(localStorage.getItem('akca_v26_hareketler')) || []);
             const [logs, setLogs] = useState(() => JSON.parse(localStorage.getItem('akca_v26_logs')) || []);
+            const [scheduledMsgs, setScheduledMsgs] = useState(() => JSON.parse(localStorage.getItem('akca_v26_scheduled')) || []);
             const [botSettings, setBotSettings] = useState(() => JSON.parse(localStorage.getItem('akca_v26_bot')) || { limit: 5000, active: false });
 
-            // Değişiklikleri v26 üzerine kaydetmeye devam ediyoruz (Veri bütünlüğü için)
             useEffect(() => {
                 localStorage.setItem('akca_v26_personel', JSON.stringify(personel));
                 localStorage.setItem('akca_v26_mukellef', JSON.stringify(mukellef));
                 localStorage.setItem('akca_v26_hareketler', JSON.stringify(hareketler));
                 localStorage.setItem('akca_v26_logs', JSON.stringify(logs));
+                localStorage.setItem('akca_v26_scheduled', JSON.stringify(scheduledMsgs));
                 localStorage.setItem('akca_v26_bot', JSON.stringify(botSettings));
-            }, [personel, mukellef, hareketler, logs, botSettings]);
+            }, [personel, mukellef, hareketler, logs, scheduledMsgs, botSettings]);
 
             const getBakiye = (mId) => {
                 const borc = hareketler.filter(h => h.mukellefId === mId && h.tur === 'borc').reduce((a,b)=>a+b.tutar,0);
@@ -125,24 +130,41 @@
                 return borc - alacak;
             };
 
-            const sendApiMessage = async (tel, msg) => {
+            const sendApiMessage = async (tel, msg, fileUrl = null) => {
                 if(!tel) return alert("Telefon numarası yok!");
                 let cleanNumber = tel.replace(/\D/g, '');
                 if (cleanNumber.length === 10) cleanNumber = '90' + cleanNumber;
                 else if (cleanNumber.length === 11 && cleanNumber.startsWith('0')) cleanNumber = '90' + cleanNumber.substring(1);
 
                 try {
-                    const response = await fetch(`${API_CONFIG.baseUrl}/waInstance${API_CONFIG.id}/SendMessage/${API_CONFIG.token}`, {
+                    let url = `${API_CONFIG.baseUrl}/waInstance${API_CONFIG.id}/SendMessage/${API_CONFIG.token}`;
+                    let body = { chatId: `${cleanNumber}@c.us`, message: msg };
+                    
+                    if (fileUrl) {
+                        url = `${API_CONFIG.baseUrl}/waInstance${API_CONFIG.id}/sendFileByUrl/${API_CONFIG.token}`;
+                        body = { chatId: `${cleanNumber}@c.us`, urlFile: fileUrl, fileName: 'belge.pdf', caption: msg };
+                    }
+
+                    const response = await fetch(url, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ chatId: `${cleanNumber}@c.us`, message: msg })
+                        body: JSON.stringify(body)
                     });
                     const result = await response.json();
                     if (result.idMessage) {
-                        setLogs(prev => [{ id: Date.now(), to: cleanNumber, msg, time: new Date().toLocaleTimeString(), status: 'BAŞARILI' }, ...prev]);
+                        setLogs(prev => [{ id: Date.now(), to: cleanNumber, msg: msg.substring(0,20)+"...", time: new Date().toLocaleTimeString(), status: 'İLETİLDİ' }, ...prev]);
                         return true;
                     }
                 } catch { return false; }
+            };
+
+            const exportToExcel = (data, filename) => {
+                const csvContent = "\uFEFF" + data.map(e => Object.values(e).join(",")).join("\n");
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement("a");
+                link.href = URL.createObjectURL(blob);
+                link.download = filename + ".csv";
+                link.click();
             };
 
             return (
@@ -150,7 +172,7 @@
                     <aside className="w-72 glass-sidebar flex flex-col z-20">
                         <div className="p-8 border-b border-slate-800/50">
                             <h1 className="text-xl font-black text-white italic">HALİL AKÇA <span className="text-emerald-500">2026</span></h1>
-                            <p className="text-[10px] font-bold text-slate-500 uppercase mt-1">v28 Tam Sürüm</p>
+                            <p className="text-[10px] font-bold text-slate-500 uppercase mt-1">v29 Platinum</p>
                         </div>
                         <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto custom-scrollbar">
                             <MenuBtn icon="fa-chart-pie" text="Dashboard" active={page==='dashboard'} onClick={()=>setPage('dashboard')} />
@@ -171,11 +193,11 @@
                             </div>
                         </header>
                         <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
-                            {page === 'dashboard' && <DashboardPage mukellef={mukellef} getBakiye={getBakiye} />}
-                            {page === 'tasdik' && <TasdikPage mukellef={mukellef} setMukellef={setMukellef} sendApiMessage={sendApiMessage} />}
+                            {page === 'dashboard' && <DashboardPage mukellef={mukellef} getBakiye={getBakiye} personel={personel} />}
+                            {page === 'tasdik' && <TasdikPage mukellef={mukellef} setMukellef={setMukellef} sendApiMessage={sendApiMessage} exportToExcel={exportToExcel} />}
                             {page === 'crm' && <MukellefPage mukellef={mukellef} setMukellef={setMukellef} personel={personel} getBakiye={getBakiye} />}
-                            {page === 'finans' && <FinansPage mukellef={mukellef} hareketler={hareketler} setHareketler={setHareketler} getBakiye={getBakiye} />}
-                            {page === 'robot' && <WhatsAppEngine mukellef={mukellef} logs={logs} sendApiMessage={sendApiMessage} />}
+                            {page === 'finans' && <FinansPage mukellef={mukellef} hareketler={hareketler} setHareketler={setHareketler} getBakiye={getBakiye} setMukellef={setMukellef} exportToExcel={exportToExcel} />}
+                            {page === 'robot' && <WhatsAppEngine mukellef={mukellef} logs={logs} sendApiMessage={sendApiMessage} getBakiye={getBakiye} />}
                             {page === 'yedek' && <YedekPage data={{personel, mukellef, hareketler, logs}} setData={(d)=>{setPersonel(d.personel);setMukellef(d.mukellef);setHareketler(d.hareketler);setLogs(d.logs)}} />}
                         </div>
                     </main>
@@ -183,68 +205,86 @@
             );
         }
 
-        // --- DEFTER TASDİK SAYFASI (ÖZEL MESAJLI) ---
-        function TasdikPage({ mukellef, setMukellef, sendApiMessage }) {
+        // --- DASHBOARD (PERSONEL EKLENDİ) ---
+        function DashboardPage({ mukellef, getBakiye, personel }) {
+            const toplamTasdik = mukellef.reduce((a,b)=>a+(b.tasdikUcreti||0),0);
+            const toplamTahsilat = mukellef.reduce((a,b)=>a+(b.tasdikTahsilat||0),0);
+            const toplamAlacak = mukellef.reduce((a,b)=>a+getBakiye(b.id),0);
+
+            return (
+                <div className="space-y-6 fade-in">
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        <StatCard title="Toplam Portföy" val={mukellef.length} icon="fa-building" color="text-blue-500" />
+                        <StatCard title="Tasdik Bekleyen" val={`${(toplamTasdik-toplamTahsilat).toLocaleString()} ₺`} icon="fa-book" color="text-emerald-500" />
+                        <StatCard title="Muhasebe Alacak" val={`${toplamAlacak.toLocaleString()} ₺`} icon="fa-hand-holding-dollar" color="text-red-500" />
+                        <StatCard title="Personel" val={personel.length} icon="fa-users" color="text-purple-500" />
+                    </div>
+
+                    <h3 className="text-white font-bold mt-8 mb-4">Personel Performans Kartları</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {personel.map(p => {
+                            const pList = mukellef.filter(m => m.temsilci === p.ad);
+                            const pCiro = pList.reduce((a,b) => a + (b.ucret2026 || b.aylikUcret || 0), 0);
+                            return (
+                                <div key={p.id} className="glass-panel p-6 rounded-2xl border-l-4 border-slate-600">
+                                    <div className="flex justify-between items-center mb-4">
+                                        <h4 className="text-white font-bold">{p.ad}</h4>
+                                        <span className="text-xs text-slate-500">{pList.length} Mükellef</span>
+                                    </div>
+                                    <div className="bg-slate-900/50 p-3 rounded-xl flex justify-between items-center">
+                                        <span className="text-xs text-slate-400">Yönetilen Ciro</span>
+                                        <span className="text-lg font-bold text-emerald-400">{pCiro.toLocaleString()} ₺</span>
+                                    </div>
+                                </div>
+                            )
+                        })}
+                    </div>
+                </div>
+            )
+        }
+
+        // --- TASDIK PAGE (EXCEL EKLENDİ) ---
+        function TasdikPage({ mukellef, setMukellef, sendApiMessage, exportToExcel }) {
             const [search, setSearch] = useState("");
             
-            const stats = useMemo(() => {
-                const total = mukellef.reduce((a,b)=>a+(b.tasdikUcreti||0), 0);
-                const collected = mukellef.reduce((a,b)=>a+(b.tasdikTahsilat||0), 0);
-                const remaining = total - collected;
-                return { total, collected, remaining };
-            }, [mukellef]);
-
-            const updateValue = (id, field, val) => {
-                setMukellef(mukellef.map(m => m.id === id ? {...m, [field]: val} : m));
+            const exportList = () => {
+                const data = mukellef
+                    .filter(m => (m.tasdikUcreti - m.tasdikTahsilat) > 0)
+                    .map(m => ({ Unvan: m.unvan, Telefon: m.tel, Borc: m.tasdikUcreti - m.tasdikTahsilat }));
+                exportToExcel(data, "Tasdik_Borclulari");
             };
 
             const sendTasdikWA = (m) => {
-                // YENİ İSTEK: İsimsiz, resmi mesaj
-                const msg = "Süresi geçen defter tasdik ödemeleri için bugün son gündür ödemenizi yapmanızı rica ederiz.";
+                const kalan = m.tasdikUcreti - m.tasdikTahsilat;
+                const msg = `Sayın ${m.unvan}, 2026 yılı defter tasdik ücreti bakiyeniz ${kalan.toLocaleString()} TL'dir. Ödemenizi rica ederiz.`;
                 sendApiMessage(m.tel, msg);
-                alert("Mesaj Gönderildi!");
             };
 
             const filtered = mukellef.filter(m => m.unvan.toLowerCase().includes(search.toLowerCase()));
 
             return (
                 <div className="space-y-6 fade-in">
-                    <div className="grid grid-cols-3 gap-6">
-                        <StatCard title="Toplam Tasdik Ciro" val={`${stats.total.toLocaleString()} ₺`} icon="fa-coins" color="text-blue-500" />
-                        <StatCard title="Kasa Girişi" val={`${stats.collected.toLocaleString()} ₺`} icon="fa-check-circle" color="text-emerald-500" />
-                        <StatCard title="Bekleyen" val={`${stats.remaining.toLocaleString()} ₺`} icon="fa-clock" color="text-red-500" />
-                    </div>
-
-                    <div className="flex gap-4">
-                        <input className="input-dark flex-1" placeholder="Mükellef Ara..." value={search} onChange={e=>setSearch(e.target.value)} />
+                    <div className="flex justify-between items-center">
+                        <div className="flex gap-4 flex-1">
+                            <input className="input-dark w-80" placeholder="Ara..." value={search} onChange={e=>setSearch(e.target.value)} />
+                        </div>
+                        <button onClick={exportList} className="btn btn-excel"><i className="fas fa-file-excel mr-2"></i> Borçluları İndir</button>
                     </div>
 
                     <div className="glass-panel rounded-2xl overflow-hidden border border-slate-700">
                         <table className="w-full text-left text-sm">
-                            <thead className="bg-slate-900 text-slate-500 uppercase font-bold text-[10px]">
-                                <tr>
-                                    <th className="p-4">Mükellef</th>
-                                    <th className="p-4 text-right">Tasdik Ücreti</th>
-                                    <th className="p-4 text-right">Ödenen</th>
-                                    <th className="p-4 text-right">Kalan</th>
-                                    <th className="p-4 text-center">Durum</th>
-                                    <th className="p-4 text-center">Hatırlat</th>
-                                </tr>
-                            </thead>
+                            <thead className="bg-slate-900 text-slate-500 uppercase font-bold text-[10px]"><tr><th className="p-4">Mükellef</th><th className="p-4 text-right">Tasdik Ücreti</th><th className="p-4 text-right">Ödenen</th><th className="p-4 text-right">Kalan</th><th className="p-4 text-center">Durum</th><th className="p-4 text-center">İşlem</th></tr></thead>
                             <tbody className="divide-y divide-slate-800">
                                 {filtered.map(m => {
                                     const kalan = (m.tasdikUcreti || 0) - (m.tasdikTahsilat || 0);
-                                    let status = "ÖDENMEDİ";
-                                    let statusColor = "text-red-500";
-                                    
+                                    let status = "ÖDENMEDİ", statusColor = "text-red-500";
                                     if(m.tasdikTahsilat > 0 && kalan > 0) { status = "KISMİ"; statusColor = "text-yellow-500"; }
                                     else if(m.tasdikTahsilat > 0 && kalan <= 0) { status = "TAMAM"; statusColor = "text-emerald-500"; }
-
                                     return (
                                         <tr key={m.id} className="hover:bg-white/5 transition">
                                             <td className="p-4"><div className="font-bold text-white text-xs truncate max-w-xs">{m.unvan}</div><div className="text-[9px] text-slate-500">{m.tel}</div></td>
-                                            <td className="p-4 text-right"><input type="number" className="bg-transparent border-b border-slate-700 text-right w-24 outline-none text-slate-300" value={m.tasdikUcreti} onChange={e=>updateValue(m.id, 'tasdikUcreti', parseInt(e.target.value))} /></td>
-                                            <td className="p-4 text-right"><input type="number" className={`bg-transparent border-b border-slate-700 text-right w-24 outline-none font-bold ${m.tasdikTahsilat > 0 ? 'text-emerald-400' : 'text-slate-600'}`} value={m.tasdikTahsilat} onChange={e=>updateValue(m.id, 'tasdikTahsilat', parseInt(e.target.value))} /></td>
+                                            <td className="p-4 text-right"><input type="number" className="bg-transparent border-b border-slate-700 text-right w-24 outline-none text-slate-300" value={m.tasdikUcreti} onChange={e=>setMukellef(mukellef.map(x => x.id === m.id ? {...x, tasdikUcreti: parseInt(e.target.value)} : x))} /></td>
+                                            <td className="p-4 text-right"><input type="number" className={`bg-transparent border-b border-slate-700 text-right w-24 outline-none font-bold ${m.tasdikTahsilat > 0 ? 'text-emerald-400' : 'text-slate-600'}`} value={m.tasdikTahsilat} onChange={e=>setMukellef(mukellef.map(x => x.id === m.id ? {...x, tasdikTahsilat: parseInt(e.target.value)} : x))} /></td>
                                             <td className="p-4 text-right font-mono font-bold text-white">{kalan > 0 ? kalan.toLocaleString() : '-'} ₺</td>
                                             <td className={`p-4 text-center text-[10px] font-black ${statusColor}`}>{status}</td>
                                             <td className="p-4 text-center"><button onClick={()=>sendTasdikWA(m)} className="text-emerald-500 hover:scale-110 transition"><i className="fab fa-whatsapp text-lg"></i></button></td>
@@ -258,90 +298,153 @@
             );
         }
 
-        // --- TAMİR EDİLEN DİĞER SAYFALAR (EKSİKSİZ KODLAR) ---
+        // --- CRM PAGE (PERSONEL FİLTRELİ) ---
         function MukellefPage({ mukellef, setMukellef, personel, getBakiye }) {
             const [search, setSearch] = useState("");
+            const [filterP, setFilterP] = useState("all");
             const [modal, setModal] = useState(null);
-            const filtered = mukellef.filter(m => m.unvan.toLowerCase().includes(search.toLowerCase()));
 
-            const saveM = (m) => { 
-                if(m.id) setMukellef(prev => prev.map(x=>x.id===m.id?m:x)); 
-                else setMukellef(prev => [{...m, id: Date.now()}, ...prev]); 
-                setModal(null); 
+            const filtered = mukellef.filter(m => 
+                m.unvan.toLowerCase().includes(search.toLowerCase()) && 
+                (filterP === "all" || m.temsilci === filterP)
+            );
+
+            const saveM = (m) => {
+                if(m.id) setMukellef(prev => prev.map(x=>x.id===m.id?m:x));
+                else setMukellef(prev => [{...m, id: Date.now()}, ...prev]);
+                setModal(null);
             };
 
             return (
                 <div className="space-y-6 fade-in">
-                    <div className="flex justify-between"><input className="input-dark w-80" placeholder="Ara..." value={search} onChange={e=>setSearch(e.target.value)} /><button onClick={()=>setModal({unvan:"", tel:"", aylikUcret:0})} className="btn btn-primary">+ Ekle</button></div>
+                    <div className="flex gap-4">
+                        <input className="input-dark flex-1" placeholder="Mükellef Ara..." value={search} onChange={e=>setSearch(e.target.value)} />
+                        <select className="input-dark w-48" value={filterP} onChange={e=>setFilterP(e.target.value)}>
+                            <option value="all">Tüm Personel</option>
+                            {personel.map(p=><option key={p.id} value={p.ad}>{p.ad}</option>)}
+                        </select>
+                        <button onClick={()=>setModal({unvan:"", tel:"", aylikUcret:0})} className="btn btn-primary">+ Ekle</button>
+                    </div>
                     <div className="glass-panel rounded-2xl overflow-hidden">
                         <table className="w-full text-left text-sm"><thead className="bg-slate-900 text-slate-500 uppercase font-bold text-[10px]"><tr><th className="p-4">Firma</th><th className="p-4">Temsilci</th><th className="p-4 text-right">Ücret</th><th className="p-4 text-right">Bakiye</th><th className="p-4 text-center">Düzenle</th></tr></thead>
                         <tbody className="divide-y divide-slate-800">{filtered.map(m=>(<tr key={m.id} className="hover:bg-white/5"><td className="p-4 font-bold text-white">{m.unvan}</td><td className="p-4 text-xs">{m.temsilci}</td><td className="p-4 text-right">{m.aylikUcret.toLocaleString()} ₺</td><td className="p-4 text-right text-red-400">{getBakiye(m.id).toLocaleString()} ₺</td><td className="p-4 text-center"><button onClick={()=>setModal(m)} className="text-blue-400"><i className="fas fa-edit"></i></button></td></tr>))}</tbody></table>
                     </div>
-                    {modal && <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50"><div className="bg-slate-800 p-8 rounded-2xl w-96"><h3 className="text-white font-bold mb-4">Düzenle</h3><input className="input-dark mb-2" value={modal.unvan} onChange={e=>setModal({...modal, unvan:e.target.value})} /><input className="input-dark mb-2" value={modal.tel} onChange={e=>setModal({...modal, tel:e.target.value})} /><div className="flex gap-2"><button onClick={()=>saveM(modal)} className="btn btn-primary flex-1">Kaydet</button><button onClick={()=>setModal(null)} className="btn bg-slate-700 flex-1">İptal</button></div></div></div>}
+                    {modal && <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50"><div className="bg-slate-800 p-8 rounded-2xl w-96 border border-slate-600"><h3 className="text-white font-bold mb-4">Mükellef Kartı</h3><input className="input-dark mb-2" placeholder="Ünvan" value={modal.unvan} onChange={e=>setModal({...modal, unvan:e.target.value})} /><input className="input-dark mb-2" placeholder="Tel" value={modal.tel} onChange={e=>setModal({...modal, tel:e.target.value})} /><div className="flex gap-2"><button onClick={()=>saveM(modal)} className="btn btn-primary flex-1">Kaydet</button><button onClick={()=>setModal(null)} className="btn bg-slate-700 flex-1">İptal</button></div></div></div>}
                 </div>
             );
         }
 
-        function FinansPage({ mukellef, hareketler, setHareketler, getBakiye }) {
+        // --- FİNANS PAGE (2025/2026 VE ZAM ROBOTU) ---
+        function FinansPage({ mukellef, hareketler, setHareketler, getBakiye, setMukellef, exportToExcel }) {
             const [selectedMId, setSelectedMId] = useState(mukellef[0]?.id || 0);
-            const [tahsilat, setTahsilat] = useState({tutar:0, aciklama:""});
-            const bakiye = getBakiye(parseInt(selectedMId));
-            const ekstre = hareketler.filter(h => h.mukellefId == selectedMId);
+            const [year, setYear] = useState(2026);
+            const [zamModal, setZamModal] = useState(false);
+            const [zamOran, setZamOran] = useState(50);
+            const m = mukellef.find(x => x.id == selectedMId);
 
-            const islemYap = (tur) => {
-                const rec = { id: Date.now(), mukellefId: parseInt(selectedMId), tarih: new Date().toLocaleDateString(), tur, aciklama: tahsilat.aciklama || (tur==='borc'?'Aylık Tahakkuk':'Tahsilat'), tutar: Number(tahsilat.tutar) };
+            const exportBorc = () => {
+                const data = mukellef.map(m => ({Unvan: m.unvan, Borc: getBakiye(m.id)})).filter(x => x.Borc > 0);
+                exportToExcel(data, "Cari_Borclular");
+            };
+
+            const topluZam = () => {
+                if(confirm(`2025 Ücretlerine %${zamOran} zam yapılıp 2026'ya aktarılacak?`)) {
+                    setMukellef(mukellef.map(m => ({
+                        ...m,
+                        ucret2026: Math.round((m.ucret2025 || m.aylikUcret) * (1 + zamOran/100))
+                    })));
+                    setZamModal(false);
+                    alert("Zam İşlendi!");
+                }
+            };
+
+            const borclandir = () => {
+                const ucret = year === 2026 ? m.ucret2026 : m.ucret2025;
+                if(!ucret) return alert("Ücret 0 görünüyor, önce mükellef kartını güncelle.");
+                const rec = { id: Date.now(), mukellefId: parseInt(selectedMId), tarih: new Date().toLocaleDateString(), tur: 'borc', aciklama: `${year} Ayı Tahakkuku`, tutar: ucret };
                 setHareketler([rec, ...hareketler]);
-                alert("İşlendi.");
             };
 
             return (
                 <div className="space-y-6 fade-in">
-                    <div className="glass-panel p-6 rounded-2xl flex gap-4 items-end">
-                        <div className="flex-1"><label className="text-xs text-slate-500">Mükellef</label><select className="input-dark" value={selectedMId} onChange={e=>setSelectedMId(e.target.value)}>{mukellef.map(m=><option key={m.id} value={m.id}>{m.unvan}</option>)}</select></div>
-                        <div className="w-32"><label className="text-xs text-slate-500">Tutar</label><input type="number" className="input-dark" value={tahsilat.tutar} onChange={e=>setTahsilat({...tahsilat, tutar:e.target.value})} /></div>
-                        <button onClick={()=>islemYap('borc')} className="btn bg-red-600 text-white">Borçlandır</button>
-                        <button onClick={()=>islemYap('alacak')} className="btn bg-emerald-600 text-white">Tahsil Et</button>
+                    <div className="flex justify-between items-center bg-slate-800 p-4 rounded-2xl border border-slate-700">
+                        <div className="flex gap-2">
+                            <button onClick={()=>setYear(2025)} className={`btn ${year===2025?'bg-blue-600':'bg-slate-700'}`}>2025</button>
+                            <button onClick={()=>setYear(2026)} className={`btn ${year===2026?'bg-blue-600':'bg-slate-700'}`}>2026</button>
+                        </div>
+                        <div className="flex gap-2">
+                            <button onClick={()=>setZamModal(true)} className="btn bg-purple-600 text-white"><i className="fas fa-magic mr-2"></i> Zam Robotu</button>
+                            <button onClick={exportBorc} className="btn btn-excel"><i className="fas fa-file-excel mr-2"></i> Borç Listesi</button>
+                        </div>
                     </div>
-                    <div className="glass-panel p-6 rounded-2xl"><h3 className="text-white font-bold mb-4">Hesap Özeti (Bakiye: {bakiye.toLocaleString()} ₺)</h3><div className="max-h-64 overflow-y-auto"><table className="w-full text-sm text-left"><thead className="text-slate-500"><tr><th>Tarih</th><th>Açıklama</th><th className="text-right">Borç</th><th className="text-right">Alacak</th></tr></thead><tbody>{ekstre.map(h=>(<tr key={h.id} className="border-b border-slate-800"><td className="py-2 text-slate-400">{h.tarih}</td><td className="py-2 text-white">{h.aciklama}</td><td className="py-2 text-right text-red-400">{h.tur==='borc'?h.tutar:''}</td><td className="py-2 text-right text-emerald-400">{h.tur==='alacak'?h.tutar:''}</td></tr>))}</tbody></table></div></div>
+
+                    {zamModal && <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50"><div className="bg-slate-800 p-8 rounded-2xl w-96 border border-purple-500"><h3 className="text-white font-bold mb-4">Otomatik Zam</h3><input type="number" className="input-dark mb-4 text-center text-xl font-bold" value={zamOran} onChange={e=>setZamOran(e.target.value)} /><button onClick={topluZam} className="btn bg-purple-600 w-full">Uygula</button><button onClick={()=>setZamModal(false)} className="text-slate-400 mt-4 w-full">İptal</button></div></div>}
+
+                    <div className="glass-panel p-6 rounded-2xl flex gap-4 items-center">
+                        <select className="input-dark flex-1" value={selectedMId} onChange={e=>setSelectedMId(parseInt(e.target.value))}>{mukellef.map(m=><option key={m.id} value={m.id}>{m.unvan}</option>)}</select>
+                        <div className="text-right"><p className="text-xs text-slate-500">Seçili Yıl Ücreti</p><p className="font-bold text-emerald-400">{year===2026 ? m?.ucret2026 : m?.ucret2025} ₺</p></div>
+                        <button onClick={borclandir} className="btn btn-primary">Borçlandır</button>
+                    </div>
                 </div>
             );
         }
 
-        function WhatsAppEngine({ mukellef, logs, sendApiMessage }) {
+        // --- WHATSAPP ENGINE (AI + GREEN API + TEMPLATE) ---
+        function WhatsAppEngine({ mukellef, logs, sendApiMessage, getBakiye }) {
             const [selected, setSelected] = useState([]);
             const [msg, setMsg] = useState("");
-            
-            const gonder = async () => {
-                if(!msg || selected.length === 0) return alert("Seçim yapın!");
-                for(let id of selected) {
-                    const m = mukellef.find(x=>x.id===id);
-                    if(m) await sendApiMessage(m.tel, msg);
-                }
-                alert("Bitti!"); setSelected([]);
-            };
+            const [mode, setMode] = useState("borclu"); // borclu, tumu
+            const filtered = mode === 'borclu' ? mukellef.filter(m => getBakiye(m.id) > 0) : mukellef;
 
             const toggle = (id) => setSelected(selected.includes(id) ? selected.filter(x=>x!==id) : [...selected, id]);
+            const selectAll = () => setSelected(filtered.map(m=>m.id));
+
+            const send = async () => {
+                if(selected.length === 0 || !msg) return alert("Seçim yapın!");
+                for(let id of selected) {
+                    const m = mukellef.find(x=>x.id===id);
+                    if(m && m.tel) {
+                        // AI Template Replacement
+                        let finalMsg = msg.replace("[AD]", m.unvan).replace("[BORC]", getBakiye(m.id));
+                        await sendApiMessage(m.tel, finalMsg);
+                    }
+                }
+                alert("Gönderim Tamamlandı!"); setSelected([]);
+            };
 
             return (
-                <div className="grid grid-cols-2 gap-6 h-[80vh] fade-in">
-                    <div className="glass-panel p-6 rounded-2xl flex flex-col"><h3 className="text-white font-bold mb-4">Kişi Seç ({selected.length})</h3><div className="flex-1 overflow-y-auto custom-scrollbar space-y-1">{mukellef.map(m=>(<div key={m.id} onClick={()=>toggle(m.id)} className={`p-2 rounded cursor-pointer text-xs ${selected.includes(m.id)?'bg-emerald-600 text-white':'hover:bg-slate-800'}`}>{m.unvan}</div>))}</div></div>
-                    <div className="glass-panel p-6 rounded-2xl flex flex-col"><h3 className="text-white font-bold mb-4">Mesaj</h3><textarea className="input-dark flex-1 resize-none mb-4" value={msg} onChange={e=>setMsg(e.target.value)}></textarea><button onClick={gonder} className="btn btn-wa w-full">GÖNDER</button><div className="mt-4 h-32 overflow-y-auto bg-slate-900 p-2 rounded text-[10px]">{logs.map(l=>(<div key={l.id} className="text-slate-400">To: {l.to} - {l.status}</div>))}</div></div>
-                </div>
-            );
-        }
-
-        // --- DASHBOARD (Özet) ---
-        function DashboardPage({ mukellef, getBakiye }) {
-            return (
-                <div className="space-y-6 fade-in">
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                        <StatCard title="Portföy" val={mukellef.length} icon="fa-building" color="text-blue-500" />
-                        <StatCard title="Tasdik Kasası" val={`${mukellef.reduce((a,b)=>a+(b.tasdikTahsilat||0),0).toLocaleString()} ₺`} icon="fa-wallet" color="text-emerald-500" />
-                        <StatCard title="Toplam Alacak" val={`${mukellef.reduce((a,b)=>a+getBakiye(b.id),0).toLocaleString()} ₺`} icon="fa-hand-holding-dollar" color="text-red-500" />
-                        <StatCard title="Bekleyen Tasdik" val={`${(mukellef.reduce((a,b)=>a+(b.tasdikUcreti||0),0) - mukellef.reduce((a,b)=>a+(b.tasdikTahsilat||0),0)).toLocaleString()} ₺`} icon="fa-clock" color="text-purple-500" />
+                <div className="grid grid-cols-12 gap-6 h-[80vh] fade-in">
+                    <div className="col-span-4 bg-slate-800 rounded-2xl border border-slate-700 flex flex-col overflow-hidden">
+                        <div className="p-4 border-b border-slate-700 flex justify-between">
+                            <h3 className="font-bold text-white">Kişiler ({filtered.length})</h3>
+                            <div className="flex gap-2"><button onClick={()=>setMode('borclu')} className={`text-xs p-1 rounded ${mode==='borclu'?'bg-red-600':'bg-slate-700'}`}>Borçlular</button><button onClick={()=>setMode('tumu')} className={`text-xs p-1 rounded ${mode==='tumu'?'bg-blue-600':'bg-slate-700'}`}>Tümü</button></div>
+                        </div>
+                        <div className="p-2"><button onClick={selectAll} className="text-xs text-emerald-400 underline">Hepsini Seç</button></div>
+                        <div className="flex-1 overflow-y-auto p-2 space-y-1 custom-scrollbar">
+                            {filtered.map(m => (
+                                <div key={m.id} onClick={()=>toggle(m.id)} className={`p-2 rounded cursor-pointer text-xs flex justify-between ${selected.includes(m.id)?'bg-emerald-600 text-white':'hover:bg-slate-700 text-slate-300'}`}>
+                                    <span className="truncate w-32">{m.unvan}</span>
+                                    {getBakiye(m.id)>0 && <span className="bg-red-900 px-1 rounded">{getBakiye(m.id)}</span>}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                    <div className="col-span-8 flex flex-col gap-4">
+                        <div className="bg-slate-800 p-6 rounded-2xl border border-slate-700 flex-1 flex flex-col">
+                            <div className="flex gap-2 mb-4">
+                                <button onClick={()=>setMsg("Sayın [AD], toplam [BORC] TL bakiyeniz bulunmaktadır.")} className="text-[10px] bg-slate-700 px-2 py-1 rounded hover:bg-slate-600">Bakiye Şablonu</button>
+                                <button onClick={()=>setMsg("Sayın [AD], evraklarınızı bekliyoruz.")} className="text-[10px] bg-slate-700 px-2 py-1 rounded hover:bg-slate-600">Evrak Şablonu</button>
+                            </div>
+                            <textarea className="input-dark flex-1 resize-none mb-4" placeholder="Mesajınız... ( [AD] ve [BORC] yazarsanız otomatik değişir )" value={msg} onChange={e=>setMsg(e.target.value)}></textarea>
+                            <button onClick={send} className="btn btn-wa w-full">GÖNDER ({selected.length})</button>
+                        </div>
+                        <div className="h-32 bg-slate-900 rounded-2xl border border-slate-800 p-4 overflow-y-auto custom-scrollbar">
+                            <p className="text-xs text-slate-500 mb-2 font-bold uppercase">Log Kayıtları</p>
+                            {logs.map(l => <div key={l.id} className="text-[10px] text-slate-400 border-b border-slate-800 py-1 flex justify-between"><span>{l.to}</span><span className="text-emerald-500">{l.status}</span></div>)}
+                        </div>
                     </div>
                 </div>
-            )
+            );
         }
 
         function YedekPage({ data, setData }) { const download = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(data)], {type: "application/json"})); a.download = `akca_yedek.json`; a.click(); }; const upload = (e) => { const r = new FileReader(); r.onload = (ev) => { setData(JSON.parse(ev.target.result)); alert("Yüklendi!"); }; r.readAsText(e.target.files[0]); }; return (<div className="grid grid-cols-2 gap-6 fade-in"><div className="glass-panel p-8 text-center rounded-xl hover:bg-white/5 cursor-pointer" onClick={download}><i className="fas fa-download text-4xl text-blue-500 mb-4"></i><h3>Yedeği İndir</h3></div><div className="glass-panel p-8 text-center rounded-xl hover:bg-white/5 cursor-pointer relative"><input type="file" className="absolute inset-0 opacity-0 cursor-pointer" onChange={upload} /><i className="fas fa-upload text-4xl text-green-500 mb-4"></i><h3>Yedek Yükle</h3></div></div>) }
